@@ -36,6 +36,16 @@ void Settings::setMentalStateDrives(int state, QVector<int> drives)
     }
 }
 
+void Settings::setMentalStateDrive(int state, int motorIndex, int value)
+{
+    m_settings->setValue(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), value);
+}
+
+int Settings::getMentalStateDrive(int state, int motorIndex)
+{
+    return m_settings->value(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), 0).toInt();
+}
+
 QString Settings::mentalStateHeader(int state)
 {
     return "mentalState" + QString::number(state);

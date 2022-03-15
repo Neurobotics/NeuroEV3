@@ -15,7 +15,8 @@ public:
 
     QVector<int> getMentalStateDrives(int state);
     void setMentalStateDrives(int state, QVector<int> drives);
-
+    void setMentalStateDrive(int state, int motorIndex, int value);
+    int getMentalStateDrive(int state, int motorIndex);
 signals:
 
 protected:
