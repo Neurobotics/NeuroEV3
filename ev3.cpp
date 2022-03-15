@@ -1,18 +1,18 @@
-#include "ev3.h"
+#include "EV3.h"
 
 #include <QDebug>
 
 #define UNLOCK_MESSAGE "GET /target?sn=%1 VMTP1.0\nProtocol: EV3"
 
-Ev3::Ev3(QObject *parent) : QObject(parent)
+EV3::EV3(QObject *parent) : QObject(parent)
 {
-    qRegisterMetaType<Ev3::ConnectionState>("ConnectionState");
+    qRegisterMetaType<EV3::ConnectionState>("ConnectionState");
 
     m_broadcast = new QUdpSocket;
     QObject::connect(m_broadcast, SIGNAL(readyRead()), this, SLOT(processBroadcastDatagram()));
 
     m_connection = new QTcpSocket;
-    connect(m_connection, &QTcpSocket::stateChanged, this, &Ev3::updateState);
+    connect(m_connection, &QTcpSocket::stateChanged, this, &EV3::updateState);
     connect(m_connection, &QTcpSocket::readyRead,[=]() {
         if (m_connectionState != Connected)
             return;
@@ -25,14 +25,14 @@ Ev3::Ev3(QObject *parent) : QObject(parent)
     connect(m_connection, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(updateError(QAbstractSocket::SocketError)));
 }
 
-Ev3::~Ev3()
+EV3::~EV3()
 {  
     disconnect();
     m_connection->deleteLater();
     m_broadcast->deleteLater();
 }
 
-void Ev3::searchAndConnect()
+void EV3::searchAndConnect()
 {
     if (m_connectionState > Disconnected)
         return;
@@ -43,7 +43,7 @@ void Ev3::searchAndConnect()
     m_broadcast->bind(3015);
 }
 
-void Ev3::processBroadcastDatagram()
+void EV3::processBroadcastDatagram()
 {
     clearError();
 
@@ -68,7 +68,7 @@ void Ev3::processBroadcastDatagram()
     m_connection->connectToHost(address, 5555);
 }
 
-bool Ev3::unlockEv3()
+bool EV3::unlockEv3()
 {
     qDebug() << "Sending unlock message";
     m_connection->write(QString(QLatin1String(UNLOCK_MESSAGE)).arg(m_serialNumber).toLatin1());
@@ -81,7 +81,7 @@ bool Ev3::unlockEv3()
     }
 }
 
-void Ev3::disconnect()
+void EV3::disconnect()
 {
     m_serialNumber.clear();
 
@@ -97,7 +97,7 @@ void Ev3::disconnect()
     m_connection->disconnectFromHost();
 }
 
-void Ev3::sendCommand(const QByteArray &data, bool noReply)
+void EV3::sendCommand(const QByteArray &data, bool noReply)
 {
     if (m_connectionState != Connected)
         return;
@@ -127,12 +127,12 @@ void Ev3::sendCommand(const QByteArray &data, bool noReply)
     m_connection->write(actual);
 }
 
-void Ev3::sendDirectCommand(const QByteArray &data)
+void EV3::sendDirectCommand(const QByteArray &data)
 {
     m_connection->write(data);
 }
 
-QByteArray Ev3::readResponse()
+QByteArray EV3::readResponse()
 {
     if (m_connectionState != Connected)
         return QByteArray();
@@ -142,12 +142,12 @@ QByteArray Ev3::readResponse()
     return m_connection->readAll();
 }
 
-Ev3::ConnectionState Ev3::connectionState() const
+EV3::ConnectionState EV3::connectionState() const
 {
     return m_connectionState;
 }
 
-void Ev3::setState(ConnectionState state)
+void EV3::setState(ConnectionState state)
 {
     if (m_connectionState == state)
         return;
@@ -166,7 +166,7 @@ void Ev3::setState(ConnectionState state)
     emit connectionStateChanged();
 }
 
-void Ev3::updateState(QAbstractSocket::SocketState state)
+void EV3::updateState(QAbstractSocket::SocketState state)
 {
     switch (state) {
     case QAbstractSocket::UnconnectedState:
@@ -189,7 +189,7 @@ void Ev3::updateState(QAbstractSocket::SocketState state)
     }
 }
 
-void Ev3::updateError(QAbstractSocket::SocketError error)
+void EV3::updateError(QAbstractSocket::SocketError error)
 {
     switch (error) {
     case QAbstractSocket::ConnectionRefusedError:
@@ -244,7 +244,7 @@ void Ev3::updateError(QAbstractSocket::SocketError error)
     emit errorChanged();
 }
 
-void Ev3::clearError()
+void EV3::clearError()
 {
     if (m_error.isEmpty()) return;
 

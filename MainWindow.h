@@ -2,8 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "ev3.h"
-#include "ev3motor.h"
+#include "EV3.h"
+#include "EV3_Motor.h"
+#include <QWebSocket>
 
 class MainWindow : public QMainWindow
 {
@@ -14,8 +15,14 @@ public:
     ~MainWindow();
 
 protected:
-    Ev3 *m_ev3 = nullptr;
-    QVector<ev3motor*> m_motors;
+    EV3 *m_ev3 = nullptr;
+    QVector<EV3_Motor*> m_motors;
+    QWebSocket *socket = nullptr;
 
+    EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;
+
+    int m_mentalState = -1;
+    int meditation = 0;
+    int concentration = 0;
 };
 #endif // MAINWINDOW_H

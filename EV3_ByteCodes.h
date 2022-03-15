@@ -19,8 +19,8 @@
  */
 
 
-#ifndef   BYTECODES_H_
-#define   BYTECODES_H_
+#ifndef   EV3_BYTECODES_H_
+#define   EV3_BYTECODES_H_
 
 #define   BYTECODE_VERSION              1.04
 
@@ -1661,4 +1661,4 @@ DEVCMD;
 #define   IO_S                          IN_S  | OUT_S
 
 
-#endif /* BYTECODES_H_ */
+#endif /* EV3_BYTECODES_H_ */

@@ -1,15 +1,18 @@
-#include "ev3motor.h"
+#include "EV3_Motor.h"
 
-ev3motor::ev3motor(Ev3 *ev3, int port, QObject *parent) : QObject(parent) {
+EV3_Motor::EV3_Motor(EV3 *ev3, int port, QObject *parent) : QObject(parent) {
     m_ev3 = ev3;
     m_port = port;
+    if (port > 0 && port < 5) {
+        m_internalPort = m_ports[port - 1];
+    }
 }
 
-void ev3motor::setPower(int power)
+void EV3_Motor::setPower(int power)
 {
     power = qBound(-100, power, 100);
 
-    if (m_power == power || m_port == 0)
+    if (m_internalPort == 0)
         return;
 
     char command[14];
@@ -17,15 +20,15 @@ void ev3motor::setPower(int power)
     command[1] = 0x81;
     command[2] = 0x00;
     command[3] = 0x81;
-    command[4] = m_port;
+    command[4] = m_internalPort;
     command[5] = 0x81;
     command[6] = m_polarity ? qint8(1) : qint8(-1);
 
-    command[7] = m_enableSpeedControl? opOUTPUT_SPEED : opOUTPUT_POWER;
+    command[7] = m_enableSpeedControl ? opOUTPUT_SPEED : opOUTPUT_POWER;
     command[8] = 0x81;
     command[9] = 0x00;
     command[10] = 0x81;
-    command[11] = m_port;
+    command[11] = m_internalPort;
     command[12] = 0x81;
     command[13] = power;
 
@@ -40,44 +43,47 @@ void ev3motor::setPower(int power)
     emit powerChanged();
 }
 
-void ev3motor::start()
+void EV3_Motor::start(bool enable)
 {
-    char command[5];
-    command[0] = opOUTPUT_START;
-    command[1] = 0x81;
-    command[2] = 0x00;
-    command[3] = 0x81;
-    command[4] = m_port;
-    m_ev3->sendCommand(QByteArray::fromRawData(command, 5));
+    if (!enable) stop();
+    else {
+        char command[5];
+        command[0] = opOUTPUT_START;
+        command[1] = 0x81;
+        command[2] = 0x00;
+        command[3] = 0x81;
+        command[4] = m_internalPort;
+        m_ev3->sendCommand(QByteArray::fromRawData(command, 5));
+    }
 }
 
-void ev3motor::stop()
+void EV3_Motor::stop()
 {
     char command[7];
     command[0] = opOUTPUT_STOP;
     command[1] = 0x81;
     command[2] = 0x00;
     command[3] = 0x81;
-    command[4] = m_port;
+    command[4] = m_internalPort;
     command[5] = 0x81;
     command[6] = 0x01; // brake
     m_ev3->sendCommand(QByteArray::fromRawData(command, 7));
 }
 
-void ev3motor::setPolarity(int p)
+void EV3_Motor::setPolarity(bool straight)
 {
     char command[7];
     command[0] = opOUTPUT_POLARITY;
     command[1] = 0x81;
     command[2] = 0x00;
     command[3] = 0x81;
-    command[4] = m_port;
+    command[4] = m_internalPort;
     command[5] = 0x81;
-    command[6] = p > 0 ? qint8(1) : qint8(-1);
+    command[6] = straight ? qint8(1) : qint8(-1);
     m_ev3->sendCommand(QByteArray::fromRawData(command, 7));
 }
 
-void ev3motor::setSpeedControlEnabled(bool enable)
+void EV3_Motor::setSpeedControlEnabled(bool enable)
 {
     m_enableSpeedControl = enable;
 }

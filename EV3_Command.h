@@ -1,13 +1,13 @@
-#ifndef EV3COMMAND_H
-#define EV3COMMAND_H
+#ifndef EV3_COMMAND_H
+#define EV3_COMMAND_H
 
 #include <QDataStream>
-#include "bytecodes.h"
+#include "EV3_ByteCodes.h"
 
-class Ev3Command
+class EV3_Command
 {
 public:
-    Ev3Command();
+    EV3_Command();
 
     void addOpCode(OP opCode);
     void addParameter(qint8 p);
@@ -21,4 +21,4 @@ private:
     QDataStream m_stream;
 };
 
-#endif // EV3COMMAND_H
+#endif // EV3_COMMAND_H

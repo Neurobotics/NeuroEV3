@@ -9,8 +9,7 @@
 #define EV3_UDP_PORT 3015
 #define EV3_TCP_PORT 5555
 
-
-class Ev3 : public QObject
+class EV3 : public QObject
 {
     Q_OBJECT
     Q_ENUMS(ConnectionState)
@@ -27,8 +26,8 @@ public:
     };
     Q_ENUM(ConnectionState)
 
-    Ev3(QObject *parent = nullptr);
-    ~Ev3();
+    EV3(QObject *parent = nullptr);
+    ~EV3();
  #pragma pack(push,1)
 
     struct packetStruct
@@ -73,7 +72,6 @@ private:
 
     QUdpSocket *m_broadcast = nullptr;
     QTcpSocket *m_connection = nullptr;
-
 };
 
 #endif // EV3_H
