@@ -5,6 +5,8 @@
 #include "EV3.h"
 #include "EV3_Motor.h"
 #include <QWebSocket>
+#include <QGridLayout>
+#include "Settings.h"
 
 class MainWindow : public QMainWindow
 {
@@ -24,5 +26,7 @@ protected:
     int m_mentalState = -1;
     int meditation = 0;
     int concentration = 0;
+
+    Settings *m_settings = nullptr;
 };
 #endif // MAINWINDOW_H

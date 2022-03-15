@@ -1,6 +1,5 @@
 #include "MainWindow.h"
 #include "EV3.h"
-#include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
@@ -9,13 +8,22 @@
 #include <QTimer>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QTabWidget>
+#include "MotorsWidget.h"
+#include <QCheckBox>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    m_settings = new Settings();
+
     auto labelConnected = new QLabel("?");
     auto func_connected = [=]() {
         labelConnected->setText(TextHelper::EnumToString<EV3::ConnectionState>(m_ev3->connectionState()));
     };
+
+    m_ev3 = new EV3();
+    connect(m_ev3, &EV3::connectionStateChanged, this, func_connected, Qt::QueuedConnection);
 
     auto btnConnect = new QPushButton("Подключение");
     btnConnect->setCheckable(true);
@@ -30,43 +38,43 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         }
     });
 
-    auto layoutMotors = new QVBoxLayout();
-    layoutMotors->addWidget(new QLabel("Моторы"));
+    auto manualMotors = new MotorsWidget();
+    connect(manualMotors, &MotorsWidget::motorValueChangeRequest, [=](int motorIndex, int value) {
+        auto motor = m_ev3->motor(motorIndex);
+        if (!motor) return;
+        if (value == 0) {
+            motor->stop();
+        } else {
+            motor->setPower(value);
+        }
+    });
 
-    m_ev3 = new EV3();
-    connect(m_ev3, &EV3::connectionStateChanged, this, func_connected, Qt::QueuedConnection);
+    auto bciStateMotors = new QWidget();
+    auto bciStateMotorsLayout = new QVBoxLayout(bciStateMotors);
     for (int i = 1; i<=4; i++) {
-        auto motor = new EV3_Motor(m_ev3, i);
-        m_motors << motor;
 
-        auto motorPowerLabel = new QLabel("0");
-        motorPowerLabel->setMinimumWidth(50);
-
-        auto motorPower = new QSlider();
-        motorPower->setRange(-100, 100);
-        motorPower->setValue(0);
-        motorPower->setOrientation(Qt::Horizontal);
-        connect(motorPower, QOverload<int>::of(&QSlider::valueChanged), [=](int val) {
-            motor->setPower(val);
-            motorPowerLabel->setText(QString::number(val));
+        auto checkbox = new QCheckBox("State " + QString::number(i));
+        checkbox->setChecked(m_settings->getMentalStateEnabled(i));
+        connect(checkbox, &QCheckBox::toggled, [=](bool toggled) {
+            m_settings->setMentalStateEnabled(i, toggled);
         });
 
-        auto btnOnOff = new QPushButton("Off");
-        btnOnOff->setCheckable(true);
-        connect(btnOnOff, &QPushButton::toggled, [=](bool toggled) {
-            motor->start(toggled);
-            btnOnOff->setText(toggled ? "On" : "Off");
+        auto motors = new MotorsWidget();
+        for (int j = 1; j<=4; j++) {
+            motors->setMotorValue(j, m_settings->getMentalStateDrive(i, j));
+        }
+
+        connect(motors, &MotorsWidget::motorValueChangeRequest, [=](int motorIndex, int value) {
+            m_settings->setMentalStateDrive(i, motorIndex, value);
         });
 
-        auto motorLayout = new QHBoxLayout();
-        motorLayout->addWidget(new QLabel("M" + QString::number(i)));
-        motorLayout->addWidget(btnOnOff);
-        motorLayout->addWidget(motorPower, 100);
-        motorLayout->addWidget(motorPowerLabel);
+        auto lay = new QVBoxLayout();
+        lay->addWidget(checkbox);
+        lay->addWidget(motors);
 
-        layoutMotors->addLayout(motorLayout);
+        bciStateMotorsLayout->addLayout(lay);
+
     }
-    layoutMotors->addWidget(new QLabel(), 100);
 
     auto centralWidget = new QWidget();
     setCentralWidget(centralWidget);
@@ -75,10 +83,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addWidget(btnConnect);
     headerLayout->addWidget(labelConnected, 100);
 
-    auto grid = new QVBoxLayout(centralWidget);
+    auto tabs = new QTabWidget();
+    tabs->addTab(manualMotors, "Manual");
+    tabs->addTab(bciStateMotors, "Mental states");
 
+    auto grid = new QVBoxLayout(centralWidget);
     grid->addLayout(headerLayout);
-    grid->addLayout(layoutMotors, 100);
+    grid->addWidget(tabs);
 
     auto labelBCIConnected = new QLabel("?");
     headerLayout->addWidget(labelBCIConnected);
@@ -147,4 +158,3 @@ MainWindow::~MainWindow()
         motor->stop();
     }
 }
-

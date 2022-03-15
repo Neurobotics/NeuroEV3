@@ -13,6 +13,7 @@ SOURCES += \
     EV3_Motor.cpp \
     EV3.cpp \
     EV3_Command.cpp \
+    MotorsWidget.cpp \
     Settings.cpp \
     main.cpp \
     MainWindow.cpp
@@ -23,6 +24,7 @@ HEADERS += \
     MainWindow.h \
     EV3.h \
     EV3_Command.h \
+    MotorsWidget.h \
     Settings.h
 
 # Default rules for deployment.
