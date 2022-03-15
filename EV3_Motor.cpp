@@ -16,7 +16,7 @@ void EV3_Motor::setPower(int power)
         return;
 
     char command[14];
-    command[0] = opOUTPUT_POLARITY;
+    command[0] = opOUTPUT_START; // opOUTPUT_POLARITY;
     command[1] = 0x81;
     command[2] = 0x00;
     command[3] = 0x81;
