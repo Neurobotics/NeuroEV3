@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         });
 
         auto motorLayout = new QHBoxLayout();
-        motorLayout->addWidget(new QLabel(QString::number(i)));
+        motorLayout->addWidget(new QLabel("M" + QString::number(i)));
         motorLayout->addWidget(btnOnOff);
         motorLayout->addWidget(motorPower, 100);
         motorLayout->addWidget(motorPowerLabel);
@@ -103,8 +103,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         auto med = resp["meditation"];
         if (!med.isNull()) {
             meditation = med.toDouble();
-
-
         }
 
         auto con = resp["concentration"];

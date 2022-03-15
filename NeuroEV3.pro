@@ -13,6 +13,7 @@ SOURCES += \
     EV3_Motor.cpp \
     EV3.cpp \
     EV3_Command.cpp \
+    Settings.cpp \
     main.cpp \
     MainWindow.cpp
 
@@ -21,7 +22,8 @@ HEADERS += \
     EV3_Motor.h \
     MainWindow.h \
     EV3.h \
-    EV3_Command.h
+    EV3_Command.h \
+    Settings.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
