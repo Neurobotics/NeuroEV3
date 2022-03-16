@@ -3,10 +3,7 @@
 
 #include <QObject>
 #include <QSettings>
-
-const QString MEDITATION = "meditation";
-const QString CONCENTRATION = "concentration";
-const QString MENTALSTATE = "mentalState";
+#include "Common.h"
 
 class Settings : public QObject
 {

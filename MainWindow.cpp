@@ -176,7 +176,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     timer->start();
 
 #ifdef OS_DESKTOP
-    setMinimumWidth(800);
+    setMinimumWidth(500);
 #endif
 }
 

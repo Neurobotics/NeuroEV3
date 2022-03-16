@@ -7,5 +7,8 @@
         <file>resources/neuroEV3.svg</file>
         <file>resources/EV3.svg</file>
         <file>resources/neuroplay.png</file>
+        <file>resources/EV3-socket.svg</file>
+        <file>resources/zero.svg</file>
+        <file>resources/EV3-socket-active.svg</file>
     </qresource>
 </RCC>

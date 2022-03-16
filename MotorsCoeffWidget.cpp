@@ -2,13 +2,17 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include "Common.h"
 
 MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
 {
     auto layoutMotors = new QVBoxLayout(this);
     for (int i = 1; i<=4; i++) {
-        auto checkbox = new QCheckBox("M" + QString::number(i));
+        auto motorSocket = Common::Instance()->motorSocket(i);
+
+        auto checkbox = new QCheckBox();
         connect(checkbox, &QCheckBox::toggled, [=](bool toggled) {
+           motorSocket->setActive(toggled);
            emit motorEnabledChanged(i, toggled);
         });
         m_checkboxes << checkbox;
@@ -26,6 +30,7 @@ MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
         auto motorLayout = new QHBoxLayout();
         motorLayout->setSpacing(4);
         motorLayout->addWidget(checkbox);
+        motorLayout->addWidget(motorSocket);
         motorLayout->addWidget(motorCoeff, 100, Qt::AlignLeft);
 
         layoutMotors->addLayout(motorLayout);

@@ -2,6 +2,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include "IconLabel.h"
+#include "Common.h"
 
 MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
 {
@@ -11,22 +13,39 @@ MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
         auto motorPowerLabel = new QLabel("0");
         motorPowerLabel->setMinimumWidth(50);
 
+        auto motorSocket = Common::Instance()->motorSocket(i);
+
         auto motorPower = new QSlider();
         motorPower->setRange(-100, 100);
+        motorPower->setFixedWidth(208);
+        motorPower->setTickInterval(100);
+        motorPower->setTickPosition(QSlider::TickPosition::TicksAbove);
         motorPower->setValue(0);
         motorPower->setOrientation(Qt::Horizontal);
         connect(motorPower, QOverload<int>::of(&QSlider::valueChanged), this, [=](int val) {
             motorPowerLabel->setText(QString::number(val));
             emit motorValueChangeRequest(i, val);
+            motorSocket->setActive(val != 0);
         }, Qt::QueuedConnection);
+
+        auto btnZero = new QPushButton();
+        btnZero->setIcon(QIcon(":/resources/zero.svg"));
+        connect(btnZero, &QPushButton::clicked, [=]() {
+            motorPower->setValue(0);
+        });
 
         m_sliders << motorPower;
 
         auto motorLayout = new QHBoxLayout();
         motorLayout->setSpacing(4);
-        motorLayout->addWidget(new QLabel("M" + QString::number(i)));
-        motorLayout->addWidget(motorPower, 100);
+
+
+
+        // btnSocket->setText(QString::number(i));
+        motorLayout->addWidget(motorSocket);
+        motorLayout->addWidget(motorPower);
         motorLayout->addWidget(motorPowerLabel);
+        motorLayout->addWidget(btnZero, 100, Qt::AlignLeft);
 
         layoutMotors->addLayout(motorLayout);
     }
