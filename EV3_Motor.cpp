@@ -15,8 +15,12 @@ void EV3_Motor::setPower(int power)
     if (m_internalPort == 0)
         return;
 
+    if (!m_on) {
+        start();
+    }
+
     char command[14];
-    command[0] = opOUTPUT_START; // opOUTPUT_POLARITY;
+    command[0] = opOUTPUT_POLARITY;
     command[1] = 0x81;
     command[2] = 0x00;
     command[3] = 0x81;
@@ -54,6 +58,7 @@ void EV3_Motor::start(bool enable)
         command[3] = 0x81;
         command[4] = m_internalPort;
         m_ev3->sendCommand(QByteArray::fromRawData(command, 5));
+        m_on = true;
     }
 }
 
@@ -68,6 +73,7 @@ void EV3_Motor::stop()
     command[5] = 0x81;
     command[6] = 0x01; // brake
     m_ev3->sendCommand(QByteArray::fromRawData(command, 7));
+    m_on = false;
 }
 
 void EV3_Motor::setPolarity(bool straight)

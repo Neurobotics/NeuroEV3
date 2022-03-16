@@ -25,6 +25,7 @@ protected:
     char m_internalPort = 0x00;
     bool m_polarity = true;
     int m_power = 100;
+    bool m_on = false;
     EV3 *m_ev3 = nullptr;
     bool m_enableSpeedControl = false;
     QList<char> m_ports = { 0x01, 0x02, 0x04, 0x08 };
