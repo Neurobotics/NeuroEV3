@@ -25,11 +25,12 @@ MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
 
         auto motorLayout = new QHBoxLayout();
         motorLayout->addWidget(new QLabel("M" + QString::number(i)));
-        motorLayout->addWidget(checkbox, 100);
-        motorLayout->addWidget(motorCoeff);
+        motorLayout->addWidget(checkbox);
+        motorLayout->addWidget(motorCoeff, 100, Qt::AlignLeft);
 
         layoutMotors->addLayout(motorLayout);
     }
+    layoutMotors->addWidget(new QLabel(), 100);
 }
 
 void MotorsCoeffWidget::setMotorEnabled(int motorIndex, bool enabled)

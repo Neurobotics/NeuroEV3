@@ -6,6 +6,7 @@
 MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
 {
     auto layoutMotors = new QVBoxLayout(this);
+    layoutMotors->setSpacing(2);
     for (int i = 1; i<=4; i++) {
         auto motorPowerLabel = new QLabel("0");
         motorPowerLabel->setMinimumWidth(50);
@@ -28,6 +29,7 @@ MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
 
         layoutMotors->addLayout(motorLayout);
     }
+    layoutMotors->addWidget(new QLabel(), 100);
 }
 
 void MotorsWidget::setMotorValue(int motorIndex, int value)
