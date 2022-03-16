@@ -4,10 +4,9 @@
 #include <QPushButton>
 #include "Common.h"
 
-MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
+MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : BaseMotorsWidget(parent)
 {
-    m_layout = new QVBoxLayout(this);
-    for (int i = 1; i<=4; i++) {
+    for (int i = 1; i<=MAX_MOTORS; i++) {
         auto motorSocket = Common::Instance()->motorSocket(i);
 
         auto checkbox = new QCheckBox();
@@ -18,7 +17,7 @@ MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
         m_checkboxes << checkbox;
 
         auto motorCoeff = new QDoubleSpinBox();
-        motorCoeff->setRange(0, 2);
+        motorCoeff->setRange(-2, 2);
         motorCoeff->setSingleStep(0.1);
         motorCoeff->setValue(0);
         motorCoeff->setPrefix("k=");
@@ -54,7 +53,3 @@ void MotorsCoeffWidget::setMotorCoeff(int motorIndex, double coeff)
     }
 }
 
-void MotorsCoeffWidget::addWidgetOnTop(QWidget *widget)
-{
-    m_layout->insertWidget(0, widget);
-}

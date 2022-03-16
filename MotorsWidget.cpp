@@ -5,11 +5,10 @@
 #include "IconLabel.h"
 #include "Common.h"
 
-MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
+MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
 {
-    auto layoutMotors = new QVBoxLayout(this);
-    layoutMotors->setSpacing(2);
-    for (int i = 1; i<=4; i++) {
+    m_layout->setSpacing(2);
+    for (int i = 1; i<=MAX_MOTORS; i++) {
         auto motorPowerLabel = new QLabel("0");
         motorPowerLabel->setMinimumWidth(50);
 
@@ -39,17 +38,14 @@ MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
         auto motorLayout = new QHBoxLayout();
         motorLayout->setSpacing(4);
 
-
-
-        // btnSocket->setText(QString::number(i));
         motorLayout->addWidget(motorSocket);
         motorLayout->addWidget(motorPower);
         motorLayout->addWidget(motorPowerLabel);
         motorLayout->addWidget(btnZero, 100, Qt::AlignLeft);
 
-        layoutMotors->addLayout(motorLayout);
+        m_layout->addLayout(motorLayout);
     }
-    layoutMotors->addWidget(new QLabel(), 100);
+    m_layout->addWidget(new QLabel(), 100);
 }
 
 void MotorsWidget::setMotorValue(int motorIndex, int value)

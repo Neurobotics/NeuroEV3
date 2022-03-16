@@ -2,6 +2,7 @@ QT += core gui network widgets websockets
 CONFIG += c++14
 
 SOURCES += \
+    BaseMotorsWidget.cpp \
     Common.cpp \
     EV3.cpp \
     EV3_Command.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
     MainWindow.cpp
 
 HEADERS += \
+    BaseMotorsWidget.h \
     Common.h \
     EV3.h \
     EV3_Command.h \

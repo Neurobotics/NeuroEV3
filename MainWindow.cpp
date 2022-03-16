@@ -59,6 +59,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         }
     });
 
+    auto func_progress = [](QString color) {
+        auto progress = new QProgressBar();
+        progress->setRange(0, 100);
+        progress->setStyleSheet("QProgressBar { text-align: center; border: 2px solid grey; border-radius: 5px; background-color: #FFF; } "
+                              "QProgressBar::chunk { background-color: " + color + "; padding: 4px; }");
+        return progress;
+    };
+
+    auto progressMeditation = func_progress("#7c2");
+    auto progressConcentration = func_progress("#C30");
+
+    auto labelMentalState = new QLabel();
+    labelMentalState->setStyleSheet("font-weight: bold");
+
+    auto currentMentalStateWidget = new QWidget();
+    auto currentMentalStateWidgetLayout = new QHBoxLayout(currentMentalStateWidget);
+    currentMentalStateWidgetLayout->setContentsMargins(0,0,0,0);
+    currentMentalStateWidgetLayout->addWidget(new QLabel("Текущее состояние:"));
+    currentMentalStateWidgetLayout->addWidget(labelMentalState, 100, Qt::AlignLeft);
+
     auto bciStateMotors = new QWidget();
     auto bciStateMotorsLayout = new QVBoxLayout(bciStateMotors);
     for (int i = 1; i<=MAX_MENTAL_STATES; i++) {
@@ -84,22 +104,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
         bciStateMotorsLayout->addLayout(lay);
     }
+    bciStateMotorsLayout->insertWidget(0, currentMentalStateWidget);
 
     auto tabs = new QTabWidget();
     tabs->addTab(manualMotors, "Manual");
     tabs->addTab(bciStateMotors, "Mental states");
-
-    auto func_progress = [](QString color) {
-        auto progress = new QProgressBar();
-        progress->setRange(0, 100);
-        progress->setStyleSheet("QProgressBar { text-align: center; border: 2px solid grey; border-radius: 5px; background-color: #FFF; } "
-                              "QProgressBar::chunk { background-color: " + color + "; padding: 4px; }");
-        return progress;
-    };
-
-    auto labelMeditation = func_progress("#7c2");
-    auto labelConcentration = func_progress("#C30");
-    auto labelMentalState = new QLabel();
 
     auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
     foreach(auto metaIndex, metaIndexes) {
@@ -115,9 +124,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             m_settings->setMetaIndexDriveCoeff(metaIndex, motorIndex, coeff);
         });
 
-        bciMetaIndexMotors->addWidgetOnTop(metaIndex == MEDITATION ? labelMeditation : labelConcentration);
+        bciMetaIndexMotors->addWidgetOnTop(metaIndex == MEDITATION ? progressMeditation : progressConcentration);
 
-        tabs->addTab(bciMetaIndexMotors, metaIndex);
+        tabs->addTab(bciMetaIndexMotors, metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1));
     }
 
     connect(tabs, &QTabWidget::currentChanged, [=](int index) {
@@ -176,13 +185,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         auto med = resp["meditation"];
         if (!med.isNull()) {
             m_meditation = med.toDouble();
-            labelMeditation->setValue(m_meditation);
+            progressMeditation->setValue(m_meditation);
         }
 
         auto con = resp["concentration"];
         if (!con.isNull()) {
             m_concentration = con.toDouble();
-            labelConcentration->setValue(m_concentration);
+            progressConcentration->setValue(m_concentration);
         }
 
         auto st = resp["mental_state"];
@@ -219,6 +228,7 @@ void MainWindow::control()
 {
     if (m_controlState != Manual && !m_canControl) {
         m_ev3->stopMotors();
+        return;
     }
 
     switch (m_controlState)

@@ -1,10 +1,10 @@
 #ifndef MOTORSWIDGET_H
 #define MOTORSWIDGET_H
 
-#include <QWidget>
+#include "BaseMotorsWidget.h"
 #include <QSlider>
 
-class MotorsWidget : public QWidget
+class MotorsWidget : public BaseMotorsWidget
 {
     Q_OBJECT
 public:
