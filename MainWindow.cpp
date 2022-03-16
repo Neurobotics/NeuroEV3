@@ -73,7 +73,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         lay->addWidget(motors);
 
         bciStateMotorsLayout->addLayout(lay);
-
     }
 
     auto centralWidget = new QWidget();
@@ -154,7 +153,5 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 MainWindow::~MainWindow()
 {
-    foreach (auto motor, m_motors) {
-        motor->stop();
-    }
+    m_ev3->disconnect();
 }

@@ -101,6 +101,10 @@ bool EV3::unlockEv3()
 
 void EV3::disconnect()
 {
+    foreach (auto motor, m_motors) {
+        motor->stop();
+    }
+
     m_serialNumber.clear();
 
     if (m_connectionState == Searching) {
@@ -177,6 +181,9 @@ void EV3::setState(ConnectionState state)
             m_error = QStringLiteral("Could not unlock EV3.");
             emit errorChanged();
             return;
+        }
+        foreach (auto motor, m_motors) {
+            motor->stop();
         }
     }
 
