@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/connected.svg</file>
+        <file>resources/disconnected.svg</file>
+        <file>resources/neuroEV3.ico</file>
+        <file>resources/neuroEV3.png</file>
+        <file>resources/neuroEV3.svg</file>
+        <file>resources/EV3.svg</file>
+        <file>resources/neuroplay.png</file>
+    </qresource>
+</RCC>

@@ -23,6 +23,7 @@ MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
         m_sliders << motorPower;
 
         auto motorLayout = new QHBoxLayout();
+        motorLayout->setSpacing(4);
         motorLayout->addWidget(new QLabel("M" + QString::number(i)));
         motorLayout->addWidget(motorPower, 100);
         motorLayout->addWidget(motorPowerLabel);

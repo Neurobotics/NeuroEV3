@@ -25,3 +25,12 @@ HEADERS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc
+
+win32: RC_ICONS += resources/neuroEV3.ico
+
+win32: DEFINES += OS_DESKTOP
+macx: DEFINES += OS_DESKTOP
+unix:!android:!ios: DEFINES += OS_DESKTOP

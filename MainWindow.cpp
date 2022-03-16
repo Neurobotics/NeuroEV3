@@ -17,17 +17,43 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     m_settings = new Settings();
 
+    auto func_iconButton = [](QString iconPath, QSize size = QSize(24, 24)) {
+       auto btn = new QPushButton();
+       btn->setIcon(QIcon(iconPath));
+       btn->setIconSize(size);
+       btn->setStyleSheet("padding: 2px");
+       btn->setContentsMargins(0,0,0,0);
+       return btn;
+    };
+
+    static QIcon iconConnected = QIcon(":/resources/connected.svg");
+    static QIcon iconDisconnected = QIcon(":/resources/disconnected.svg");
+    auto func_connectedButton = [=](QSize size = QSize(24, 24)) {
+      auto label = new QLabel();
+      label->setFixedSize(size);
+      label->setPixmap(iconDisconnected.pixmap(size));
+
+      connect(label, &QLabel::objectNameChanged, [=]() {
+          label->setPixmap((label->objectName() == "connected" ? iconConnected : iconDisconnected).pixmap(size));
+      });
+      return label;
+    };
+
+    auto btnEV3Connected = func_connectedButton();
+
     auto labelConnected = new QLabel("?");
     auto func_connected = [=]() {
-        labelConnected->setText(EnumToString<EV3::ConnectionState>(m_ev3->connectionState()));
+        auto st = m_ev3->connectionState();
+        labelConnected->setText(EnumToString<EV3::ConnectionState>(st));
+        btnEV3Connected->setObjectName(st == EV3::ConnectionState::Connected ? "connected" : "");
     };
 
     m_ev3 = new EV3();
     connect(m_ev3, &EV3::connectionStateChanged, this, func_connected, Qt::QueuedConnection);
 
-    auto btnConnect = new QPushButton("Подключение");
-    btnConnect->setCheckable(true);
-    connect(btnConnect, &QPushButton::toggled, this, [=](bool toggled) {
+    auto btnEV3Connect = func_iconButton(":/resources/EV3.svg");
+    btnEV3Connect->setCheckable(true);
+    connect(btnEV3Connect, &QPushButton::toggled, this, [=](bool toggled) {
         if (toggled) m_ev3->searchAndConnect();
         else m_ev3->disconnect();
     });
@@ -73,7 +99,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(centralWidget);
 
     auto headerLayout = new QHBoxLayout();
-    headerLayout->addWidget(btnConnect);
+    // headerLayout->addWidget(func_iconButton(":/resources/EV3.svg"));
+    headerLayout->addWidget(btnEV3Connect);
+    headerLayout->addWidget(btnEV3Connected);
     headerLayout->addWidget(labelConnected, 100);
 
     auto tabs = new QTabWidget();
@@ -100,23 +128,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     grid->addLayout(headerLayout);
     grid->addWidget(tabs);
 
-    auto labelBCIConnected = new QLabel("?");
-    headerLayout->addWidget(labelBCIConnected);
+    auto btnNeuroPlayConnected = func_connectedButton();
+    auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
+    btnNeuroPlay->setFlat(true);
+    headerLayout->addWidget(btnNeuroPlayConnected);
+    headerLayout->addWidget(btnNeuroPlay);
 
     socket = new QWebSocket();
     connect(socket, &QWebSocket::connected, [=]() {
         m_state = EV3::ConnectionState::Connected;
-        labelBCIConnected->setText("BCI connected");
+        btnNeuroPlayConnected->setObjectName("connected");
     });
     connect(socket, &QWebSocket::disconnected, [=]() {
         m_state = EV3::ConnectionState::Disconnected;
-        labelBCIConnected->setText("BCI disconnected");
+        btnNeuroPlayConnected->setObjectName("");
     });
     connect(socket, &QWebSocket::textMessageReceived, this, [=](QString txt) {
         QJsonDocument json = QJsonDocument::fromJson(txt.toUtf8());
         QJsonObject resp = json.object();
         QString cmd = resp["command"].toString();
-        //bool result = resp["result"].toBool();
 
         auto med = resp["meditation"];
         if (!med.isNull()) {
@@ -144,6 +174,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
        }
     });
     timer->start();
+
+#ifdef OS_DESKTOP
+    setMinimumWidth(800);
+#endif
 }
 
 MainWindow::~MainWindow()

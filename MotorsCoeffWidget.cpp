@@ -7,7 +7,7 @@ MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
 {
     auto layoutMotors = new QVBoxLayout(this);
     for (int i = 1; i<=4; i++) {
-        auto checkbox = new QCheckBox();
+        auto checkbox = new QCheckBox("M" + QString::number(i));
         connect(checkbox, &QCheckBox::toggled, [=](bool toggled) {
            emit motorEnabledChanged(i, toggled);
         });
@@ -24,7 +24,7 @@ MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
         m_coeffs << motorCoeff;
 
         auto motorLayout = new QHBoxLayout();
-        motorLayout->addWidget(new QLabel("M" + QString::number(i)));
+        motorLayout->setSpacing(4);
         motorLayout->addWidget(checkbox);
         motorLayout->addWidget(motorCoeff, 100, Qt::AlignLeft);
 
