@@ -18,7 +18,6 @@ public:
 
 protected:
     EV3 *m_ev3 = nullptr;
-    QVector<EV3_Motor*> m_motors;
     QWebSocket *socket = nullptr;
 
     EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;

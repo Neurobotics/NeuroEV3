@@ -28,14 +28,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto btnConnect = new QPushButton("Подключение");
     btnConnect->setCheckable(true);
     connect(btnConnect, &QPushButton::toggled, this, [=](bool toggled) {
-        if (toggled) {
-            m_ev3->searchAndConnect();
-        } else {
-            foreach (auto motor, m_motors) {
-                motor->stop();
-            }
-            m_ev3->disconnect();
-        }
+        if (toggled) m_ev3->searchAndConnect();
+        else m_ev3->disconnect();
     });
 
     auto manualMotors = new MotorsWidget();
@@ -52,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto bciStateMotors = new QWidget();
     auto bciStateMotorsLayout = new QVBoxLayout(bciStateMotors);
     for (int i = 1; i<=4; i++) {
-
         auto checkbox = new QCheckBox("State " + QString::number(i));
         checkbox->setChecked(m_settings->getMentalStateEnabled(i));
         connect(checkbox, &QCheckBox::toggled, [=](bool toggled) {
@@ -94,13 +87,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addWidget(labelBCIConnected);
 
     socket = new QWebSocket();
-    connect(socket, &QWebSocket::connected, [=]()
-    {
+    connect(socket, &QWebSocket::connected, [=]() {
         m_state = EV3::ConnectionState::Connected;
         labelBCIConnected->setText("BCI connected");
     });
-    connect(socket, &QWebSocket::disconnected, [=]()
-    {
+    connect(socket, &QWebSocket::disconnected, [=]() {
         m_state = EV3::ConnectionState::Disconnected;
         labelBCIConnected->setText("BCI disconnected");
     });
@@ -123,18 +114,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         auto st = resp["mental_state"];
         if (!st.isNull()) {
             m_mentalState = st.toInt();
-
-            if (m_mentalState == 2) {
-                m_motors[1]->setPower(50);
-                m_motors[2]->setPower(50);
-            }
-            else if (m_mentalState == 3) {
-                m_motors[1]->setPower(50);
-                m_motors[2]->setPower(-50);
-            } else {
-                m_motors[1]->setPower(0);
-                m_motors[2]->setPower(0);
-            }
         }
     });
 
