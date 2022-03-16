@@ -12,10 +12,16 @@
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    enum ControlState {
+        Manual,
+        MentalState,
+        Meditation,
+        Concentration
+    };
 
 protected:
     EV3 *m_ev3 = nullptr;
@@ -24,8 +30,10 @@ protected:
     EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;
 
     int m_mentalState = -1;
-    int meditation = 0;
-    int concentration = 0;
+    int m_meditation = 0;
+    int m_concentration = 0;
+
+    ControlState m_controlState = Manual;
 
     Settings *m_settings = nullptr;
 
@@ -34,5 +42,7 @@ protected:
         QMetaEnum metaEnum = QMetaEnum::fromType<T>();
         return QString(metaEnum.valueToKey(value));
     }
+
+    void control();
 };
 #endif // MAINWINDOW_H

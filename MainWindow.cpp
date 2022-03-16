@@ -18,25 +18,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_settings = new Settings();
 
     auto func_iconButton = [](QString iconPath, QSize size = QSize(24, 24)) {
-       auto btn = new QPushButton();
-       btn->setIcon(QIcon(iconPath));
-       btn->setIconSize(size);
-       btn->setStyleSheet("padding: 2px");
-       btn->setContentsMargins(0,0,0,0);
-       return btn;
+        auto btn = new QPushButton();
+        btn->setIcon(QIcon(iconPath));
+        btn->setIconSize(size);
+        btn->setStyleSheet("padding: 2px");
+        btn->setContentsMargins(0,0,0,0);
+        return btn;
     };
 
     static QIcon iconConnected = QIcon(":/resources/connected.svg");
     static QIcon iconDisconnected = QIcon(":/resources/disconnected.svg");
     auto func_connectedButton = [=](QSize size = QSize(24, 24)) {
-      auto label = new QLabel();
-      label->setFixedSize(size);
-      label->setPixmap(iconDisconnected.pixmap(size));
+        auto label = new QLabel();
+        label->setFixedSize(size);
+        label->setPixmap(iconDisconnected.pixmap(size));
 
-      connect(label, &QLabel::objectNameChanged, [=]() {
-          label->setPixmap((label->objectName() == "connected" ? iconConnected : iconDisconnected).pixmap(size));
-      });
-      return label;
+        connect(label, &QLabel::objectNameChanged, [=]() {
+            label->setPixmap((label->objectName() == "connected" ? iconConnected : iconDisconnected).pixmap(size));
+        });
+        return label;
     };
 
     auto btnEV3Connected = func_connectedButton();
@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     auto bciStateMotors = new QWidget();
     auto bciStateMotorsLayout = new QVBoxLayout(bciStateMotors);
-    for (int i = 1; i<=4; i++) {
+    for (int i = 1; i<=MAX_MENTAL_STATES; i++) {
         auto checkbox = new QCheckBox("State " + QString::number(i));
         checkbox->setChecked(m_settings->getMentalStateEnabled(i));
         connect(checkbox, &QCheckBox::toggled, [=](bool toggled) {
@@ -79,8 +79,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         });
 
         auto motors = new MotorsWidget();
-            motors->layout()->setContentsMargins(0,0,0,0);
-        for (int j = 1; j<=4; j++) {
+        motors->layout()->setContentsMargins(0,0,0,0);
+        for (int j = 1; j<=MAX_MOTORS; j++) {
             motors->setMotorValue(j, m_settings->getMentalStateDrive(i, j));
         }
 
@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
     foreach(auto metaIndex, metaIndexes) {
         auto bciMetaIndexMotors = new MotorsCoeffWidget();
-        for (int i = 1; i<=4; i++) {
+        for (int i = 1; i<=MAX_MOTORS; i++) {
             bciMetaIndexMotors->setMotorCoeff(i, m_settings->getMetaIndexDriveCoeff(metaIndex, i));
             bciMetaIndexMotors->setMotorEnabled(i, m_settings->getMetaIndexDriveEnabled(metaIndex, i));
         }
@@ -123,6 +123,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         });
         tabs->addTab(bciMetaIndexMotors, metaIndex);
     }
+
+    connect(tabs, &QTabWidget::currentChanged, [=](int index) {
+        m_ev3->stopMotors();
+        m_controlState = (ControlState)index;
+    });
 
     auto grid = new QVBoxLayout(centralWidget);
     grid->addLayout(headerLayout);
@@ -150,28 +155,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
         auto med = resp["meditation"];
         if (!med.isNull()) {
-            meditation = med.toDouble();
+            m_meditation = med.toDouble();
         }
 
         auto con = resp["concentration"];
         if (!con.isNull()) {
-            concentration = con.toDouble();
+            m_concentration = con.toDouble();
         }
 
         auto st = resp["mental_state"];
         if (!st.isNull()) {
             m_mentalState = st.toInt();
         }
+
+        control();
     });
 
     auto timer = new QTimer();
     timer->setInterval(200);
     connect(timer, &QTimer::timeout, [=]() {
-       if (socket->state() != QAbstractSocket::ConnectedState) {
-          socket->open(QUrl("ws://localhost:1336"));
-       } else {
-          socket->sendTextMessage("bci");
-       }
+        if (socket->state() != QAbstractSocket::ConnectedState) {
+            socket->open(QUrl("ws://localhost:1336"));
+        } else {
+            socket->sendTextMessage("bci");
+        }
     });
     timer->start();
 
@@ -183,4 +190,35 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 MainWindow::~MainWindow()
 {
     m_ev3->disconnect();
+}
+
+void MainWindow::control()
+{
+    switch (m_controlState)
+    {
+        case MentalState: {
+            auto drives = m_settings->getMentalStateDrives(m_mentalState);
+            for (int i = 0; i < drives.length(); i++) {
+                m_ev3->motor(i + 1)->setPower(drives[i]);
+            }
+        }
+        break;
+
+        case Meditation:
+        case Concentration:
+        {
+            QString metaIndex = m_controlState == Meditation ? MEDITATION : CONCENTRATION;
+            double metaIndexValue = m_controlState == Meditation ? m_meditation : m_concentration;
+            for (int i = 1; i <= MAX_MOTORS; i++) {
+                if (m_settings->getMetaIndexDriveEnabled(metaIndex, i)) {
+                    m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(metaIndex, i) * metaIndexValue);
+                } else {
+                    m_ev3->motor(i)->setPower(0);
+                }
+            }
+        }
+        break;
+
+        default: break;
+    }
 }
