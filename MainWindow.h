@@ -7,6 +7,7 @@
 #include <QWebSocket>
 #include <QGridLayout>
 #include "Settings.h"
+#include <QMetaEnum>
 
 class MainWindow : public QMainWindow
 {
@@ -27,5 +28,11 @@ protected:
     int concentration = 0;
 
     Settings *m_settings = nullptr;
+
+    template <typename T> QString EnumToString(T value)
+    {
+        QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+        return QString(metaEnum.valueToKey(value));
+    }
 };
 #endif // MAINWINDOW_H

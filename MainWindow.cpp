@@ -3,7 +3,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
-#include "texthelper.h"
 #include <QSlider>
 #include <QTimer>
 #include <QJsonDocument>
@@ -20,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     auto labelConnected = new QLabel("?");
     auto func_connected = [=]() {
-        labelConnected->setText(TextHelper::EnumToString<EV3::ConnectionState>(m_ev3->connectionState()));
+        labelConnected->setText(EnumToString<EV3::ConnectionState>(m_ev3->connectionState()));
     };
 
     m_ev3 = new EV3();
