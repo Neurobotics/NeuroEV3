@@ -12,13 +12,20 @@ Common *Common::Instance()
 
 IconLabel *Common::motorSocket(int motorIndex)
 {
-    auto motorSocket = new IconLabel(Common::Instance()->iconSocket, Common::Instance()->iconSocketActive, QString::number(motorIndex));
+    auto motorSocket = new IconLabel(iconSocket, iconSocketActive, QString::number(motorIndex));
     motorSocket->setStyleSheet("color: white; font-weight: bold");
     return motorSocket;
+}
+
+IconLabel *Common::connectStatusWidget()
+{
+    return new IconLabel(iconDisconnected, iconConnected);
 }
 
 Common::Common()
 {
     iconSocket = QIcon(":/resources/EV3-socket.svg");
     iconSocketActive = QIcon(":/resources/EV3-socket-active.svg");
+    iconConnected = QIcon(":/resources/connected.svg");
+    iconDisconnected = QIcon(":/resources/disconnected.svg");
 }

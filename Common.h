@@ -18,8 +18,11 @@ public:
 
     QIcon iconSocket;
     QIcon iconSocketActive;
+    QIcon iconConnected;
+    QIcon iconDisconnected;
 
     IconLabel *motorSocket(int motorIndex);
+    IconLabel *connectStatusWidget();
 
 protected:
     Common();

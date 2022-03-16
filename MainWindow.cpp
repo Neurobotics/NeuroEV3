@@ -12,6 +12,7 @@
 #include "MotorsCoeffWidget.h"
 #include <QCheckBox>
 #include <QDebug>
+#include <QProgressBar>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -23,29 +24,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         btn->setIconSize(size);
         btn->setStyleSheet("padding: 2px");
         btn->setContentsMargins(0,0,0,0);
+        btn->setFixedSize(size.width() + 6, size.height() + 6);
         return btn;
     };
 
-    static QIcon iconConnected = QIcon(":/resources/connected.svg");
-    static QIcon iconDisconnected = QIcon(":/resources/disconnected.svg");
-    auto func_connectedButton = [=](QSize size = QSize(24, 24)) {
-        auto label = new QLabel();
-        label->setFixedSize(size);
-        label->setPixmap(iconDisconnected.pixmap(size));
 
-        connect(label, &QLabel::objectNameChanged, [=]() {
-            label->setPixmap((label->objectName() == "connected" ? iconConnected : iconDisconnected).pixmap(size));
-        });
-        return label;
-    };
-
-    auto btnEV3Connected = func_connectedButton();
+    auto btnEV3Connected = Common::Instance()->connectStatusWidget();
 
     auto labelConnected = new QLabel("?");
     auto func_connected = [=]() {
         auto st = m_ev3->connectionState();
         labelConnected->setText(EnumToString<EV3::ConnectionState>(st));
-        btnEV3Connected->setObjectName(st == EV3::ConnectionState::Connected ? "connected" : "");
+        btnEV3Connected->setActive(st == EV3::ConnectionState::Connected);
     };
 
     m_ev3 = new EV3();
@@ -95,18 +85,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         bciStateMotorsLayout->addLayout(lay);
     }
 
-    auto centralWidget = new QWidget();
-    setCentralWidget(centralWidget);
-
-    auto headerLayout = new QHBoxLayout();
-    // headerLayout->addWidget(func_iconButton(":/resources/EV3.svg"));
-    headerLayout->addWidget(btnEV3Connect);
-    headerLayout->addWidget(btnEV3Connected);
-    headerLayout->addWidget(labelConnected, 100);
-
     auto tabs = new QTabWidget();
     tabs->addTab(manualMotors, "Manual");
     tabs->addTab(bciStateMotors, "Mental states");
+
+    auto func_progress = [](QString color) {
+        auto progress = new QProgressBar();
+        progress->setRange(0, 100);
+        progress->setStyleSheet("QProgressBar { text-align: center; border: 2px solid grey; border-radius: 5px; background-color: #FFF; } "
+                              "QProgressBar::chunk { background-color: " + color + "; padding: 4px; }");
+        return progress;
+    };
+
+    auto labelMeditation = func_progress("#7c2");
+    auto labelConcentration = func_progress("#C30");
+    auto labelMentalState = new QLabel();
 
     auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
     foreach(auto metaIndex, metaIndexes) {
@@ -121,6 +114,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         connect(bciMetaIndexMotors, &MotorsCoeffWidget::motorCoeffChanged, [=](int motorIndex, double coeff) {
             m_settings->setMetaIndexDriveCoeff(metaIndex, motorIndex, coeff);
         });
+
+        bciMetaIndexMotors->addWidgetOnTop(metaIndex == MEDITATION ? labelMeditation : labelConcentration);
+
         tabs->addTab(bciMetaIndexMotors, metaIndex);
     }
 
@@ -129,24 +125,48 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_controlState = (ControlState)index;
     });
 
+
+
+    static QIcon iconLink = QIcon(":/resources/link.svg");
+    static QIcon iconLinkOff = QIcon(":/resources/link_off.svg");
+    auto btnCanControl = new QPushButton();
+    btnCanControl->setCheckable(true);
+    btnCanControl->setChecked(true);
+    btnCanControl->setIcon(iconLink);
+    btnCanControl->setFixedSize(30, 30);
+    btnCanControl->setIconSize(QSize(24, 24));
+
+    connect(btnCanControl, &QPushButton::toggled, [=](bool toggled) {
+        btnCanControl->setIcon(toggled ? iconLink : iconLinkOff);
+        m_canControl = toggled;
+    });
+
+    auto btnNeuroPlayConnected = Common::Instance()->connectStatusWidget();
+    auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
+    btnNeuroPlay->setFlat(true);
+
+    auto headerLayout = new QHBoxLayout();
+    headerLayout->addWidget(btnEV3Connect);
+    headerLayout->addWidget(btnEV3Connected);
+    headerLayout->addWidget(labelConnected, 100);
+    headerLayout->addWidget(btnCanControl, Qt::AlignCenter);
+    headerLayout->addWidget(btnNeuroPlayConnected, 100, Qt::AlignRight);
+    headerLayout->addWidget(btnNeuroPlay);
+
+    auto centralWidget = new QWidget();
+    setCentralWidget(centralWidget);
     auto grid = new QVBoxLayout(centralWidget);
     grid->addLayout(headerLayout);
     grid->addWidget(tabs);
 
-    auto btnNeuroPlayConnected = func_connectedButton();
-    auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
-    btnNeuroPlay->setFlat(true);
-    headerLayout->addWidget(btnNeuroPlayConnected);
-    headerLayout->addWidget(btnNeuroPlay);
-
     socket = new QWebSocket();
     connect(socket, &QWebSocket::connected, [=]() {
         m_state = EV3::ConnectionState::Connected;
-        btnNeuroPlayConnected->setObjectName("connected");
+        btnNeuroPlayConnected->setActive(true);
     });
     connect(socket, &QWebSocket::disconnected, [=]() {
         m_state = EV3::ConnectionState::Disconnected;
-        btnNeuroPlayConnected->setObjectName("");
+        btnNeuroPlayConnected->setActive(false);
     });
     connect(socket, &QWebSocket::textMessageReceived, this, [=](QString txt) {
         QJsonDocument json = QJsonDocument::fromJson(txt.toUtf8());
@@ -156,20 +176,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         auto med = resp["meditation"];
         if (!med.isNull()) {
             m_meditation = med.toDouble();
+            labelMeditation->setValue(m_meditation);
         }
 
         auto con = resp["concentration"];
         if (!con.isNull()) {
             m_concentration = con.toDouble();
+            labelConcentration->setValue(m_concentration);
         }
 
         auto st = resp["mental_state"];
         if (!st.isNull()) {
             m_mentalState = st.toInt();
+            labelMentalState->setText(QString::number((int)m_mentalState));
         }
 
         control();
-    });
+    }, Qt::QueuedConnection);
 
     auto timer = new QTimer();
     timer->setInterval(200);
@@ -194,6 +217,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::control()
 {
+    if (m_controlState != Manual && !m_canControl) {
+        m_ev3->stopMotors();
+    }
+
     switch (m_controlState)
     {
         case MentalState: {

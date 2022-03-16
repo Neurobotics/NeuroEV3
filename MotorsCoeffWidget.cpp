@@ -6,7 +6,7 @@
 
 MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
 {
-    auto layoutMotors = new QVBoxLayout(this);
+    m_layout = new QVBoxLayout(this);
     for (int i = 1; i<=4; i++) {
         auto motorSocket = Common::Instance()->motorSocket(i);
 
@@ -33,9 +33,9 @@ MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : QWidget(parent)
         motorLayout->addWidget(motorSocket);
         motorLayout->addWidget(motorCoeff, 100, Qt::AlignLeft);
 
-        layoutMotors->addLayout(motorLayout);
+        m_layout->addLayout(motorLayout);
     }
-    layoutMotors->addWidget(new QLabel(), 100);
+    m_layout->addWidget(new QLabel(), 100);
 }
 
 void MotorsCoeffWidget::setMotorEnabled(int motorIndex, bool enabled)
@@ -52,4 +52,9 @@ void MotorsCoeffWidget::setMotorCoeff(int motorIndex, double coeff)
     if (motorIndex >= 0 && motorIndex < m_coeffs.length()) {
         m_coeffs[motorIndex]->setValue(coeff);
     }
+}
+
+void MotorsCoeffWidget::addWidgetOnTop(QWidget *widget)
+{
+    m_layout->insertWidget(0, widget);
 }

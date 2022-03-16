@@ -10,5 +10,7 @@
         <file>resources/EV3-socket.svg</file>
         <file>resources/zero.svg</file>
         <file>resources/EV3-socket-active.svg</file>
+        <file>resources/link.svg</file>
+        <file>resources/link_off.svg</file>
     </qresource>
 </RCC>

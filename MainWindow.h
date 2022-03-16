@@ -34,6 +34,7 @@ protected:
     int m_concentration = 0;
 
     ControlState m_controlState = Manual;
+    bool m_canControl = true;
 
     Settings *m_settings = nullptr;
 

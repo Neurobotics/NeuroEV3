@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
+#include <QVBoxLayout>
 
 class MotorsCoeffWidget : public QWidget
 {
@@ -13,6 +14,8 @@ public:
     void setMotorEnabled(int motorIndex, bool enabled);
     void setMotorCoeff(int motorIndex, double coeff);
 
+    void addWidgetOnTop(QWidget *widget);
+
 signals:
     void motorEnabledChanged(int motorIndex, bool enabled);
     void motorCoeffChanged(int motorIndex, double coeff);
@@ -20,6 +23,7 @@ signals:
 protected:
     QVector<QCheckBox*> m_checkboxes;
     QVector<QDoubleSpinBox*> m_coeffs;
+    QVBoxLayout *m_layout = nullptr;
 };
 
 #endif // MOTORSCOEFFWIDGET_H
