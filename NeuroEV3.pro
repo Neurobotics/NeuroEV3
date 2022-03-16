@@ -13,6 +13,7 @@ SOURCES += \
     EV3_Motor.cpp \
     EV3.cpp \
     EV3_Command.cpp \
+    MotorsCoeffWidget.cpp \
     MotorsWidget.cpp \
     Settings.cpp \
     main.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     MainWindow.h \
     EV3.h \
     EV3_Command.h \
+    MotorsCoeffWidget.h \
     MotorsWidget.h \
     Settings.h
 

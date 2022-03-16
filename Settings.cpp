@@ -48,5 +48,25 @@ int Settings::getMentalStateDrive(int state, int motorIndex)
 
 QString Settings::mentalStateHeader(int state)
 {
-    return "mentalState" + QString::number(state);
+    return MENTALSTATE + QString::number(state);
+}
+
+void Settings::setMetaIndexDriveEnabled(QString metaIndex, int motorIndex, bool enable)
+{
+     m_settings->setValue(metaIndex + "/drive" + QString::number(motorIndex) + "/enabled", enable);
+}
+
+void Settings::setMetaIndexDriveCoeff(QString metaIndex, int motorIndex, double coeff)
+{
+     m_settings->setValue(QString(metaIndex) + "/drive" + QString::number(motorIndex) + "/coeff", coeff);
+}
+
+bool Settings::getMetaIndexDriveEnabled(QString metaIndex, int motorIndex)
+{
+    return m_settings->value(metaIndex + "/drive" + QString::number(motorIndex) + "/enabled", false).toBool();
+}
+
+double Settings::getMetaIndexDriveCoeff(QString metaIndex, int motorIndex)
+{
+    return m_settings->value(metaIndex + "/drive" + QString::number(motorIndex) + "/coeff", 1).toDouble();
 }

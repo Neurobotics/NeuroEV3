@@ -10,6 +10,7 @@
 #include <QJsonObject>
 #include <QTabWidget>
 #include "MotorsWidget.h"
+#include "MotorsCoeffWidget.h"
 #include <QCheckBox>
 #include <QDebug>
 
@@ -68,6 +69,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         bciStateMotorsLayout->addLayout(lay);
     }
 
+    auto bciMeditationMotors = new MotorsCoeffWidget();
+    for (int i = 1; i<=4; i++) {
+        bciMeditationMotors->setMotorCoeff(i, m_settings->getMetaIndexDriveCoeff(MEDITATION, i));
+        qDebug() << "CCC" << m_settings->getMetaIndexDriveCoeff(MEDITATION, i) << i;
+        bciMeditationMotors->setMotorEnabled(i, m_settings->getMetaIndexDriveEnabled(MEDITATION, i));
+    }
+    connect(bciMeditationMotors, &MotorsCoeffWidget::motorEnabledChanged, [=](int motorIndex, bool enabled) {
+        qDebug() << "En" << motorIndex << enabled;
+        m_settings->setMetaIndexDriveEnabled(MEDITATION, motorIndex, enabled);
+    });
+    connect(bciMeditationMotors, &MotorsCoeffWidget::motorCoeffChanged, [=](int motorIndex, double coeff) {
+        qDebug() << "CC" << motorIndex << coeff;
+        m_settings->setMetaIndexDriveCoeff(MEDITATION, motorIndex, coeff);
+    });
+
     auto centralWidget = new QWidget();
     setCentralWidget(centralWidget);
 
@@ -78,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto tabs = new QTabWidget();
     tabs->addTab(manualMotors, "Manual");
     tabs->addTab(bciStateMotors, "Mental states");
+    tabs->addTab(bciMeditationMotors, "Meditation");
 
     auto grid = new QVBoxLayout(centralWidget);
     grid->addLayout(headerLayout);
@@ -116,7 +133,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             m_mentalState = st.toInt();
         }
     });
-
 
     auto timer = new QTimer();
     timer->setInterval(200);

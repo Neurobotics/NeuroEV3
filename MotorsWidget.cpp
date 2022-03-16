@@ -7,8 +7,6 @@ MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
 {
     auto layoutMotors = new QVBoxLayout(this);
     for (int i = 1; i<=4; i++) {
-        // auto motor = ev3->motor(i);
-
         auto motorPowerLabel = new QLabel("0");
         motorPowerLabel->setMinimumWidth(50);
 
@@ -23,16 +21,8 @@ MotorsWidget::MotorsWidget(QWidget *parent) : QWidget(parent)
 
         m_sliders << motorPower;
 
-//        auto btnOnOff = new QPushButton("Off");
-//        btnOnOff->setCheckable(true);
-//        connect(btnOnOff, &QPushButton::toggled, [=](bool toggled) {
-//            motor->start(toggled);
-//            btnOnOff->setText(toggled ? "On" : "Off");
-//        });
-
         auto motorLayout = new QHBoxLayout();
         motorLayout->addWidget(new QLabel("M" + QString::number(i)));
-        // motorLayout->addWidget(btnOnOff);
         motorLayout->addWidget(motorPower, 100);
         motorLayout->addWidget(motorPowerLabel);
 
