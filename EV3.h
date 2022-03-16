@@ -33,8 +33,9 @@ public:
 
     QVector<EV3_Motor*> motors();
     EV3_Motor* motor(int motorIndex1To4);
- #pragma pack(push,1)
+    void stopMotors();
 
+ #pragma pack(push,1)
     struct packetStruct
     {
         qint16 notUse;

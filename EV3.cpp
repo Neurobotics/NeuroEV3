@@ -50,6 +50,13 @@ EV3_Motor *EV3::motor(int motorIndex1To4)
     return nullptr;
 }
 
+void EV3::stopMotors()
+{
+    foreach (auto motor, m_motors) {
+        motor->stop();
+    }
+}
+
 void EV3::searchAndConnect()
 {
     if (m_connectionState > Disconnected)
@@ -101,9 +108,7 @@ bool EV3::unlockEv3()
 
 void EV3::disconnect()
 {
-    foreach (auto motor, m_motors) {
-        motor->stop();
-    }
+    stopMotors();
 
     m_serialNumber.clear();
 
@@ -182,9 +187,7 @@ void EV3::setState(ConnectionState state)
             emit errorChanged();
             return;
         }
-        foreach (auto motor, m_motors) {
-            motor->stop();
-        }
+        stopMotors();
     }
 
     m_connectionState = state;
