@@ -10,30 +10,31 @@ DEFINES += APP_VERSION=$$VERSION
 DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
 
 SOURCES += \
-    BaseMotorsWidget.cpp \
-    Common.cpp \
-    EV3.cpp \
-    EV3_Command.cpp \
-    EV3_Motor.cpp \
-    IconLabel.cpp \
-    MotorsCoeffWidget.cpp \
-    MotorsWidget.cpp \
-    Settings.cpp \
     main.cpp \
-    MainWindow.cpp
+    classes/Common.cpp \
+    classes/Settings.cpp \
+    ev3/EV3.cpp \
+    ev3/EV3_Command.cpp \
+    ev3/EV3_Motor.cpp \
+    ui/BaseMotorsWidget.cpp \
+    ui/IconLabel.cpp \
+    ui/MotorsCoeffWidget.cpp \
+    ui/MotorsWidget.cpp \
+    ui/MainWindow.cpp
 
 HEADERS += \
-    BaseMotorsWidget.h \
-    Common.h \
-    EV3.h \
-    EV3_Command.h \
-    EV3_ByteCodes.h \
-    EV3_Motor.h \
-    IconLabel.h \
-    MainWindow.h \
-    MotorsCoeffWidget.h \
-    MotorsWidget.h \
-    Settings.h
+    classes/Common.h \
+    classes/Settings.h \
+    ev3/EV3.h \
+    ev3/EV3_Command.h \
+    ev3/EV3_ByteCodes.h \
+    ev3/EV3_Motor.h \
+    ui/BaseMotorsWidget.h \
+    ui/IconLabel.h \
+    ui/MainWindow.h \
+    ui/MotorsCoeffWidget.h \
+    ui/MotorsWidget.h
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

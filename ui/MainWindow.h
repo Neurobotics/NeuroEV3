@@ -2,11 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "EV3.h"
-#include "EV3_Motor.h"
+#include "ev3/EV3.h"
+#include "ev3/EV3_Motor.h"
 #include <QWebSocket>
 #include <QGridLayout>
-#include "Settings.h"
+#include "classes/Settings.h"
 #include <QMetaEnum>
 #include <QPushButton>
 

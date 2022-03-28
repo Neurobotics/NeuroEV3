@@ -1,5 +1,7 @@
 #include "MainWindow.h"
-#include "EV3.h"
+#include "ev3/EV3.h"
+#include "MotorsWidget.h"
+#include "MotorsCoeffWidget.h"
 #include <QLabel>
 #include <QSpinBox>
 #include <QSlider>
@@ -7,8 +9,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTabWidget>
-#include "MotorsWidget.h"
-#include "MotorsCoeffWidget.h"
 #include <QCheckBox>
 #include <QDebug>
 #include <QProgressBar>
