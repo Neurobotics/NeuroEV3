@@ -3,7 +3,6 @@
 Settings::Settings(QObject *parent) : QObject{parent}
 {
     m_settings = new QSettings("neuroev3.settings", QSettings::Format::IniFormat);
-
 }
 
 bool Settings::getMentalStateEnabled(int state)

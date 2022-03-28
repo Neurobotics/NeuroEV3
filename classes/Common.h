@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QIcon>
-#include "IconLabel.h"
+#include "ui/IconLabel.h"
 
 const QString MEDITATION = "meditation";
 const QString CONCENTRATION = "concentration";

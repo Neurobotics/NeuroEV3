@@ -19,9 +19,18 @@
 #include <QEventLoop>
 #include <QDesktopServices>
 #include <QSysInfo>
+#include <QDir>
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    QString folder = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir dir(folder);
+    if (!dir.exists()) {
+        dir.mkdir(folder);
+    }
+    QDir::setCurrent(folder);
+
     QString version = appVersion(true);
     setWindowTitle(QCoreApplication::applicationName() + " " + version);
 
