@@ -41,6 +41,8 @@ protected:
 
     Settings *m_settings = nullptr;
 
+    QWidget *newVersionButton();
+
     template <typename T> QString EnumToString(T value)
     {
         QMetaEnum metaEnum = QMetaEnum::fromType<T>();

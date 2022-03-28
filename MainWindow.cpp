@@ -51,6 +51,39 @@ QString MainWindow::OS()
     return _os;
 }
 
+QWidget *MainWindow::newVersionButton()
+{
+    QString version = appVersion(true);
+    QUrl url = "https://neurobotics.ru/repo/version.php?app="+QCoreApplication::applicationName()+"&version="+version + "&platform=" + OS();
+
+    QEventLoop connection_loop;
+    QNetworkAccessManager networkManager;
+    QNetworkRequest networkRequest;
+    networkManager.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), &connection_loop, SLOT(quit()));
+    networkRequest.setUrl( url );
+    auto reply = networkManager.get(networkRequest );
+    connection_loop.exec();
+    reply->deleteLater();
+    QByteArray bytes = reply->readAll();
+
+    QJsonDocument d = QJsonDocument::fromJson(bytes);
+    QJsonObject o = d.object();
+
+    if (o.value("valid").toBool() == true) {
+        const QString link = o.value("link").toString();
+        const QString version = o.value("version").toString();
+        auto btnNewVersion = new QPushButton(tr("New version available") + " " + version);
+        btnNewVersion->setFlat(true);
+        btnNewVersion->setCursor(Qt::PointingHandCursor);
+        btnNewVersion->setStyleSheet("QPushButton { color: #159; text-decoration: underline } QPushButton:hover { color: #37B; }");
+        connect(btnNewVersion, &QPushButton::clicked, [=]() {
+            QDesktopServices::openUrl(link);
+        });
+        return btnNewVersion;
+    }
+    return nullptr;
+}
+
 QString MainWindow::appVersion(bool withBuild)
 {
     QStringList versions = QCoreApplication::applicationVersion().split(".");
@@ -211,11 +244,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addWidget(btnNeuroPlayConnected, 100, Qt::AlignRight);
     headerLayout->addWidget(btnNeuroPlay);
 
+
+    auto btnNeurobotics = new QPushButton(QIcon(":/resources/neurobotics-logo.svg"), "");
+    btnNeurobotics->setFlat(true);
+    btnNeurobotics->setIconSize(QSize(68, 24));
+    btnNeurobotics->setCursor(Qt::PointingHandCursor);
+    connect(btnNeurobotics, &QPushButton::clicked, [=]() {
+        QDesktopServices::openUrl(QUrl("https://neurobotics.ru"));
+    });
+
+    auto bottomLayout = new QHBoxLayout();
+    bottomLayout->addWidget(btnNeurobotics, 0, Qt::AlignLeft);
+    auto btnNewVersion = newVersionButton();
+    if (btnNewVersion) {
+        bottomLayout->addWidget(btnNewVersion, 100, Qt::AlignCenter);
+    }
+
     auto centralWidget = new QWidget();
     setCentralWidget(centralWidget);
     auto grid = new QVBoxLayout(centralWidget);
     grid->addLayout(headerLayout);
-    grid->addWidget(tabs);
+    grid->addWidget(tabs, 100);
+    grid->addLayout(bottomLayout);
 
     socket = new QWebSocket();
     connect(socket, &QWebSocket::connected, [=]() {
@@ -263,34 +313,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     });
     timer->start();
 
-
-    QUrl url = "https://neurobotics.ru/repo/version.php?app="+QCoreApplication::applicationName()+"&version="+version + "&platform=" + OS();
-
-    QEventLoop connection_loop;
-    QNetworkAccessManager networkManager;
-    QNetworkRequest networkRequest;
-    networkManager.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), &connection_loop, SLOT(quit()));
-    networkRequest.setUrl( url );
-    auto reply = networkManager.get(networkRequest );
-    connection_loop.exec();
-    reply->deleteLater();
-    QByteArray bytes = reply->readAll();
-
-    QJsonDocument d = QJsonDocument::fromJson(bytes);
-    QJsonObject o = d.object();
-
-    if (o.value("valid").toBool() == true) {
-        const QString link = o.value("link").toString();
-        const QString version = o.value("version").toString();
-        auto btnNewVersion = new QPushButton(tr("New version available") + " " + version);
-        btnNewVersion->setFlat(true);
-        btnNewVersion->setCursor(Qt::PointingHandCursor);
-        btnNewVersion->setStyleSheet("QPushButton { color: #159; text-decoration: underline } QPushButton:hover { color: #37B; }");
-        connect(btnNewVersion, &QPushButton::clicked, [=]() {
-            QDesktopServices::openUrl(link);
-        });
-        grid->addWidget(btnNewVersion);
-    }
 
 #ifdef OS_DESKTOP
     setMinimumWidth(500);

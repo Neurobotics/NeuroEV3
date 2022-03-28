@@ -12,5 +12,7 @@
         <file>resources/EV3-socket-active.svg</file>
         <file>resources/link.svg</file>
         <file>resources/link_off.svg</file>
+        <file>resources/neurobotics-logo.svg</file>
+        <file>resources/neurobotics-logo-badge.svg</file>
     </qresource>
 </RCC>
