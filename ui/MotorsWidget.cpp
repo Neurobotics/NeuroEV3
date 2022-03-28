@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "IconLabel.h"
-#include "Common.h"
+#include "classes/Common.h"
 
 MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
 {

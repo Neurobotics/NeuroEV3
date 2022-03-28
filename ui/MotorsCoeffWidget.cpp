@@ -2,7 +2,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include "Common.h"
+#include "classes/Common.h"
 
 MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : BaseMotorsWidget(parent)
 {
