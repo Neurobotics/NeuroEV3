@@ -1,6 +1,14 @@
 QT += core gui network widgets websockets
 CONFIG += c++14
 
+VER_MAJ = 1
+VER_MIN = 0
+VER_PAT = 1
+
+VERSION = $$VER_MAJ"."$$VER_MIN"."$$VER_PAT
+DEFINES += APP_VERSION=$$VERSION
+DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
+
 SOURCES += \
     BaseMotorsWidget.cpp \
     Common.cpp \

@@ -23,6 +23,8 @@ public:
         Concentration
     };
 
+    QString appVersion(bool withBuild = false);
+
 protected:
     EV3 *m_ev3 = nullptr;
     QWebSocket *socket = nullptr;

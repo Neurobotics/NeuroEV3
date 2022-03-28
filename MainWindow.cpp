@@ -13,9 +13,22 @@
 #include <QCheckBox>
 #include <QDebug>
 #include <QProgressBar>
+#include <QCoreApplication>
+
+QString MainWindow::appVersion(bool withBuild)
+{
+    QStringList versions = QCoreApplication::applicationVersion().split(".");
+    int m = withBuild ? 3 : 2;
+    while (versions.length() > m) {
+        versions.removeLast();
+    }
+    return versions.join(".");
+}
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    setWindowTitle(QCoreApplication::applicationName() + " " + appVersion(true));
+
     m_settings = new Settings();
 
     auto func_iconButton = [](QString iconPath, QSize size = QSize(24, 24)) {
@@ -27,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         btn->setFixedSize(size.width() + 6, size.height() + 6);
         return btn;
     };
-
 
     auto btnEV3Connected = Common::Instance()->connectStatusWidget();
 
