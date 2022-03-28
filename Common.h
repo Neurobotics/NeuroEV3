@@ -24,6 +24,8 @@ public:
     IconLabel *motorSocket(int motorIndex);
     IconLabel *connectStatusWidget();
 
+    static QString motorString(int motorIndex);
+
 protected:
     Common();
     static Common* _instance;

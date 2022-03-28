@@ -12,7 +12,7 @@ Common *Common::Instance()
 
 IconLabel *Common::motorSocket(int motorIndex)
 {
-    auto motorSocket = new IconLabel(iconSocket, iconSocketActive, QString::number(motorIndex));
+    auto motorSocket = new IconLabel(iconSocket, iconSocketActive, motorString(motorIndex));
     motorSocket->setStyleSheet("color: white; font-weight: bold");
     return motorSocket;
 }
@@ -20,6 +20,17 @@ IconLabel *Common::motorSocket(int motorIndex)
 IconLabel *Common::connectStatusWidget()
 {
     return new IconLabel(iconDisconnected, iconConnected);
+}
+
+QString Common::motorString(int motorIndex)
+{
+    switch (motorIndex) {
+    case 1: return "A";
+    case 2: return "B";
+    case 3: return "C";
+    case 4: return "D";
+    }
+    return "?";
 }
 
 Common::Common()
