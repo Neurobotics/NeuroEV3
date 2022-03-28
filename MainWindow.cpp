@@ -1,7 +1,6 @@
 #include "MainWindow.h"
 #include "EV3.h"
 #include <QLabel>
-#include <QPushButton>
 #include <QSpinBox>
 #include <QSlider>
 #include <QTimer>
@@ -20,79 +19,6 @@
 #include <QEventLoop>
 #include <QDesktopServices>
 #include <QSysInfo>
-
-QString MainWindow::OS()
-{
-    static QString _os = "";
-    if (_os.isEmpty())
-    {
-        auto os = QSysInfo::productType().toLower();
-
-        if (os.contains("windows") || os.contains("winrt")) _os = "windows";
-
-        else if (os.contains("android")) _os = "android";
-
-        else if (os.contains("osx") || os.contains("mac")) _os = "macos";
-
-        else if (os.contains("ios")) _os = "ios";
-        else if (os.contains("tvos")) _os = "tvos";
-        else if (os.contains("watchos")) _os = "watchos";
-        else if (os.contains("ubuntu") ||
-                 os.contains("linux") ||
-                 os.contains("manjaro") ||
-                 os.contains("centos") ||
-                 os.contains("fedora") ||
-                 os.contains("raspberry"))
-        {
-            _os = "linux";
-        }
-        else _os = "unix";
-    }
-    return _os;
-}
-
-QWidget *MainWindow::newVersionButton()
-{
-    QString version = appVersion(true);
-    QUrl url = "https://neurobotics.ru/repo/version.php?app="+QCoreApplication::applicationName()+"&version="+version + "&platform=" + OS();
-
-    QEventLoop connection_loop;
-    QNetworkAccessManager networkManager;
-    QNetworkRequest networkRequest;
-    networkManager.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), &connection_loop, SLOT(quit()));
-    networkRequest.setUrl( url );
-    auto reply = networkManager.get(networkRequest );
-    connection_loop.exec();
-    reply->deleteLater();
-    QByteArray bytes = reply->readAll();
-
-    QJsonDocument d = QJsonDocument::fromJson(bytes);
-    QJsonObject o = d.object();
-
-    if (o.value("valid").toBool() == true) {
-        const QString link = o.value("link").toString();
-        const QString version = o.value("version").toString();
-        auto btnNewVersion = new QPushButton(tr("New version available") + " " + version);
-        btnNewVersion->setFlat(true);
-        btnNewVersion->setCursor(Qt::PointingHandCursor);
-        btnNewVersion->setStyleSheet("QPushButton { color: #159; text-decoration: underline } QPushButton:hover { color: #37B; }");
-        connect(btnNewVersion, &QPushButton::clicked, [=]() {
-            QDesktopServices::openUrl(link);
-        });
-        return btnNewVersion;
-    }
-    return nullptr;
-}
-
-QString MainWindow::appVersion(bool withBuild)
-{
-    QStringList versions = QCoreApplication::applicationVersion().split(".");
-    int m = withBuild ? 3 : 2;
-    while (versions.length() > m) {
-        versions.removeLast();
-    }
-    return versions.join(".");
-}
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -244,14 +170,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addWidget(btnNeuroPlayConnected, 100, Qt::AlignRight);
     headerLayout->addWidget(btnNeuroPlay);
 
-
-    auto btnNeurobotics = new QPushButton(QIcon(":/resources/neurobotics-logo.svg"), "");
-    btnNeurobotics->setFlat(true);
+    auto btnNeurobotics = flatButton("", QIcon(":/resources/neurobotics-logo.svg"), tr("Visit neurobotics.ru"), QUrl("https://neurobotics.ru"));
     btnNeurobotics->setIconSize(QSize(68, 24));
-    btnNeurobotics->setCursor(Qt::PointingHandCursor);
-    connect(btnNeurobotics, &QPushButton::clicked, [=]() {
-        QDesktopServices::openUrl(QUrl("https://neurobotics.ru"));
-    });
+
+    auto btnGithub = flatButton("", QIcon(":/resources/github.svg"), tr("Visit NeuroEV3 GitHub repo"), QUrl("https://github.com/neurobotics/neuroev3"));
+    btnGithub->setIconSize(QSize(24, 24));
 
     auto bottomLayout = new QHBoxLayout();
     bottomLayout->addWidget(btnNeurobotics, 0, Qt::AlignLeft);
@@ -259,6 +182,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     if (btnNewVersion) {
         bottomLayout->addWidget(btnNewVersion, 100, Qt::AlignCenter);
     }
+    bottomLayout->addWidget(btnGithub, 0, Qt::AlignRight);
 
     auto centralWidget = new QWidget();
     setCentralWidget(centralWidget);
@@ -313,7 +237,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     });
     timer->start();
 
-
 #ifdef OS_DESKTOP
     setMinimumWidth(500);
 #endif
@@ -358,4 +281,86 @@ void MainWindow::control()
 
         default: break;
     }
+}
+
+QString MainWindow::OS()
+{
+    static QString _os = "";
+    if (_os.isEmpty())
+    {
+        auto os = QSysInfo::productType().toLower();
+
+        if (os.contains("windows") || os.contains("winrt")) _os = "windows";
+
+        else if (os.contains("android")) _os = "android";
+
+        else if (os.contains("osx") || os.contains("mac")) _os = "macos";
+
+        else if (os.contains("ios")) _os = "ios";
+        else if (os.contains("tvos")) _os = "tvos";
+        else if (os.contains("watchos")) _os = "watchos";
+        else if (os.contains("ubuntu") ||
+                 os.contains("linux") ||
+                 os.contains("manjaro") ||
+                 os.contains("centos") ||
+                 os.contains("fedora") ||
+                 os.contains("raspberry"))
+        {
+            _os = "linux";
+        }
+        else _os = "unix";
+    }
+    return _os;
+}
+
+QWidget *MainWindow::newVersionButton()
+{
+    QString version = appVersion(true);
+    QUrl url = "https://neurobotics.ru/repo/version.php?app="+QCoreApplication::applicationName()+"&version="+version + "&platform=" + OS();
+
+    QEventLoop connection_loop;
+    QNetworkAccessManager networkManager;
+    QNetworkRequest networkRequest;
+    networkManager.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), &connection_loop, SLOT(quit()));
+    networkRequest.setUrl( url );
+    auto reply = networkManager.get(networkRequest );
+    connection_loop.exec();
+    reply->deleteLater();
+    QByteArray bytes = reply->readAll();
+
+    QJsonDocument d = QJsonDocument::fromJson(bytes);
+    QJsonObject o = d.object();
+
+    if (o.value("valid").toBool() == true) {
+        const QString link = o.value("link").toString();
+        const QString version = o.value("version").toString();
+        auto btnNewVersion = flatButton(tr("New version available") + " " + version, QIcon(), tr("Download new version"), QUrl(link));
+        btnNewVersion->setStyleSheet("QPushButton { color: #159; text-decoration: underline } QPushButton:hover { color: #37B; }");
+        return btnNewVersion;
+    }
+    return nullptr;
+}
+
+QPushButton *MainWindow::flatButton(QString text, QIcon icon, QString tooltip, QUrl url)
+{
+    auto btn = new QPushButton(icon, text);
+    btn->setFlat(true);
+    btn->setCursor(Qt::PointingHandCursor);
+    btn->setToolTip(tooltip);
+    if (!url.isEmpty()) {
+        connect(btn, &QPushButton::clicked, [=]() {
+            QDesktopServices::openUrl(url);
+        });
+    }
+    return btn;
+}
+
+QString MainWindow::appVersion(bool withBuild)
+{
+    QStringList versions = QCoreApplication::applicationVersion().split(".");
+    int m = withBuild ? 3 : 2;
+    while (versions.length() > m) {
+        versions.removeLast();
+    }
+    return versions.join(".");
 }

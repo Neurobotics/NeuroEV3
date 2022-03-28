@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include "Settings.h"
 #include <QMetaEnum>
+#include <QPushButton>
 
 class MainWindow : public QMainWindow
 {
@@ -42,6 +43,7 @@ protected:
     Settings *m_settings = nullptr;
 
     QWidget *newVersionButton();
+    QPushButton *flatButton(QString text, QIcon icon = QIcon(), QString tooltip = "", QUrl url = QUrl());
 
     template <typename T> QString EnumToString(T value)
     {
