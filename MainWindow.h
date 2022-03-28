@@ -24,6 +24,7 @@ public:
     };
 
     QString appVersion(bool withBuild = false);
+    QString OS();
 
 protected:
     EV3 *m_ev3 = nullptr;
