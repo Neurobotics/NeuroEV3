@@ -69,3 +69,13 @@ double Settings::getMetaIndexDriveCoeff(QString metaIndex, int motorIndex)
 {
     return m_settings->value(metaIndex + "/drive" + QString::number(motorIndex) + "/coeff", 1).toDouble();
 }
+
+void Settings::setMultiplayerControl(QString control)
+{
+    m_settings->setValue("muliplayer/control", control);
+}
+
+QString Settings::getMultiplayerControl()
+{
+    return m_settings->value("muliplayer/control", "meditation").toString();
+}

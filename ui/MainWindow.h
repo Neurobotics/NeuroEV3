@@ -10,6 +10,14 @@
 #include <QMetaEnum>
 #include <QPushButton>
 
+struct UserBCI
+{
+    int mentalState = -1;
+    int meditation = 0;
+    int concentration = 0;
+};
+
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -33,14 +41,14 @@ protected:
 
     EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;
 
-    int m_mentalState = -1;
-    int m_meditation = 0;
-    int m_concentration = 0;
+    QList<UserBCI> m_userBCI;
 
     ControlState m_controlState = Manual;
     bool m_canControl = true;
 
     Settings *m_settings = nullptr;
+
+    bool m_multiplayer = false;
 
     QWidget *newVersionButton();
     QPushButton *flatButton(QString text, QIcon icon = QIcon(), QString tooltip = "", QUrl url = QUrl());

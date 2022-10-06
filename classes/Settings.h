@@ -24,6 +24,9 @@ public:
     bool getMetaIndexDriveEnabled(QString metaIndex, int motorIndex);
     double getMetaIndexDriveCoeff(QString metaIndex, int motorIndex);
 
+    void setMultiplayerControl(QString control);
+    QString getMultiplayerControl();
+
 protected:
     QSettings *m_settings = nullptr;
     QString mentalStateHeader(int state);    

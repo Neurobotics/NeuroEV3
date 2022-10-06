@@ -21,9 +21,13 @@
 #include <QSysInfo>
 #include <QDir>
 #include <QStandardPaths>
+#include <QJsonArray>
+#include <QComboBox>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    for (int i = 0; i<4; i++) m_userBCI << UserBCI();
+
     QString folder = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir dir(folder);
     if (!dir.exists()) {
@@ -146,7 +150,76 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         tabs->addTab(bciMetaIndexMotors, metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1));
     }
 
+    auto multiplayerWidget = new MotorsCoeffWidget();
+
+    for (int i = 1; i<=MAX_MOTORS; i++) {
+        multiplayerWidget->setMotorCoeff(i, m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i));
+        multiplayerWidget->setMotorEnabled(i, m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i));
+    }
+    connect(multiplayerWidget, &MotorsCoeffWidget::motorEnabledChanged, [=](int motorIndex, bool enabled) {
+        m_settings->setMetaIndexDriveEnabled(MULTIPLAYER, motorIndex, enabled);
+    });
+    connect(multiplayerWidget, &MotorsCoeffWidget::motorCoeffChanged, [=](int motorIndex, double coeff) {
+        m_settings->setMetaIndexDriveCoeff(MULTIPLAYER, motorIndex, coeff);
+    });
+
+    auto progressMeditationU1 = func_progress("#7c2");
+    auto progressConcentrationU1 = func_progress("#C30");
+    auto progressMeditationU2 = func_progress("#7c2");
+    progressMeditationU2->setLayoutDirection(Qt::RightToLeft);
+    auto progressConcentrationU2 = func_progress("#C30");
+    progressConcentrationU2->setLayoutDirection(Qt::RightToLeft);
+
+
+    auto progressMeditationMix1 = func_progress("#7c2");
+    progressMeditationMix1->setLayoutDirection(Qt::RightToLeft);
+    auto progressMeditationMix2 = func_progress("#7c2");
+    auto progressConcentrationMix1 = func_progress("#C30");
+    progressConcentrationMix1->setLayoutDirection(Qt::RightToLeft);
+    auto progressConcentrationMix2 = func_progress("#C30");
+
+    auto multipl = new QWidget();
+    auto multipleGrid = new QGridLayout(multipl);
+
+    multipleGrid->addWidget(progressMeditationU1,     1, 0, 1, 1, Qt::AlignLeft);
+    multipleGrid->addWidget(progressConcentrationU1,  2, 0, 1, 1, Qt::AlignLeft);
+    multipleGrid->addWidget(progressMeditationU2,     1, 3, 1, 1, Qt::AlignLeft);
+    multipleGrid->addWidget(progressConcentrationU2,  2, 3, 1, 1, Qt::AlignLeft);
+
+    multipleGrid->addWidget(new QLabel("User1"), 0, 0, 1, 1, Qt::AlignLeft);
+    multipleGrid->addWidget(new QLabel("User2"), 0, 3, 1, 1, Qt::AlignRight);
+
+    multipleGrid->setColumnStretch(0, 100);
+    multipleGrid->setColumnStretch(3, 100);
+
+    auto multipleControlCombo = new QComboBox();
+    auto multipleControlComboIndex = m_settings->getMultiplayerControl() == "meditation" ? 0 : 1;
+    multipleControlCombo->addItem(tr("Meditation"));
+    multipleControlCombo->addItem(tr("Concentration"));
+    multipleControlCombo->setCurrentIndex(multipleControlComboIndex);
+
+    connect(multipleControlCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), [=]()
+    {
+       m_settings->setMultiplayerControl(multipleControlCombo->currentIndex() == 0 ? "meditation" : "concentration");
+    });
+
+    multipleGrid->addWidget(new QLabel("Control"), 0, 1, 1, 2, Qt::AlignCenter);
+    multipleGrid->addWidget(multipleControlCombo, 1, 1, 1, 2, Qt::AlignCenter);
+
+    multiplayerWidget->addWidgetOnTop(multipl);
+
+    multipleGrid->addWidget(progressMeditationMix1,     3, 0, 1, 2, Qt::AlignLeft);
+    multipleGrid->addWidget(progressMeditationMix2,     3, 2, 1, 2, Qt::AlignLeft);
+
+    multipleGrid->addWidget(progressConcentrationMix1,     4, 0, 1, 2, Qt::AlignLeft);
+    multipleGrid->addWidget(progressConcentrationMix2,     4, 2, 1, 2, Qt::AlignLeft);
+
+    tabs->addTab(multiplayerWidget, "Multiplayer");
+
     connect(tabs, &QTabWidget::currentChanged, [=](int index) {
+        m_multiplayer = index == tabs->count()-1;
+        qDebug() << "MULTIPLE" << m_multiplayer;
+
         m_ev3->stopMotors();
         m_controlState = (ControlState)index;
     });
@@ -209,30 +282,81 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_state = EV3::ConnectionState::Disconnected;
         btnNeuroPlayConnected->setActive(false);
     });
-    connect(socket, &QWebSocket::textMessageReceived, this, [=](QString txt) {
-        QJsonDocument json = QJsonDocument::fromJson(txt.toUtf8());
-        QJsonObject resp = json.object();
-        QString cmd = resp["command"].toString();
 
+    auto func_parseBCI = [](QJsonObject resp, UserBCI &bci)
+    {
         auto med = resp["meditation"];
         if (!med.isNull()) {
-            m_meditation = med.toDouble();
-            progressMeditation->setValue(m_meditation);
+            bci.meditation = med.toDouble();
+
         }
 
         auto con = resp["concentration"];
         if (!con.isNull()) {
-            m_concentration = con.toDouble();
-            progressConcentration->setValue(m_concentration);
+            bci.concentration = con.toDouble();
+
         }
 
         auto st = resp["mental_state"];
         if (!st.isNull()) {
-            m_mentalState = st.toInt();
-            labelMentalState->setText(QString::number((int)m_mentalState));
-        }
+            bci.mentalState = st.toInt();
 
-        control();
+        }
+    };
+
+    connect(socket, &QWebSocket::textMessageReceived, this, [=](QString txt) {
+        QJsonDocument json = QJsonDocument::fromJson(txt.toUtf8());
+        QJsonObject resp = json.object();
+
+        if (!m_multiplayer) {
+            QString cmd = resp["command"].toString();
+
+            func_parseBCI(resp, m_userBCI[0]);
+
+            progressMeditation->setValue(m_userBCI[0].meditation);
+            progressConcentration->setValue(m_userBCI[0].concentration);
+            labelMentalState->setText(QString::number((int)m_userBCI[0].mentalState));
+
+            control();
+        }
+        else
+        {
+             QString cmd = resp["command"].toString();
+
+             auto devs = resp["results"];
+             if (devs.isArray())
+             {
+                 auto devices = devs.toArray();
+                 int index = 0;
+                 foreach (auto dev, devices)
+                 {
+                     if (dev.isObject())
+                     {
+                        func_parseBCI(dev.toObject(), m_userBCI[index]);
+                     }
+                     index ++;
+                     if (index >= m_userBCI.length()) break;
+                 }
+             }
+
+             qDebug() << devs;
+
+             progressMeditationU1->setValue(m_userBCI[0].meditation);
+             progressConcentrationU1->setValue(m_userBCI[0].concentration);
+
+             progressMeditationU2->setValue(m_userBCI[1].meditation);
+             progressConcentrationU2->setValue(m_userBCI[1].concentration);
+
+             auto med = m_userBCI[1].meditation - m_userBCI[0].meditation;
+             auto con = m_userBCI[1].concentration - m_userBCI[0].concentration;
+
+             progressMeditationMix1->setValue(med < 0 ? -med : 0);
+             progressMeditationMix2->setValue(med > 0 ? med : 0);
+
+             progressConcentrationMix1->setValue(con < 0 ? -con : 0);
+             progressConcentrationMix2->setValue(con > 0 ? con : 0);
+
+        }
     }, Qt::QueuedConnection);
 
     auto timer = new QTimer();
@@ -241,7 +365,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         if (socket->state() != QAbstractSocket::ConnectedState) {
             socket->open(QUrl("ws://localhost:1336"));
         } else {
-            socket->sendTextMessage("bci");
+            socket->sendTextMessage(m_multiplayer ? "bcis" : "bci");
         }
     });
     timer->start();
@@ -263,10 +387,27 @@ void MainWindow::control()
         return;
     }
 
+    if (m_multiplayer)
+    {
+        bool isMed = m_settings->getMultiplayerControl() == "meditation";
+
+        bool val = isMed ? m_userBCI[0].meditation - m_userBCI[1].meditation : m_userBCI[0].concentration - m_userBCI[1].concentration;
+
+        for (int i = 1; i <= MAX_MOTORS; i++) {
+            if (m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i)) {
+                m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) * val);
+            } else {
+                m_ev3->motor(i)->setPower(0);
+            }
+        }
+
+        return;
+    }
+
     switch (m_controlState)
     {
         case MentalState: {
-            auto drives = m_settings->getMentalStateDrives(m_mentalState);
+            auto drives = m_settings->getMentalStateDrives(m_userBCI[0].mentalState);
             for (int i = 0; i < drives.length(); i++) {
                 m_ev3->motor(i + 1)->setPower(drives[i]);
             }
@@ -277,7 +418,7 @@ void MainWindow::control()
         case Concentration:
         {
             QString metaIndex = m_controlState == Meditation ? MEDITATION : CONCENTRATION;
-            double metaIndexValue = m_controlState == Meditation ? m_meditation : m_concentration;
+            double metaIndexValue = m_controlState == Meditation ? m_userBCI[0].meditation : m_userBCI[0].concentration;
             for (int i = 1; i <= MAX_MOTORS; i++) {
                 if (m_settings->getMetaIndexDriveEnabled(metaIndex, i)) {
                     m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(metaIndex, i) * metaIndexValue);
