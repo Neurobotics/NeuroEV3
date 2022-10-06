@@ -2,8 +2,8 @@ QT += core gui network widgets websockets
 CONFIG += c++14
 
 VER_MAJ = 1
-VER_MIN = 1
-VER_PAT = 1
+VER_MIN = 2
+VER_PAT = 0
 
 VERSION = $$VER_MAJ"."$$VER_MIN"."$$VER_PAT
 DEFINES += APP_VERSION=$$VERSION

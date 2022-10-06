@@ -317,7 +317,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             progressConcentration->setValue(m_userBCI[0].concentration);
             labelMentalState->setText(QString::number((int)m_userBCI[0].mentalState));
 
-            control();
+
         }
         else
         {
@@ -357,6 +357,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
              progressConcentrationMix2->setValue(con > 0 ? con : 0);
 
         }
+
+        control();
     }, Qt::QueuedConnection);
 
     auto timer = new QTimer();
@@ -391,9 +393,10 @@ void MainWindow::control()
     {
         bool isMed = m_settings->getMultiplayerControl() == "meditation";
 
-        bool val = isMed ? m_userBCI[0].meditation - m_userBCI[1].meditation : m_userBCI[0].concentration - m_userBCI[1].concentration;
+        float val = isMed ? m_userBCI[0].meditation - m_userBCI[1].meditation : m_userBCI[0].concentration - m_userBCI[1].concentration;
 
         for (int i = 1; i <= MAX_MOTORS; i++) {
+            //qDebug() << i <<  m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i) << m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) << val;
             if (m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i)) {
                 m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) * val);
             } else {
