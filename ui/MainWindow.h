@@ -3,12 +3,11 @@
 
 #include <QMainWindow>
 #include "ev3/EV3.h"
-#include "ev3/EV3_Motor.h"
-#include <QWebSocket>
 #include <QGridLayout>
 #include "classes/Settings.h"
 #include <QMetaEnum>
 #include <QPushButton>
+#include "classes/NeuroPlayAppConnector.h"
 
 struct UserBCI
 {
@@ -37,8 +36,6 @@ public:
 
 protected:
     EV3 *m_ev3 = nullptr;
-    QWebSocket *socket = nullptr;
-
     EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;
 
     QList<UserBCI> m_userBCI;
@@ -49,6 +46,8 @@ protected:
     Settings *m_settings = nullptr;
 
     bool m_multiplayer = false;
+
+    NeuroPlayAppConnector *m_neuroplayConnector = nullptr;
 
     QWidget *newVersionButton();
     QPushButton *flatButton(QString text, QIcon icon = QIcon(), QString tooltip = "", QUrl url = QUrl());

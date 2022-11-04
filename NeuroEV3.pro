@@ -3,13 +3,14 @@ CONFIG += c++14
 
 VER_MAJ = 1
 VER_MIN = 2
-VER_PAT = 0
+VER_PAT = 1
 
 VERSION = $$VER_MAJ"."$$VER_MIN"."$$VER_PAT
 DEFINES += APP_VERSION=$$VERSION
 DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
 
 SOURCES += \
+    classes/NeuroPlayAppConnector.cpp \
     main.cpp \
     classes/Common.cpp \
     classes/Settings.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     classes/Common.h \
+    classes/NeuroPlayAppConnector.h \
     classes/Settings.h \
     ev3/EV3.h \
     ev3/EV3_Command.h \
