@@ -41,13 +41,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_settings = new Settings();
 
-    auto func_iconButton = [](QString iconPath, QSize size = QSize(24, 24)) {
+    auto func_iconButton = [](QString iconPath, QSize size = QSize(40, 40), QSize iconSize = QSize(32, 32)) {
         auto btn = new QPushButton();
         btn->setIcon(QIcon(iconPath));
-        btn->setIconSize(size);
-        btn->setStyleSheet("padding: 2px");
+        btn->setIconSize(iconSize);
+        btn->setFixedSize(size);
         btn->setContentsMargins(0,0,0,0);
-        btn->setFixedSize(size.width() + 6, size.height() + 6);
+        btn->setCursor(Qt::PointingHandCursor);
         return btn;
     };
 
@@ -226,40 +226,45 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     static QIcon iconLink = QIcon(":/resources/link.svg");
     static QIcon iconLinkOff = QIcon(":/resources/link_off.svg");
-    auto btnCanControl = new QPushButton();
+    auto btnCanControl = func_iconButton("");
     btnCanControl->setCheckable(true);
     btnCanControl->setChecked(true);
     btnCanControl->setIcon(iconLink);
-    btnCanControl->setFixedSize(30, 30);
-    btnCanControl->setIconSize(QSize(24, 24));
 
     connect(btnCanControl, &QPushButton::toggled, [=](bool toggled) {
         btnCanControl->setIcon(toggled ? iconLink : iconLinkOff);
         m_canControl = toggled;
     });
 
-    auto layoutConnectionType = new QHBoxLayout();
-    auto radioBluetooth = new QRadioButton("B");
-    auto radioWiFi = new QRadioButton("W");
+    auto layoutConnectionType = new QVBoxLayout();
+    layoutConnectionType->setContentsMargins(0,0,0,0);
+    layoutConnectionType->setSpacing(0);
+    auto btnBluetooth = func_iconButton(":/resources/bluetooth.svg", QSize(20, 20), QSize(16, 16));
+    btnBluetooth->setCheckable(true);
+    auto btnWiFi = func_iconButton(":/resources/wifi.svg", QSize(20, 20), QSize(16, 16));
+    btnWiFi->setCheckable(true);
 
-    layoutConnectionType->addWidget(radioWiFi);
-    layoutConnectionType->addWidget(radioBluetooth);
+    layoutConnectionType->addWidget(btnWiFi);
+    layoutConnectionType->addWidget(btnBluetooth);
 
-    if (m_settings->getConnectionType() == EV3::WiFi) {
-        radioWiFi->setChecked(true);
-    } else {
-        radioBluetooth->setChecked(true);
-    }
+    auto func_setMode = [=](EV3::ConnectionType type) {
+        m_settings->setConnectionType(type);
+        m_ev3->setConnectionType(type);
+        btnBluetooth->setChecked(type == EV3::Bluetooth);
+        btnWiFi->setChecked(type == EV3::WiFi);
+        btnEV3Connect->setChecked(false);
+        btnEV3Connect->setCheckable(type != EV3::Bluetooth);
+    };
 
-    connect(radioBluetooth, &QRadioButton::clicked, [=]() {
-        m_settings->setConnectionType(EV3::Bluetooth);
-        m_ev3->setConnectionType(EV3::Bluetooth);
+    connect(btnBluetooth, &QRadioButton::clicked, [=]() {
+        func_setMode(EV3::Bluetooth);
     });
 
-    connect(radioWiFi, &QRadioButton::clicked, [=]() {
-        m_settings->setConnectionType(EV3::WiFi);
-        m_ev3->setConnectionType(EV3::WiFi);
+    connect(btnWiFi, &QRadioButton::clicked, [=]() {
+       func_setMode(EV3::WiFi);
     });
+
+    func_setMode(m_settings->getConnectionType());
 
     auto btnNeuroPlayConnected = Common::Instance()->connectStatusWidget();
     auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
@@ -267,9 +272,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     auto headerLayout = new QHBoxLayout();
     headerLayout->addWidget(btnEV3Connect);
+    headerLayout->addLayout(layoutConnectionType);
     headerLayout->addWidget(btnEV3Connected);
     headerLayout->addWidget(labelConnected, 100);
-    headerLayout->addLayout(layoutConnectionType);
     headerLayout->addWidget(btnCanControl, Qt::AlignCenter);
     headerLayout->addWidget(btnNeuroPlayConnected, 100, Qt::AlignRight);
     headerLayout->addWidget(btnNeuroPlay);

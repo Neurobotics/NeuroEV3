@@ -14,5 +14,7 @@
         <file>resources/link_off.svg</file>
         <file>resources/neurobotics-logo.svg</file>
         <file>resources/github.svg</file>
+        <file>resources/bluetooth.svg</file>
+        <file>resources/wifi.svg</file>
     </qresource>
 </RCC>
