@@ -1,6 +1,6 @@
 # NeuroEV3
 
-Connects NeuroPlay/NeuroPlayPro software with EV3 module over WiFi.
+Connects NeuroPlay/NeuroPlayPro software with LEGO™ EV3™ module over WiFi or Bluetooth™.
 
 A QT-based C++ solution.
 
