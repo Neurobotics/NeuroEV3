@@ -39,7 +39,7 @@ public:
     EV3(ConnectionType type = ConnectionType::WiFi, QObject *parent = nullptr);
     ~EV3();
 
-    void setConnectionType(ConnectionType type);
+    void setConnectionType(ConnectionType type, bool force = false);
 
 
     QVector<EV3_Motor*> motors();
@@ -94,10 +94,12 @@ private:
     ConnectionState m_connectionState = ConnectionState::Disconnected;
     QString m_error = "";
 
+    ConnectionType m_connectionType = WiFi;
+
     QUdpSocket *m_broadcast = nullptr;
     QTcpSocket *m_connection = nullptr;
     QBluetoothSocket *m_bluetooth = nullptr;
-    QBluetoothDeviceDiscoveryAgent *discoveryAgent = nullptr;
+    QBluetoothDeviceDiscoveryAgent *m_discoveryAgent = nullptr;
 
     void startClient(const QBluetoothDeviceInfo &remoteService);
 };

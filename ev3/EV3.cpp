@@ -10,14 +10,14 @@ void EV3::startDeviceDiscovery()
 {
 
     // Create a discovery agent and connect to its signals
-    if (!discoveryAgent) {
-    discoveryAgent = new QBluetoothDeviceDiscoveryAgent(this);
-    connect(discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
+    if (!m_discoveryAgent) {
+        m_discoveryAgent = new QBluetoothDeviceDiscoveryAgent(this);
+        connect(m_discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
             this, SLOT(deviceDiscovered(QBluetoothDeviceInfo)));
     }
 
     // Start a discovery
-    discoveryAgent->start();
+    m_discoveryAgent->start();
 
     //...
 }
@@ -27,9 +27,9 @@ void EV3::deviceDiscovered(const QBluetoothDeviceInfo &device)
 {
     qDebug() << "Found new device:" << device.name() << '(' << device.address().toString() << ')';
 
-    if (device.name().startsWith("EV3")) {
+    if (device.name().startsWith("EV3", Qt::CaseInsensitive)) {
         startClient(device);
-        discoveryAgent->stop();
+        m_discoveryAgent->stop();
     }
 }
 
@@ -39,8 +39,8 @@ void EV3::readSocket() {
 
     QByteArray ba = m_bluetooth ? m_bluetooth->readAll() : m_connection->readAll();
     packetStruct *packet = reinterpret_cast<packetStruct *>(ba.data());
-    qDebug() << "READ" << ba.toHex(',');
-    qDebug() << packet->id << " id " << packet->value<<" value ";  // пока не удаляйте
+    // qDebug() << "READ" << ba.toHex(',');
+    // qDebug() << packet->id << " id " << packet->value<<" value ";  // пока не удаляйте
     emit readyRead(packet->id,packet->value);
 }
 
@@ -53,11 +53,15 @@ EV3::EV3(ConnectionType type, QObject *parent) : QObject(parent)
         m_motors << new EV3_Motor(this, i);
     }
 
-    setConnectionType(type);
+    setConnectionType(type, true);
 }
 
-void EV3::setConnectionType(ConnectionType type)
+void EV3::setConnectionType(ConnectionType type, bool force)
 {
+    if (type == m_connectionType && !force) return;
+
+    m_connectionType = type;
+
     close();
 
     qDebug() << "Start EV3 via" << type;
@@ -109,13 +113,15 @@ void EV3::stopMotors()
 
 void EV3::searchAndConnect()
 {
+    if (m_bluetooth) return;
+
     if (m_connectionState > Disconnected)
         return;
 
     setState(Searching);
 
     m_serialNumber.clear();
-    m_broadcast->bind(3015);
+    if (m_broadcast) m_broadcast->bind(3015);
 }
 
 void EV3::processBroadcastDatagram()
@@ -160,9 +166,9 @@ void EV3::close()
         m_bluetooth->deleteLater();
         m_bluetooth = nullptr;
     }
-    if (discoveryAgent) {
-        discoveryAgent->deleteLater();
-        discoveryAgent->deleteLater();
+    if (m_discoveryAgent) {
+        m_discoveryAgent->deleteLater();
+        m_discoveryAgent = nullptr;
     }
 }
 
@@ -210,8 +216,6 @@ void EV3::sendCommand(const QByteArray &data, bool noReply)
             return;
     }
 
-    qDebug() << QDateTime::currentDateTime() << "cdm" << data.toHex(' ');
-
     QByteArray actual;
     QDataStream out(&actual, QIODevice::WriteOnly);
     out << quint8(data.size() + 5) << quint8(0)
@@ -223,7 +227,6 @@ void EV3::sendCommand(const QByteArray &data, bool noReply)
 
     if (m_connection) m_connection->write(actual);
     if (m_bluetooth) {
-//        qDebug() << "BL send" << actual.toHex(' ');
         m_bluetooth->write(actual);
     }
 }
