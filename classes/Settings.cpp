@@ -5,6 +5,16 @@ Settings::Settings(QObject *parent) : QObject{parent}
     m_settings = new QSettings("neuroev3.settings", QSettings::Format::IniFormat);
 }
 
+EV3::ConnectionType Settings::getConnectionType()
+{
+    return m_settings->value("ev3/connection", "wifi").toString() == "wifi" ? EV3::WiFi : EV3::Bluetooth;
+}
+
+void Settings::setConnectionType(EV3::ConnectionType type)
+{
+    m_settings->setValue("ev3/connection", type == EV3::WiFi ? "wifi" : "bluetooth");
+}
+
 bool Settings::getMentalStateEnabled(int state)
 {
     QString header = mentalStateHeader(state);

@@ -2,6 +2,8 @@
 #define EV3_COMMAND_H
 
 #include <QDataStream>
+#include <QByteArray>
+#include <QIODevice>
 #include "EV3_ByteCodes.h"
 
 class EV3_Command

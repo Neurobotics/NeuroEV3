@@ -22,6 +22,8 @@
 #include <QComboBox>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRadioButton>
+
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -58,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         btnEV3Connected->setActive(st == EV3::ConnectionState::Connected);
     };
 
-    m_ev3 = new EV3();
+    m_ev3 = new EV3(m_settings->getConnectionType());
     connect(m_ev3, &EV3::connectionStateChanged, this, func_connected, Qt::QueuedConnection);
 
     auto btnEV3Connect = func_iconButton(":/resources/EV3.svg");
@@ -219,7 +221,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_multiplayer = index == tabs->count()-1;
         m_ev3->stopMotors();
         m_controlState = (ControlState)index;
-        m_neuroplayConnector->startMultiUser(m_multiplayer);
+        m_neuroplayConnector->start(m_multiplayer);
     });
 
     static QIcon iconLink = QIcon(":/resources/link.svg");
@@ -236,6 +238,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_canControl = toggled;
     });
 
+    auto layoutConnectionType = new QHBoxLayout();
+    auto radioBluetooth = new QRadioButton("B");
+    auto radioWiFi = new QRadioButton("W");
+
+    layoutConnectionType->addWidget(radioWiFi);
+    layoutConnectionType->addWidget(radioBluetooth);
+
+    if (m_settings->getConnectionType() == EV3::WiFi) {
+        radioWiFi->setChecked(true);
+    } else {
+        radioBluetooth->setChecked(true);
+    }
+
+    connect(radioBluetooth, &QRadioButton::clicked, [=]() {
+        m_settings->setConnectionType(EV3::Bluetooth);
+        m_ev3->setConnectionType(EV3::Bluetooth);
+    });
+
+    connect(radioWiFi, &QRadioButton::clicked, [=]() {
+        m_settings->setConnectionType(EV3::WiFi);
+        m_ev3->setConnectionType(EV3::WiFi);
+    });
+
     auto btnNeuroPlayConnected = Common::Instance()->connectStatusWidget();
     auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
     btnNeuroPlay->setFlat(true);
@@ -244,6 +269,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addWidget(btnEV3Connect);
     headerLayout->addWidget(btnEV3Connected);
     headerLayout->addWidget(labelConnected, 100);
+    headerLayout->addLayout(layoutConnectionType);
     headerLayout->addWidget(btnCanControl, Qt::AlignCenter);
     headerLayout->addWidget(btnNeuroPlayConnected, 100, Qt::AlignRight);
     headerLayout->addWidget(btnNeuroPlay);
@@ -291,6 +317,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             progressMeditation->setValue(m_userBCI[0].meditation);
             progressConcentration->setValue(m_userBCI[0].concentration);
             labelMentalState->setText(QString::number((int)m_userBCI[0].mentalState));
+
             control();
         }
         else if (userIndex < 2)
@@ -327,6 +354,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
 }
 
+void MainWindow::closeEvent(QCloseEvent *)
+{
+    if (m_ev3) m_ev3->disconnect();
+}
+
 MainWindow::~MainWindow()
 {
     if (m_ev3) m_ev3->disconnect();
@@ -347,7 +379,6 @@ void MainWindow::control()
         float val = isMed ? m_userBCI[0].meditation - m_userBCI[1].meditation : m_userBCI[0].concentration - m_userBCI[1].concentration;
 
         for (int i = 1; i <= MAX_MOTORS; i++) {
-            //qDebug() << i <<  m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i) << m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) << val;
             if (m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i)) {
                 m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) * val);
             } else {
@@ -374,11 +405,8 @@ void MainWindow::control()
         QString metaIndex = m_controlState == Meditation ? MEDITATION : CONCENTRATION;
         double metaIndexValue = m_controlState == Meditation ? m_userBCI[0].meditation : m_userBCI[0].concentration;
         for (int i = 1; i <= MAX_MOTORS; i++) {
-            if (m_settings->getMetaIndexDriveEnabled(metaIndex, i)) {
-                m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(metaIndex, i) * metaIndexValue);
-            } else {
-                m_ev3->motor(i)->setPower(0);
-            }
+            int power = m_settings->getMetaIndexDriveEnabled(metaIndex, i) ? m_settings->getMetaIndexDriveCoeff(metaIndex, i) * metaIndexValue : 0;
+            m_ev3->motor(i)->setPower(power);
         }
     }
         break;

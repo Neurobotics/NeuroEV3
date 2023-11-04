@@ -5,6 +5,8 @@
 #include <QDataStream>
 #include <QTcpSocket>
 #include <QUdpSocket>
+#include <QtBluetooth/QBluetoothSocket>
+#include <QBluetoothDeviceDiscoveryAgent>
 
 class EV3_Motor;
 
@@ -18,6 +20,12 @@ class EV3 : public QObject
     Q_PROPERTY(ConnectionState state READ connectionState NOTIFY connectionStateChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)    
 public:
+    enum ConnectionType {
+        WiFi,
+        Bluetooth
+    };
+    Q_ENUM(ConnectionType)
+
     enum ConnectionState {
         Unknown,
         Disconnected,
@@ -28,8 +36,11 @@ public:
     };
     Q_ENUM(ConnectionState)
 
-    EV3(QObject *parent = nullptr);
+    EV3(ConnectionType type = ConnectionType::WiFi, QObject *parent = nullptr);
     ~EV3();
+
+    void setConnectionType(ConnectionType type);
+
 
     QVector<EV3_Motor*> motors();
     EV3_Motor* motor(int motorIndex1To4);
@@ -61,10 +72,16 @@ public Q_SLOTS:
     void searchAndConnect();
     void disconnect();
 
-private Q_SLOTS:
+protected Q_SLOTS:
+    void startDeviceDiscovery();
+    void deviceDiscovered(const QBluetoothDeviceInfo &device);
+    void readSocket();
+
     void updateState(QAbstractSocket::SocketState state);
     void updateError(QAbstractSocket::SocketError error);
     void processBroadcastDatagram();
+
+    void close();
 
 private:
     QVector<EV3_Motor*> m_motors;
@@ -79,6 +96,10 @@ private:
 
     QUdpSocket *m_broadcast = nullptr;
     QTcpSocket *m_connection = nullptr;
+    QBluetoothSocket *m_bluetooth = nullptr;
+    QBluetoothDeviceDiscoveryAgent *discoveryAgent = nullptr;
+
+    void startClient(const QBluetoothDeviceInfo &remoteService);
 };
 
 #endif // EV3_H

@@ -4,12 +4,16 @@
 #include <QObject>
 #include <QSettings>
 #include "Common.h"
+#include "ev3/EV3.h"
 
 class Settings : public QObject
 {
     Q_OBJECT
 public:
     explicit Settings(QObject *parent = nullptr);
+
+    EV3::ConnectionType getConnectionType();
+    void setConnectionType(EV3::ConnectionType type);
 
     bool getMentalStateEnabled(int state);
     void setMentalStateEnabled(int state, bool enabled);

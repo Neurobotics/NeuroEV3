@@ -35,6 +35,8 @@ public:
     QString OS();
 
 protected:
+    void closeEvent(QCloseEvent *) override;
+
     EV3 *m_ev3 = nullptr;
     EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;
 
@@ -59,5 +61,7 @@ protected:
     }
 
     void control();
+
+
 };
 #endif // MAINWINDOW_H
