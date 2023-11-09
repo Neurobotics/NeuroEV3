@@ -4,6 +4,19 @@
 #include "BaseMotorsWidget.h"
 #include <QSlider>
 
+class QImprovedSlider : public QSlider
+{
+    Q_OBJECT
+protected:
+    void mousePressEvent(QMouseEvent *event);
+
+public:
+    explicit QImprovedSlider(QWidget *parent = 0);
+
+signals:
+    void onClick(int value);
+};
+
 class MotorsWidget : public BaseMotorsWidget
 {
     Q_OBJECT
