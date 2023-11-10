@@ -98,13 +98,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto currentMentalStateWidget = new QWidget();
     auto currentMentalStateWidgetLayout = new QHBoxLayout(currentMentalStateWidget);
     currentMentalStateWidgetLayout->setContentsMargins(0,0,0,0);
-    currentMentalStateWidgetLayout->addWidget(new QLabel("Текущее состояние:"));
+    currentMentalStateWidgetLayout->addWidget(new QLabel(tr("Current state:")));
     currentMentalStateWidgetLayout->addWidget(labelMentalState, 100, Qt::AlignLeft);
 
     auto bciStateMotors = new QWidget();
     auto bciStateMotorsLayout = new QVBoxLayout(bciStateMotors);
     for (int i = 1; i<=MAX_MENTAL_STATES; i++) {
-        auto checkbox = new QCheckBox("State " + QString::number(i));
+        auto checkbox = new QCheckBox(tr("State") + " " + QString::number(i));
         checkbox->setChecked(m_settings->getMentalStateEnabled(i));
         connect(checkbox, &QCheckBox::toggled, [=](bool toggled) {
             m_settings->setMentalStateEnabled(i, toggled);
@@ -129,8 +129,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     bciStateMotorsLayout->insertWidget(0, currentMentalStateWidget);
 
     auto tabs = new QTabWidget();
-    tabs->addTab(manualMotors, "Manual");
-    tabs->addTab(bciStateMotors, "Mental states");
+    tabs->addTab(manualMotors, tr("Manual"));
+    tabs->addTab(bciStateMotors, tr("Mental states"));
 
     auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
     foreach(auto metaIndex, metaIndexes) {
@@ -204,7 +204,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_settings->setMultiplayerControl(multipleControlCombo->currentIndex() == 0 ? "meditation" : "concentration");
     });
 
-    multipleGrid->addWidget(new QLabel("Control"), 0, 1, 1, 2, Qt::AlignCenter);
+    multipleGrid->addWidget(new QLabel(tr("Control")), 0, 1, 1, 2, Qt::AlignCenter);
     multipleGrid->addWidget(multipleControlCombo, 1, 1, 1, 2, Qt::AlignCenter);
 
     multiplayerWidget->addWidgetOnTop(multipl);
@@ -215,7 +215,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     multipleGrid->addWidget(progressConcentrationMix1,     4, 0, 1, 2, Qt::AlignLeft);
     multipleGrid->addWidget(progressConcentrationMix2,     4, 2, 1, 2, Qt::AlignLeft);
 
-    tabs->addTab(multiplayerWidget, "Multiplayer");
+    tabs->addTab(multiplayerWidget, tr("Multiplayer"));
 
     connect(tabs, &QTabWidget::currentChanged, [=](int index) {
         m_multiplayer = index == tabs->count()-1;
@@ -254,6 +254,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         btnWiFi->setChecked(type == EV3::WiFi);
         btnEV3Connect->setChecked(false);
         btnEV3Connect->setCheckable(type != EV3::Bluetooth);
+        btnEV3Connect->setFlat(type == EV3::Bluetooth);
     };
 
     connect(btnBluetooth, &QRadioButton::clicked, [=]() {
@@ -354,7 +355,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_neuroplayConnector->start(m_multiplayer);
 
-#ifdef OS_DESKTOP
+#if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
     setMinimumWidth(500);
 #endif
 }

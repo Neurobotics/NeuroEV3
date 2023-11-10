@@ -16,5 +16,9 @@
         <file>resources/github.svg</file>
         <file>resources/bluetooth.svg</file>
         <file>resources/wifi.svg</file>
+        <file>resources/style.css</file>
+        <file>resources/check.svg</file>
+        <file>resources/chevron-down.svg</file>
+        <file>resources/chevron-up.svg</file>
     </qresource>
 </RCC>

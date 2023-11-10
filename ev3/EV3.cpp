@@ -1,25 +1,21 @@
 #include "EV3.h"
 #include "EV3_Motor.h"
+#include <QTimer>
 #include <QtBluetooth/QBluetoothLocalDevice>
 #include <QDebug>
-
+#include <QDateTime>
 
 #define UNLOCK_MESSAGE "GET /target?sn=%1 VMTP1.0\nProtocol: EV3"
 
 void EV3::startDeviceDiscovery()
 {
-
-    // Create a discovery agent and connect to its signals
     if (!m_discoveryAgent) {
         m_discoveryAgent = new QBluetoothDeviceDiscoveryAgent(this);
-        connect(m_discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
-            this, SLOT(deviceDiscovered(QBluetoothDeviceInfo)));
+        connect(m_discoveryAgent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered,
+                this, &EV3::deviceDiscovered);
     }
 
-    // Start a discovery
-    m_discoveryAgent->start();
-
-    //...
+    m_discoveryAgent->start(QBluetoothDeviceDiscoveryAgent::ClassicMethod);
 }
 
 
@@ -39,8 +35,6 @@ void EV3::readSocket() {
 
     QByteArray ba = m_bluetooth ? m_bluetooth->readAll() : m_connection->readAll();
     packetStruct *packet = reinterpret_cast<packetStruct *>(ba.data());
-    // qDebug() << "READ" << ba.toHex(',');
-    // qDebug() << packet->id << " id " << packet->value<<" value ";  // пока не удаляйте
     emit readyRead(packet->id,packet->value);
 }
 
@@ -207,8 +201,6 @@ void EV3::disconnect()
     if (m_bluetooth) m_bluetooth->disconnectFromService();
 }
 
-
-#include <QDateTime>
 void EV3::sendCommand(const QByteArray &data, bool noReply)
 {
     if (!m_bluetooth) {
@@ -245,7 +237,7 @@ QByteArray EV3::readResponse()
     if (m_connection) {
         if (!m_connection->bytesAvailable())
             m_connection->waitForReadyRead(1000);
-         return m_connection->readAll();
+        return m_connection->readAll();
     }
     return QByteArray();
 }
@@ -281,22 +273,24 @@ void EV3::startClient(const QBluetoothDeviceInfo &remoteService)
         return;
 
     m_bluetooth = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
-    m_bluetooth->connectToService(remoteService.address(), remoteService.serviceUuids()[0]);
+
+    static QBluetoothUuid uuid = QBluetoothUuid::fromString(QLatin1String("{00001101-0000-1000-8000-00805f9b34fb}"));
+    m_bluetooth->connectToService(remoteService.address(), uuid);
 
     connect(m_bluetooth, &QBluetoothSocket::stateChanged, [=](QBluetoothSocket::SocketState state) {
         updateState((QAbstractSocket::SocketState)state);
     });
     connect(m_bluetooth, &QBluetoothSocket::readyRead, this, &EV3::readSocket);
-//    connect(m_bluetooth, &QBluetoothSocket::connected, this, [=]() {
-//        qDebug() << "BL connected";
-//    });
+    //    connect(m_bluetooth, &QBluetoothSocket::connected, this, [=]() {
+    //        qDebug() << "BL connected";
+    //    });
 
-//    connect(m_bluetooth, &QBluetoothSocket::disconnected, this, [=]() {
-//        qDebug() << "BL DIsconnected";
-//    });
-//    connect(m_bluetooth, &QBluetoothSocket::errorOccurred, this, [=](QBluetoothSocket::SocketError err) {
-//        qDebug() << "BL ERR" << err;
-//    });
+    //    connect(m_bluetooth, &QBluetoothSocket::disconnected, this, [=]() {
+    //        qDebug() << "BL DIsconnected";
+    //    });
+    //    connect(m_bluetooth, &QBluetoothSocket::errorOccurred, this, [=](QBluetoothSocket::SocketError err) {
+    //        qDebug() << "BL ERR" << err;
+    //    });
 }
 
 void EV3::updateState(QAbstractSocket::SocketState state)

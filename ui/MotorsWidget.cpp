@@ -29,6 +29,9 @@ MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
 
         auto btnZero = new QPushButton();
         btnZero->setIcon(QIcon(":/resources/zero.svg"));
+        btnZero->setCursor(Qt::PointingHandCursor);
+        btnZero->setToolTip(tr("Set to zero"));
+        btnZero->setFixedSize(24, 24);
         connect(btnZero, &QPushButton::clicked, [=]() {
             motorPower->setValue(0);
         });
@@ -93,7 +96,7 @@ void QImprovedSlider::mousePressEvent(QMouseEvent *event)
         }
 
         if (invertedAppearance())
-            this->setValue( maximum() - newVal );
+            this->setValue(maximum() - newVal);
         else
             this->setValue(newVal);
 

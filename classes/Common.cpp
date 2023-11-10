@@ -13,7 +13,7 @@ Common *Common::Instance()
 IconLabel *Common::motorSocket(int motorIndex)
 {
     auto motorSocket = new IconLabel(iconSocket, iconSocketActive, motorString(motorIndex));
-    motorSocket->setStyleSheet("color: white; font-weight: bold");
+    motorSocket->setStyleSheet("color: white; font-weight: bold; font-size: 12px; padding-right: 0px;");
     return motorSocket;
 }
 
