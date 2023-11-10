@@ -20,5 +20,6 @@
         <file>resources/check.svg</file>
         <file>resources/chevron-down.svg</file>
         <file>resources/chevron-up.svg</file>
+        <file>resources/neuroEV3.icns</file>
     </qresource>
 </RCC>

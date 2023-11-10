@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>NeuroEV3</string>
+	<key>CFBundleIdentifier</key>
+	<string>neurobotics.neuroev3</string>
+	<key>CFBundleName</key>
+	<string>NeuroEV3</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.healthcare-fitness</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app requires Bluetooth functionality to connect to EV3 devices. Please consider turning Bluetooth on to be able to connect to these devices.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app uses Bluetooth to connect to NeuroPlay EEG devices</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>App uses Documents to store settings</string>
+</dict>
+</plist>

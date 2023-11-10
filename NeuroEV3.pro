@@ -49,5 +49,9 @@ RESOURCES += \
 win32: RC_ICONS += resources/neuroEV3.ico
 
 win32: DEFINES += OS_DESKTOP
-macx: DEFINES += OS_DESKTOP
+macx: {
+    DEFINES += OS_DESKTOP
+    QMAKE_INFO_PLIST = $$PWD/platforms/mac/Info.plist
+    QMAKE_ASSET_CATALOGS += $$PWD/platforms/mac/Images.xcassets
+}
 unix:!android:!ios: DEFINES += OS_DESKTOP
