@@ -12,9 +12,6 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Qml)
 qt6_policy(SET QTP0001 NEW)
 
-#add_compile_definitions(NEUROPLAYPRO)
-
-
 set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/classes/NeuroPlayAppConnector.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
@@ -51,9 +48,6 @@ add_compile_definitions(TARGET_NAME="${CMAKE_PROJECT_NAME}")
 add_compile_definitions(IS_X64)
 
 if(ANDROID)
-#    include_directories(${CMAKE_PREFIX_PATH}/include/QtZlib)
-#    add_compile_definitions(NT_OS_MOBILE)
-
     set(ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platforms/android CACHE INTERNAL "")
     set(PROJECT_SOURCES
         ${PROJECT_SOURCES}
@@ -63,7 +57,6 @@ if(ANDROID)
     )
     qt_add_executable(${CMAKE_PROJECT_NAME} WIN32 MACOSX_BUNDLE ${PROJECT_SOURCES})
     set(ANDROID_MIN_SDK_VERSION 33)
-#    include(C:/Users/konys/AppData/Local/Android/Sdk/android_openssl/CMakeLists.txt)
 else()
     if(WIN32)
         string(TIMESTAMP CURRENT_YEAR "%Y")

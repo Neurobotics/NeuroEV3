@@ -31,3 +31,5 @@ _ReSharper*/
 #Nuget packages folder
 packages/
 /*.user.*
+/platforms/android/.gradle/*
+/platforms/android/.idea/*
