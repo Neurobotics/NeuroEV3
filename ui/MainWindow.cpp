@@ -398,9 +398,14 @@ void MainWindow::control()
     switch (m_controlState)
     {
     case MentalState: {
-        auto drives = m_settings->getMentalStateDrives(m_userBCI[0].mentalState);
-        for (int i = 0; i < drives.length(); i++) {
-            m_ev3->motor(i + 1)->setPower(drives[i]);
+        auto state = m_userBCI[0].mentalState;
+        if (m_settings->getMentalStateEnabled(state)) {
+            auto drives = m_settings->getMentalStateDrives(m_userBCI[0].mentalState);
+            for (int i = 0; i < drives.length(); i++) {
+                m_ev3->motor(i + 1)->setPower(drives[i]);
+            }
+        } else {
+            m_ev3->stopMotors();
         }
     }
         break;
