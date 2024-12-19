@@ -33,3 +33,8 @@ packages/
 /*.user.*
 /platforms/android/.gradle/*
 /platforms/android/.idea/*
+/build/*
+/.qmake.stash
+/.qtc_clangd/*
+/Makefile*
+/NeuroEV3_resource.rc
