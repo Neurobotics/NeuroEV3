@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QMainWindow>
 #include <QGridLayout>
+#include <QTabWidget>
 
 #include "ev3/EV3.h"
 #include "classes/Settings.h"
@@ -66,6 +67,10 @@ protected:
 
     QWidget *newVersionButton();
     QPushButton *flatButton(QString text, QIcon icon = QIcon(), QString tooltip = "", QUrl url = QUrl());
+
+    QMap<DeviceMode, QList<QWidget*>> m_deviceWidgets;
+
+    QTabWidget *m_tabs = nullptr;
 
     template <typename T> QString EnumToString(T value)
     {

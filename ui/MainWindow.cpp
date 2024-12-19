@@ -13,7 +13,6 @@
 #include <QSysInfo>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QTabWidget>
 #include <QEventLoop>
 #include <QJsonObject>
 #include <QTranslator>
@@ -30,6 +29,9 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     autoDetectLanguage();
+
+    m_deviceWidgets.insert(Device_EV3, QList<QWidget*>());
+    m_deviceWidgets.insert(Device_COM, QList<QWidget*>());
 
     for (int i = 0; i<4; i++) m_userBCI << UserBCI();
 
@@ -132,9 +134,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     }
     bciStateMotorsLayout->insertWidget(0, currentMentalStateWidget);
 
-    auto tabs = new QTabWidget();
-    tabs->addTab(manualMotors, tr("Manual"));
-    tabs->addTab(bciStateMotors, tr("Mental states"));
+    auto comProfile = new QLabel("123");
+    m_deviceWidgets[Device_COM] << comProfile;
+
+    m_tabs = new QTabWidget();
+    m_tabs->addTab(comProfile, tr("Profile"));
+    m_tabs->addTab(manualMotors, tr("Manual"));
+    m_tabs->addTab(bciStateMotors, tr("Mental states"));
 
     auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
     foreach(auto metaIndex, metaIndexes) {
@@ -152,7 +158,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
         bciMetaIndexMotors->addWidgetOnTop(metaIndex == MEDITATION ? progressMeditation : progressConcentration);
 
-        tabs->addTab(bciMetaIndexMotors, tr(qPrintable(metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1))));
+        m_tabs->addTab(bciMetaIndexMotors, tr(qPrintable(metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1))));
     }
 
     auto multiplayerWidget = new MotorsCoeffWidget();
@@ -218,10 +224,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     multipleGrid->addWidget(progressConcentrationMix1,     4, 0, 1, 2, Qt::AlignLeft);
     multipleGrid->addWidget(progressConcentrationMix2,     4, 2, 1, 2, Qt::AlignLeft);
 
-    tabs->addTab(multiplayerWidget, tr("Multiplayer"));
+    m_tabs->addTab(multiplayerWidget, tr("Multiplayer"));
 
-    connect(tabs, &QTabWidget::currentChanged, [=](int index) {
-        m_multiplayer = index == tabs->count()-1;
+    connect(m_tabs, &QTabWidget::currentChanged, [=](int index) {
+        m_multiplayer = index == m_tabs->count()-1;
         m_ev3->stopMotors();
         m_controlState = (ControlState)index;
         m_neuroplayConnector->start(m_multiplayer);
@@ -307,6 +313,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
     btnNeuroPlay->setFlat(true);
 
+    m_deviceWidgets[Device_EV3] << btnEV3Connect;
+
     auto headerLayout = new QHBoxLayout();
     headerLayout->addLayout(layoutDeviceSelection);
     headerLayout->addWidget(btnEV3Connect);
@@ -337,7 +345,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(centralWidget);
     auto grid = new QVBoxLayout(centralWidget);
     grid->addLayout(headerLayout);
-    grid->addWidget(tabs, 100);
+    grid->addWidget(m_tabs, 100);
     grid->addLayout(bottomLayout);
 
     m_neuroplayConnector = new NeuroPlayAppConnector();
@@ -351,7 +359,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     });
 
     connect(m_neuroplayConnector, &NeuroPlayAppConnector::userBCI, this, [=](int userIndex, float meditation, float concentration, int mentalState) {
-
         if (userIndex < 0 || userIndex >= m_userBCI.length()) return;
 
         m_userBCI[userIndex].meditation = meditation;
@@ -364,17 +371,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             labelMentalState->setText(QString::number((int)m_userBCI[0].mentalState));
 
             control();
-        }
-        else if (userIndex < 2)
-        {
-            if (userIndex == 0)
-            {
+        } else if (userIndex < 2) {
+            if (userIndex == 0) {
                 progressMeditationU1->setValue(m_userBCI[0].meditation);
                 progressConcentrationU1->setValue(m_userBCI[0].concentration);
             }
 
-            if (userIndex == 1)
-            {
+            if (userIndex == 1) {
                 progressMeditationU2->setValue(m_userBCI[1].meditation);
                 progressConcentrationU2->setValue(m_userBCI[1].concentration);
 
@@ -395,7 +398,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_neuroplayConnector->start(m_multiplayer);
 
 #if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
-    setMinimumWidth(600);
+    setMinimumWidth(650);
 #endif
 
     //TODO: Apply settings
@@ -420,12 +423,9 @@ void MainWindow::control()
         return;
     }
 
-    if (m_multiplayer)
-    {
+    if (m_multiplayer) {
         bool isMed = m_settings->getMultiplayerControl() == "meditation";
-
         float val = isMed ? m_userBCI[0].meditation - m_userBCI[1].meditation : m_userBCI[0].concentration - m_userBCI[1].concentration;
-
         for (int i = 1; i <= MAX_MOTORS; i++) {
             if (m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i)) {
                 m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) * val);
@@ -433,12 +433,10 @@ void MainWindow::control()
                 m_ev3->motor(i)->setPower(0);
             }
         }
-
         return;
     }
 
-    switch (m_controlState)
-    {
+    switch (m_controlState) {
     case MentalState: {
         auto state = m_userBCI[0].mentalState;
         if (m_settings->getMentalStateEnabled(state)) {
@@ -453,8 +451,7 @@ void MainWindow::control()
     break;
 
     case Meditation:
-    case Concentration:
-    {
+    case Concentration: {
         QString metaIndex = m_controlState == Meditation ? MEDITATION : CONCENTRATION;
         double metaIndexValue = m_controlState == Meditation ? m_userBCI[0].meditation : m_userBCI[0].concentration;
         for (int i = 1; i <= MAX_MOTORS; i++) {
@@ -470,20 +467,29 @@ void MainWindow::control()
 
 void MainWindow::setDeviceMode(DeviceMode mode)
 {
+    m_tabs->setTabVisible(0, mode == Device_COM);
+
     if (mode != Device_EV3) {
         if (m_ev3) {
             m_ev3->disconnect();
         }
+        m_tabs->setCurrentIndex(0);
     }
 
     m_deviceMode = mode;
+
+    foreach (auto deviceMode, m_deviceWidgets.keys()) {
+        bool visible = deviceMode == mode;
+        foreach (auto widget, m_deviceWidgets[deviceMode]) {
+            widget->setVisible(visible);
+        }
+    }
 }
 
 QString MainWindow::OS()
 {
     static QString _os = "";
-    if (_os.isEmpty())
-    {
+    if (_os.isEmpty()) {
         auto os = QSysInfo::productType().toLower();
 
         if (os.contains("windows") || os.contains("winrt")) _os = "windows";
@@ -528,7 +534,6 @@ QString MainWindow::autoDetectLanguage(QString settingsFile)
         QFile sets(settingsFile);
         if (sets.open(QIODevice::ReadOnly)) {
             QString allSets = sets.readAll();
-
             if (allSets.contains("<Language>en_US</Language>")) {
                 lang = "en-US";
             } else if (allSets.contains("<Language>ru_RU</Language>")) {
