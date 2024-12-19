@@ -34,6 +34,8 @@ public:
     QString appVersion(bool withBuild = false);
     QString OS();
 
+    static void ChangeBackground(QWidget *w, QColor color);
+
 protected:
     void closeEvent(QCloseEvent *) override;
 

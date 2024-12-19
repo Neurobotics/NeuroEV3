@@ -224,6 +224,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_neuroplayConnector->start(m_multiplayer);
     });
 
+    static QColor colorBlue = QColor(0x00CCFF);
+    static QColor colorGray = QColor(0xCCCCCC);
+
+    auto line1 = new QWidget();
+    line1->setMaximumHeight(4);
+    line1->setMinimumWidth(30);
+    ChangeBackground(line1, colorBlue);
+
+    auto line2 = new QWidget();
+    line2->setMaximumHeight(4);
+    line2->setMinimumWidth(30);
+    ChangeBackground(line2, colorBlue);
+
     static QIcon iconLink = QIcon(":/resources/link.svg");
     static QIcon iconLinkOff = QIcon(":/resources/link_off.svg");
     auto btnCanControl = func_iconButton("");
@@ -234,6 +247,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(btnCanControl, &QPushButton::toggled, [=](bool toggled) {
         btnCanControl->setIcon(toggled ? iconLink : iconLinkOff);
         m_canControl = toggled;
+        ChangeBackground(line1, toggled ? colorBlue : colorGray);
+        ChangeBackground(line2, toggled ? colorBlue : colorGray);
     });
 
     auto layoutConnectionType = new QVBoxLayout();
@@ -271,13 +286,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
     btnNeuroPlay->setFlat(true);
 
+
+
     auto headerLayout = new QHBoxLayout();
     headerLayout->addWidget(btnEV3Connect);
     headerLayout->addLayout(layoutConnectionType);
     headerLayout->addWidget(btnEV3Connected);
-    headerLayout->addWidget(labelConnected, 100);
+    headerLayout->addWidget(labelConnected);
+    headerLayout->addWidget(line1, 100);
     headerLayout->addWidget(btnCanControl, Qt::AlignCenter);
-    headerLayout->addWidget(btnNeuroPlayConnected, 100, Qt::AlignRight);
+    headerLayout->addWidget(line2, 100);
+    headerLayout->addWidget(btnNeuroPlayConnected);
     headerLayout->addWidget(btnNeuroPlay);
 
     auto btnNeurobotics = flatButton("", QIcon(":/resources/neurobotics-logo.svg"), tr("Visit neurobotics.ru"), QUrl("https://neurobotics.ru"));
@@ -454,6 +473,14 @@ QString MainWindow::OS()
         else _os = "unix";
     }
     return _os;
+}
+
+void MainWindow::ChangeBackground(QWidget *w, QColor color)
+{
+    QPalette pal(w->palette());
+    pal.setColor(QPalette::Window, color);
+    w->setAutoFillBackground(true);
+    w->setPalette(pal);
 }
 
 QWidget *MainWindow::newVersionButton()
