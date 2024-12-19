@@ -1,0 +1,19 @@
+1.3.1 (2023-11-14)
+<ru-RU>
++ Исправление проверки применимости ментальных состояний для управления
+</ru-RU>
+<en-EN>
++ Fix mental state enabled control check
+</en-EN>
+
+1.3.0 (2023-11-10)
+<ru-RU>
++ Поддержка подключения к EV3 по Bluetooth
++ Вкладка Multiplayer для многопользовательского взаимодействия
++ Формированная светлая тема
+</ru-RU>
+<en-EN>
++ Support Bluetooth connection to EV3
++ Multiplayer tab
++ Forced light theme
+</en-EN>

@@ -3,7 +3,7 @@ CONFIG += c++14
 
 VER_MAJ = 1
 VER_MIN = 3
-VER_PAT = 0
+VER_PAT = 1
 
 VERSION = $$VER_MAJ"."$$VER_MIN"."$$VER_PAT
 DEFINES += APP_VERSION=$$VERSION
@@ -51,7 +51,15 @@ win32: RC_ICONS += resources/neuroEV3.ico
 win32: DEFINES += OS_DESKTOP
 macx: {
     DEFINES += OS_DESKTOP
+
+    QMAKE_FULL_VERSION = $$VERSION
+    QMAKE_SHORT_VERSION = $$VERSION
+    QMAKE_TARGET_BUNDLE_PREFIX = neurobotics
+
     QMAKE_INFO_PLIST = $$PWD/platforms/mac/Info.plist
     QMAKE_ASSET_CATALOGS += $$PWD/platforms/mac/Images.xcassets
 }
 unix:!android:!ios: DEFINES += OS_DESKTOP
+
+DISTFILES += \
+    ChangeLog.txt
