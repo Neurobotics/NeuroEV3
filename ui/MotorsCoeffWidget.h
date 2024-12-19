@@ -5,7 +5,6 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
-
 class MotorsCoeffWidget : public BaseMotorsWidget
 {
     Q_OBJECT

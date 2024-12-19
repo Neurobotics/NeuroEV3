@@ -1,12 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include "ev3/EV3.h"
-#include <QGridLayout>
-#include "classes/Settings.h"
 #include <QMetaEnum>
 #include <QPushButton>
+#include <QMainWindow>
+#include <QGridLayout>
+
+#include "ev3/EV3.h"
+#include "classes/Settings.h"
 #include "classes/NeuroPlayAppConnector.h"
 
 struct UserBCI
@@ -16,7 +17,6 @@ struct UserBCI
     int concentration = 0;
 };
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -24,12 +24,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    enum DeviceMode {
+        Device_EV3,
+        Device_COM
+    };
+    Q_ENUM(DeviceMode)
+
     enum ControlState {
         Manual,
         MentalState,
         Meditation,
         Concentration
     };
+    Q_ENUM(ControlState)
 
     QString appVersion(bool withBuild = false);
     QString OS();
@@ -40,6 +47,8 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *) override;
+
+    DeviceMode m_deviceMode = Device_EV3;
 
     EV3 *m_ev3 = nullptr;
     EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;
@@ -65,7 +74,6 @@ protected:
     }
 
     void control();
-
-
+    void setDeviceMode(DeviceMode mode);
 };
 #endif // MAINWINDOW_H

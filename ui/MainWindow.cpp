@@ -2,28 +2,30 @@
 #include "ev3/EV3_Motor.h"
 #include "MotorsWidget.h"
 #include "MotorsCoeffWidget.h"
-#include <QLabel>
-#include <QSpinBox>
-#include <QSlider>
-#include <QTimer>
-#include <QTabWidget>
-#include <QCheckBox>
-#include <QDebug>
-#include <QProgressBar>
-#include <QCoreApplication>
+
 #include <QUrl>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QEventLoop>
-#include <QDesktopServices>
-#include <QSysInfo>
 #include <QDir>
-#include <QStandardPaths>
+#include <QLabel>
+#include <QTimer>
+#include <QDebug>
+#include <QSlider>
+#include <QSpinBox>
+#include <QSysInfo>
+#include <QCheckBox>
 #include <QComboBox>
-#include <QJsonDocument>
+#include <QTabWidget>
+#include <QEventLoop>
 #include <QJsonObject>
-#include <QRadioButton>
 #include <QTranslator>
+#include <QProgressBar>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QStandardPaths>
+#include <QCoreApplication>
+#include <QDesktopServices>
+#include <QNetworkAccessManager>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -43,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_settings = new Settings();
 
-    auto func_iconButton = [](QString iconPath, QSize size = QSize(40, 40), QSize iconSize = QSize(32, 32)) {
+    auto func_iconButton = [](QString iconPath, QSize size = QSize(42, 42), QSize iconSize = QSize(32, 32)) {
         auto btn = new QPushButton();
         btn->setIcon(QIcon(iconPath));
         btn->setIconSize(iconSize);
@@ -238,6 +240,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     line2->setMinimumWidth(30);
     ChangeBackground(line2, colorBlue);
 
+    auto radioGroup = new QButtonGroup();
+    auto radioDeviceEV3 = new QRadioButton("EV3");
+    auto radioDeviceCOM = new QRadioButton("COM");
+    radioGroup->addButton(radioDeviceEV3);
+    radioGroup->addButton(radioDeviceCOM);
+    connect(radioDeviceEV3, &QRadioButton::toggled, this, [=](bool on) {
+        setDeviceMode(Device_EV3);
+    });
+    connect(radioDeviceCOM, &QRadioButton::toggled, this, [=](bool on) {
+        setDeviceMode(Device_COM);
+    });
+
+    auto layoutDeviceSelection = new QVBoxLayout();
+    layoutDeviceSelection->setContentsMargins(0,0,0,0);
+    layoutDeviceSelection->setSpacing(0);
+    layoutDeviceSelection->addWidget(radioDeviceEV3);
+    layoutDeviceSelection->addWidget(radioDeviceCOM);
+
     static QIcon iconLink = QIcon(":/resources/link.svg");
     static QIcon iconLinkOff = QIcon(":/resources/link_off.svg");
     auto btnCanControl = func_iconButton("");
@@ -288,6 +308,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     btnNeuroPlay->setFlat(true);
 
     auto headerLayout = new QHBoxLayout();
+    headerLayout->addLayout(layoutDeviceSelection);
     headerLayout->addWidget(btnEV3Connect);
     headerLayout->addLayout(layoutConnectionType);
     headerLayout->addWidget(btnEV3Connected);
@@ -376,6 +397,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
     setMinimumWidth(600);
 #endif
+
+    //TODO: Apply settings
+    radioDeviceEV3->setChecked(true);
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
@@ -442,6 +466,17 @@ void MainWindow::control()
 
     default: break;
     }
+}
+
+void MainWindow::setDeviceMode(DeviceMode mode)
+{
+    if (mode != Device_EV3) {
+        if (m_ev3) {
+            m_ev3->disconnect();
+        }
+    }
+
+    m_deviceMode = mode;
 }
 
 QString MainWindow::OS()

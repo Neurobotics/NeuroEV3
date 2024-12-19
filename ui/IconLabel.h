@@ -22,8 +22,6 @@ protected:
     QPixmap m_pixmapInactive;
 
     void paintEvent(QPaintEvent *);
-
-
 };
 
 #endif // ICONLABEL_H

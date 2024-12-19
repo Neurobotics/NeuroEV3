@@ -18,7 +18,6 @@ void EV3::startDeviceDiscovery()
     m_discoveryAgent->start(QBluetoothDeviceDiscoveryAgent::ClassicMethod);
 }
 
-
 void EV3::deviceDiscovered(const QBluetoothDeviceInfo &device)
 {
     qDebug() << "Found new device:" << device.name() << '(' << device.address().toString() << ')';
@@ -281,16 +280,6 @@ void EV3::startClient(const QBluetoothDeviceInfo &remoteService)
         updateState((QAbstractSocket::SocketState)state);
     });
     connect(m_bluetooth, &QBluetoothSocket::readyRead, this, &EV3::readSocket);
-    //    connect(m_bluetooth, &QBluetoothSocket::connected, this, [=]() {
-    //        qDebug() << "BL connected";
-    //    });
-
-    //    connect(m_bluetooth, &QBluetoothSocket::disconnected, this, [=]() {
-    //        qDebug() << "BL DIsconnected";
-    //    });
-    //    connect(m_bluetooth, &QBluetoothSocket::errorOccurred, this, [=](QBluetoothSocket::SocketError err) {
-    //        qDebug() << "BL ERR" << err;
-    //    });
 }
 
 void EV3::updateState(QAbstractSocket::SocketState state)
