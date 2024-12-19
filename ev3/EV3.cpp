@@ -70,7 +70,7 @@ void EV3::setConnectionType(ConnectionType type, bool force)
         connect(m_connection, &QTcpSocket::readyRead,[=]() {
 
         });
-        connect(m_connection, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(updateError(QAbstractSocket::SocketError)));
+        connect(m_connection, &QAbstractSocket::errorOccurred, this, &EV3::updateError);
     }
     else if (type == Bluetooth)
     {
