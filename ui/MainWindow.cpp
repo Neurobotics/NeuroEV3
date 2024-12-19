@@ -23,10 +23,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRadioButton>
-
+#include <QTranslator>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    autoDetectLanguage();
+
     for (int i = 0; i<4; i++) m_userBCI << UserBCI();
 
     QString folder = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -148,7 +150,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
         bciMetaIndexMotors->addWidgetOnTop(metaIndex == MEDITATION ? progressMeditation : progressConcentration);
 
-        tabs->addTab(bciMetaIndexMotors, metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1));
+        tabs->addTab(bciMetaIndexMotors, tr(qPrintable(metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1))));
     }
 
     auto multiplayerWidget = new MotorsCoeffWidget();
@@ -187,8 +189,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     multipleGrid->addWidget(progressMeditationU2,     1, 3, 1, 1, Qt::AlignLeft);
     multipleGrid->addWidget(progressConcentrationU2,  2, 3, 1, 1, Qt::AlignLeft);
 
-    multipleGrid->addWidget(new QLabel("User1"), 0, 0, 1, 1, Qt::AlignLeft);
-    multipleGrid->addWidget(new QLabel("User2"), 0, 3, 1, 1, Qt::AlignRight);
+    multipleGrid->addWidget(new QLabel(tr("User") + "1"), 0, 0, 1, 1, Qt::AlignLeft);
+    multipleGrid->addWidget(new QLabel(tr("User") + "2"), 0, 3, 1, 1, Qt::AlignRight);
 
     multipleGrid->setColumnStretch(0, 100);
     multipleGrid->setColumnStretch(3, 100);
@@ -199,8 +201,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     multipleControlCombo->addItem(tr("Concentration"));
     multipleControlCombo->setCurrentIndex(multipleControlComboIndex);
 
-    connect(multipleControlCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), [=]()
-    {
+    connect(multipleControlCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), [=]() {
         m_settings->setMultiplayerControl(multipleControlCombo->currentIndex() == 0 ? "meditation" : "concentration");
     });
 
@@ -277,7 +278,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     });
 
     connect(btnWiFi, &QRadioButton::clicked, [=]() {
-       func_setMode(EV3::WiFi);
+        func_setMode(EV3::WiFi);
     });
 
     func_setMode(m_settings->getConnectionType());
@@ -285,8 +286,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto btnNeuroPlayConnected = Common::Instance()->connectStatusWidget();
     auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
     btnNeuroPlay->setFlat(true);
-
-
 
     auto headerLayout = new QHBoxLayout();
     headerLayout->addWidget(btnEV3Connect);
@@ -375,7 +374,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_neuroplayConnector->start(m_multiplayer);
 
 #if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
-    setMinimumWidth(500);
+    setMinimumWidth(600);
 #endif
 }
 
@@ -427,7 +426,7 @@ void MainWindow::control()
             m_ev3->stopMotors();
         }
     }
-        break;
+    break;
 
     case Meditation:
     case Concentration:
@@ -439,7 +438,7 @@ void MainWindow::control()
             m_ev3->motor(i)->setPower(power);
         }
     }
-        break;
+    break;
 
     default: break;
     }
@@ -481,6 +480,34 @@ void MainWindow::ChangeBackground(QWidget *w, QColor color)
     pal.setColor(QPalette::Window, color);
     w->setAutoFillBackground(true);
     w->setPalette(pal);
+}
+
+QString MainWindow::autoDetectLanguage(QString settingsFile)
+{
+    QString lang = "en-US";
+    QString locale = QLocale::system().name();
+
+    if (locale.startsWith("ru")) lang = "ru-RU";
+
+    if (!settingsFile.isEmpty() && QFile::exists(settingsFile)) {
+        QFile sets(settingsFile);
+        if (sets.open(QIODevice::ReadOnly)) {
+            QString allSets = sets.readAll();
+
+            if (allSets.contains("<Language>en_US</Language>")) {
+                lang = "en-US";
+            } else if (allSets.contains("<Language>ru_RU</Language>")) {
+                lang = "ru-RU";
+            }
+        }
+    }
+
+    auto translator = new QTranslator(qApp);
+    auto qm = ":/resources/translations/NeuroEV3_" + lang + ".qm";
+    if (translator->load(qm)) {
+        qApp->installTranslator(translator);
+    }
+    return lang;
 }
 
 QWidget *MainWindow::newVersionButton()

@@ -36,6 +36,8 @@ public:
 
     static void ChangeBackground(QWidget *w, QColor color);
 
+    QString autoDetectLanguage(QString settingsFile = "");
+
 protected:
     void closeEvent(QCloseEvent *) override;
 

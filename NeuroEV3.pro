@@ -61,5 +61,7 @@ macx: {
 }
 unix:!android:!ios: DEFINES += OS_DESKTOP
 
+TRANSLATIONS = resources/translations/NeuroEV3_ru-RU.ts resources/translations/NeuroEV3_en-US.ts
+
 DISTFILES += \
     ChangeLog.txt
