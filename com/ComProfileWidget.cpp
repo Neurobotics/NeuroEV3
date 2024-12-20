@@ -7,24 +7,27 @@
 #include <QSerialPortInfo>
 #include <QPushButton>
 #include "classes/Common.h"
+#include <QLineEdit>
+#include "com/ComDeviceStatusWidget.h"
 
-ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidget(parent)
+ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(parent)
 {
-    if (!profile) return;
+    if (!com) return;
 
-    m_profile = profile;
+    m_profile = com->profile();
+    if (!m_profile) return;
 
     // Port selector
     auto comboPorts = new QComboBox();
     connect(comboPorts, &QComboBox::currentIndexChanged, [=]() {
         auto port = comboPorts->currentData().toString();
-        profile->setPort(port);
+        m_profile->setPort(port);
     });
 
     auto func_fillPorts = [=]() {
         comboPorts->blockSignals(true);
         comboPorts->clear();
-        QString lastPort = profile->getPort();
+        QString lastPort = m_profile->getPort();
         auto infos = QSerialPortInfo::availablePorts();
         foreach (auto p, infos) {
             auto name = p.portName();
@@ -60,9 +63,9 @@ ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidg
     foreach (auto rate, baudRates) {
         comboBaudRate->addItem(QString::number(rate), rate);
     }
-    comboBaudRate->setCurrentText(QString::number(profile->baudRate()));
+    comboBaudRate->setCurrentText(QString::number(m_profile->baudRate()));
     connect(comboBaudRate, &QComboBox::currentTextChanged, [=]() {
-        profile->setBaudRate(comboBaudRate->currentText().toInt());
+        m_profile->setBaudRate(comboBaudRate->currentText().toInt());
     });
 
 
@@ -70,7 +73,7 @@ ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidg
     auto comboParity = new QComboBox();
     comboParity->setMaximumWidth(200);
     auto parities = Common::EnumIntValues<QSerialPort::Parity>();
-    auto selectedParity = profile->parity();
+    auto selectedParity = m_profile->parity();
     foreach (auto parity, parities) {
         comboParity->addItem(Common::EnumToString<QSerialPort::Parity>((QSerialPort::Parity)parity), parity);
         if (selectedParity == parity) {
@@ -78,7 +81,7 @@ ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidg
         }
     }
     connect(comboParity, &QComboBox::currentTextChanged, [=]() {
-        profile->setParity((QSerialPort::Parity)comboParity->currentData().toInt());
+        m_profile->setParity((QSerialPort::Parity)comboParity->currentData().toInt());
     });
 
     // DataBits
@@ -89,26 +92,52 @@ ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidg
     foreach (auto bits, dataBits) {
         comboDataBits->addItem(QString::number(bits), bits);
     }
-    comboDataBits->setCurrentText(QString::number(profile->dataBits()));
+    comboDataBits->setCurrentText(QString::number(m_profile->dataBits()));
     connect(comboDataBits, &QComboBox::currentTextChanged, [=]() {
-        profile->setDataBits(comboDataBits->currentText().toInt());
+        m_profile->setDataBits(comboDataBits->currentText().toInt());
     });
 
-    auto func_commandRow = [=](QString commandKey, QString commandTitle) {
-
-    };
-
     auto grid = new QGridLayout();
-    int row = 0;
-    auto func_addRow = [=](QString title, QWidget *editor, int &r) {
-        grid->addWidget(new QLabel(title), r, 0);
-        grid->addWidget(editor, r, 1);
-        r++;
+    auto func_addRow = [=](QString title, QWidget *editor = nullptr) {
+        int row = grid->rowCount();
+        auto label = new QLabel(title);
+        grid->addWidget(label, row, 0);
+        if (editor) grid->addWidget(editor, row, 1);
+        else label->setStyleSheet("font-weight: bold");
     };
-    func_addRow(QCoreApplication::translate("Generic", "Port"), portWidget, row);
-    func_addRow(QCoreApplication::translate("Generic", "BaudRate"), comboBaudRate, row);
-    func_addRow(QCoreApplication::translate("Generic", "Parity"), comboParity, row);
-    func_addRow(QCoreApplication::translate("Generic", "DataBits"), comboDataBits, row);
+
+    auto func_commandRow = [=](QString commandKey, QString commandTitle) {
+        auto txt = new QLineEdit(m_profile->command(commandKey));
+        txt->setPlaceholderText(tr("Enter command"));
+        connect(txt, &QLineEdit::editingFinished, [=]() {
+            m_profile->setCommand(commandKey, txt->text());
+        });
+        func_addRow(commandTitle, txt);
+        return txt;
+    };
+
+    func_addRow(tr("Port settings"));
+
+    func_addRow(QCoreApplication::translate("Generic", "Port"), portWidget);
+    func_addRow(QCoreApplication::translate("Generic", "BaudRate"), comboBaudRate);
+    func_addRow(QCoreApplication::translate("Generic", "Parity"), comboParity);
+    func_addRow(QCoreApplication::translate("Generic", "DataBits"), comboDataBits);
+
+    int r = grid->rowCount();
+    int c = grid->columnCount();
+    grid->addWidget(new ComDeviceStatusWidget(com), 0, 0, r, c, Qt::AlignRight|Qt::AlignBottom);
+
+    func_addRow("");
+    func_addRow(tr("Commands"));
+
+    func_commandRow("Forward", tr("Forward"));
+    func_commandRow("Backwards", tr("Backwards"));
+    func_commandRow("Stop", tr("Stop"));
+    func_commandRow("TurnLeft", tr("TurnLeft"));
+    func_commandRow("TurnRight", tr("TurnRight"));
+    func_commandRow("Custom1", tr("Custom1"));
+    func_commandRow("Custom2", tr("Custom2"));
+    func_commandRow("Custom3", tr("Custom3"));
 
     grid->setColumnStretch(1, 100);
 

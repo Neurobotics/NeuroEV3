@@ -3,6 +3,7 @@
 #include "MotorsWidget.h"
 #include "MotorsCoeffWidget.h"
 #include "com/ComProfileWidget.h"
+#include "com/ComDeviceStatusWidget.h"
 
 #include <QUrl>
 #include <QDir>
@@ -29,8 +30,6 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    auto profile = new ComProfile();
-
     autoDetectLanguage();
 
     m_deviceWidgets.insert(Device_EV3, QList<QWidget*>());
@@ -60,14 +59,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         return btn;
     };
 
-    auto btnEV3Connected = Common::Instance()->connectStatusWidget();
+    m_com = new ComDevice();
+
+    auto ev3ConnectedStatus = Common::Instance()->connectStatusWidget();
+    m_deviceWidgets[Device_EV3] << ev3ConnectedStatus;
+
+    auto comConnectedStatus = new ComDeviceStatusWidget(m_com);
+    m_deviceWidgets[Device_COM] << comConnectedStatus;
 
     auto labelConnected = new QLabel("?");
     auto func_connected = [=]() {
         auto st = m_ev3->connectionState();
         labelConnected->setText(Common::EnumToString<EV3::ConnectionState>(st));
-        btnEV3Connected->setActive(st == EV3::ConnectionState::Connected);
+        ev3ConnectedStatus->setActive(st == EV3::ConnectionState::Connected);
     };
+    m_deviceWidgets[Device_EV3] << labelConnected;
 
     m_ev3 = new EV3(m_settings->getConnectionType());
     connect(m_ev3, &EV3::connectionStateChanged, this, func_connected, Qt::QueuedConnection);
@@ -136,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     }
     bciStateMotorsLayout->insertWidget(0, currentMentalStateWidget);
 
-    auto comProfile = new ComProfileWidget(profile);
+    auto comProfile = new ComProfileWidget(m_com);
     m_deviceWidgets[Device_COM] << comProfile;
 
     m_tabs = new QTabWidget();
@@ -322,7 +328,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addLayout(layoutDeviceSelection);
     headerLayout->addWidget(btnEV3Connect);
     headerLayout->addLayout(layoutEV3connectionType);
-    headerLayout->addWidget(btnEV3Connected);
+    headerLayout->addWidget(ev3ConnectedStatus);
+    headerLayout->addWidget(comConnectedStatus);
     headerLayout->addWidget(labelConnected);
     headerLayout->addWidget(line1, 100);
     headerLayout->addWidget(btnCanControl, Qt::AlignCenter);
@@ -481,6 +488,10 @@ void MainWindow::setDeviceMode(DeviceMode mode)
             m_ev3->disconnect();
         }
         m_tabs->setCurrentIndex(0);
+
+        m_com->setEnabled(true);
+    } else {
+        m_com->setEnabled(false);
     }
 
     m_deviceMode = mode;

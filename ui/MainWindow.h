@@ -8,6 +8,7 @@
 #include <QTabWidget>
 
 #include "ev3/EV3.h"
+#include "com/ComDevice.h"
 #include "classes/Settings.h"
 #include "classes/NeuroPlayAppConnector.h"
 
@@ -53,6 +54,8 @@ protected:
 
     EV3 *m_ev3 = nullptr;
     EV3::ConnectionState m_state = EV3::ConnectionState::Disconnected;
+
+    ComDevice *m_com = nullptr;
 
     QList<UserBCI> m_userBCI;
 

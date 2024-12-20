@@ -10,6 +10,9 @@ DEFINES += APP_VERSION=$$VERSION
 DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
 
 SOURCES += \
+    com/ComDevice.cpp \
+    com/ComDeviceControl.cpp \
+    com/ComDeviceStatusWidget.cpp \
     com/ComProfile.cpp \
     com/ComProfileWidget.cpp \
     classes/NeuroPlayAppConnector.cpp \
@@ -26,6 +29,9 @@ SOURCES += \
     ui/MainWindow.cpp
 
 HEADERS += \
+    com/ComDevice.h \
+    com/ComDeviceControl.h \
+    com/ComDeviceStatusWidget.h \
     com/ComProfile.h \
     com/ComProfileWidget.h \
     classes/Common.h \

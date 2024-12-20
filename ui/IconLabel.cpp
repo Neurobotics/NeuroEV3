@@ -10,6 +10,8 @@ IconLabel::IconLabel(QIcon inactive, QIcon active, QString text, QSize size, QWi
     if (!inactive.isNull()) m_pixmapInactive = inactive.pixmap(size);
 
     m_label = new QLabel(text);
+    m_label->setWordWrap(true);
+    m_label->setAlignment(Qt::AlignCenter);
 
     auto grid = new QGridLayout(this);
     grid->setContentsMargins(0,0,0,0);

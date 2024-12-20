@@ -2,13 +2,13 @@
 #define COMPROFILEWIDGET_H
 
 #include <QWidget>
-#include "ComProfile.h"
+#include "ComDevice.h"
 
 class ComProfileWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ComProfileWidget(ComProfile *profile, QWidget *parent = nullptr);
+    ComProfileWidget(ComDevice *com, QWidget *parent = nullptr);
 
 protected:
     ComProfile *m_profile = nullptr;
