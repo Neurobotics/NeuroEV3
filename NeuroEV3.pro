@@ -1,4 +1,4 @@
-QT += core gui network widgets websockets bluetooth
+QT += core gui network widgets websockets bluetooth serialport
 CONFIG += c++14
 
 VER_MAJ = 1
@@ -10,6 +10,8 @@ DEFINES += APP_VERSION=$$VERSION
 DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
 
 SOURCES += \
+    com/ComProfile.cpp \
+    com/ComProfileWidget.cpp \
     classes/NeuroPlayAppConnector.cpp \
     main.cpp \
     classes/Common.cpp \
@@ -24,6 +26,8 @@ SOURCES += \
     ui/MainWindow.cpp
 
 HEADERS += \
+    com/ComProfile.h \
+    com/ComProfileWidget.h \
     classes/Common.h \
     classes/NeuroPlayAppConnector.h \
     classes/Settings.h \
