@@ -66,3 +66,15 @@ void ComProfile::setParity(QSerialPort::Parity p)
     setValue("parity", (int)p);
     emit parityChanged(p);
 }
+
+QString ComProfile::command(QString key)
+{
+    if (key.isEmpty()) return "";
+    return value("command" + key, "").toString();
+}
+
+void ComProfile::setCommand(QString key, QString value)
+{
+    if (key.isEmpty()) return;
+    setValue("command" + key, value);
+}

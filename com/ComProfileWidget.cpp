@@ -50,7 +50,7 @@ ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidg
 
     // Baud rate
     auto comboBaudRate = new QComboBox();
-
+    comboBaudRate->setMaximumWidth(200);
     auto baudRates = Common::EnumIntValues<QSerialPort::BaudRate>();
     baudRates.insert(baudRates.count() - 1, 100000);
     baudRates << (QSerialPort::Baud115200 * 2);
@@ -65,6 +65,39 @@ ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidg
         profile->setBaudRate(comboBaudRate->currentText().toInt());
     });
 
+
+    // Parity
+    auto comboParity = new QComboBox();
+    comboParity->setMaximumWidth(200);
+    auto parities = Common::EnumIntValues<QSerialPort::Parity>();
+    auto selectedParity = profile->parity();
+    foreach (auto parity, parities) {
+        comboParity->addItem(Common::EnumToString<QSerialPort::Parity>((QSerialPort::Parity)parity), parity);
+        if (selectedParity == parity) {
+            comboParity->setCurrentIndex(comboParity->count() - 1);
+        }
+    }
+    connect(comboParity, &QComboBox::currentTextChanged, [=]() {
+        profile->setParity((QSerialPort::Parity)comboParity->currentData().toInt());
+    });
+
+    // DataBits
+    auto comboDataBits = new QComboBox();
+    comboDataBits->setMaximumWidth(200);
+    auto dataBits = Common::EnumIntValues<QSerialPort::DataBits>();
+
+    foreach (auto bits, dataBits) {
+        comboDataBits->addItem(QString::number(bits), bits);
+    }
+    comboDataBits->setCurrentText(QString::number(profile->dataBits()));
+    connect(comboDataBits, &QComboBox::currentTextChanged, [=]() {
+        profile->setDataBits(comboDataBits->currentText().toInt());
+    });
+
+    auto func_commandRow = [=](QString commandKey, QString commandTitle) {
+
+    };
+
     auto grid = new QGridLayout();
     int row = 0;
     auto func_addRow = [=](QString title, QWidget *editor, int &r) {
@@ -74,10 +107,13 @@ ComProfileWidget::ComProfileWidget(ComProfile *profile, QWidget *parent) : QWidg
     };
     func_addRow(QCoreApplication::translate("Generic", "Port"), portWidget, row);
     func_addRow(QCoreApplication::translate("Generic", "BaudRate"), comboBaudRate, row);
+    func_addRow(QCoreApplication::translate("Generic", "Parity"), comboParity, row);
+    func_addRow(QCoreApplication::translate("Generic", "DataBits"), comboDataBits, row);
 
     grid->setColumnStretch(1, 100);
 
     auto vbox = new QVBoxLayout(this);
+    vbox->setContentsMargins(10, 10, 10, 10);
     vbox->addLayout(grid, 0);
     vbox->addStretch(100);
 }

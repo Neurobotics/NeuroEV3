@@ -23,6 +23,9 @@ public:
     QSerialPort::Parity parity();
     void setParity(QSerialPort::Parity p);
 
+    QString command(QString key);
+    void setCommand(QString key, QString value);
+
 signals:
     void portChanged(QString port);
     void baudRateChanged(int baudRate);
