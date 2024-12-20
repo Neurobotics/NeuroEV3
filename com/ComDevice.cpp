@@ -14,7 +14,6 @@ ComDevice::ComDevice(QObject *parent) : QObject(parent)
 
     m_connectionTimer = new QTimer(this);
     connect(m_connectionTimer, &QTimer::timeout, this, [=]() {
-        qDebug() << "T" << m_isEnabled << isConnected();
         if (!isConnected() && m_isEnabled) {
             qDebug() << "Reconnecting";
             reconnect();
@@ -41,6 +40,7 @@ ComProfile *ComDevice::profile() const
 void ComDevice::sendMessage(QString msg)
 {
     if (m_port && m_port->isOpen()) {
+        qDebug() << "COM >>" << msg;
         m_port->write(msg.toUtf8());
         m_port->waitForBytesWritten();
     }
@@ -81,5 +81,4 @@ void ComDevice::updatePortSettings()
     if (open) {
         emit connected();
     }
-
 }

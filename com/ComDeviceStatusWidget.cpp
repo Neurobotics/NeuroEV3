@@ -4,16 +4,12 @@ ComDeviceStatusWidget::ComDeviceStatusWidget(ComDevice *com, QWidget *parent) : 
 {
     if (com) {
         connect(com, &ComDevice::connected, [=]() {
-            qDebug() << "C!";
             setActive(true);
         });
 
         connect(com, &ComDevice::disconnected, [=]() {
-            qDebug() << "D!";
             setActive(false);
         });
-
-        qDebug() << "A";
 
         setActive(com->isConnected());
 

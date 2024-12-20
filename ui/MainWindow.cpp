@@ -4,6 +4,7 @@
 #include "MotorsCoeffWidget.h"
 #include "com/ComProfileWidget.h"
 #include "com/ComDeviceStatusWidget.h"
+#include "com/ComDeviceControl.h"
 
 #include <QUrl>
 #include <QDir>
@@ -142,12 +143,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     }
     bciStateMotorsLayout->insertWidget(0, currentMentalStateWidget);
 
-    auto comProfile = new ComProfileWidget(m_com);
-    m_deviceWidgets[Device_COM] << comProfile;
+    auto comProfileWidget = new ComProfileWidget(m_com);
+    m_deviceWidgets[Device_COM] << comProfileWidget;
+
+    auto comControlWidget = new ComDeviceControl();
+    comControlWidget->setComDevice(m_com);
 
     m_tabs = new QTabWidget();
-    m_tabs->addTab(comProfile, tr("Profile"));
-    m_tabs->addTab(manualMotors, tr("Manual"));
+    m_tabs->addTab(comProfileWidget, tr("Profile"));
+    m_tabs->addTab(deviceConditionalWidget(manualMotors, comControlWidget), tr("Manual"));
     m_tabs->addTab(bciStateMotors, tr("Mental states"));
 
     auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
@@ -499,11 +503,24 @@ void MainWindow::setDeviceMode(DeviceMode mode)
     foreach (auto deviceMode, m_deviceWidgets.keys()) {
         bool visible = deviceMode == mode;
         foreach (auto widget, m_deviceWidgets[deviceMode]) {
-            widget->setVisible(visible);
+            if (widget) widget->setVisible(visible);
         }
     }
 
     m_settings->setEV3mode(mode == Device_EV3);
+}
+
+QWidget *MainWindow::deviceConditionalWidget(QWidget *widgetForEV3, QWidget *widgetForCOM)
+{
+    auto holder = new QWidget();
+    holder->setContentsMargins(0,0,0,0);
+    auto lay = new QVBoxLayout(holder);
+    lay->setContentsMargins(0,0,0,0);
+    lay->addWidget(widgetForEV3);
+    lay->addWidget(widgetForCOM);
+    m_deviceWidgets[Device_EV3] << widgetForEV3;
+    m_deviceWidgets[Device_COM] << widgetForCOM;
+    return holder;
 }
 
 QString MainWindow::OS()

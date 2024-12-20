@@ -77,5 +77,7 @@ protected:
 
     void control();
     void setDeviceMode(DeviceMode mode);
+
+    QWidget *deviceConditionalWidget(QWidget *widgetForEV3, QWidget *widgetForCOM);
 };
 #endif // MAINWINDOW_H

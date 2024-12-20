@@ -130,11 +130,11 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
     func_addRow("");
     func_addRow(tr("Commands"));
 
-    func_commandRow("Forward", tr("Forward"));
-    func_commandRow("Backwards", tr("Backwards"));
-    func_commandRow("Stop", tr("Stop"));
-    func_commandRow("TurnLeft", tr("TurnLeft"));
-    func_commandRow("TurnRight", tr("TurnRight"));
+    func_commandRow("Forward",  "[ ↑ ] " + tr("Forward"));
+    func_commandRow("Backwards", "[ ↓ ] " + tr("Backwards"));
+    func_commandRow("Stop", "[ Х ] " + tr("Stop"));
+    func_commandRow("TurnLeft", "[←] " + tr("TurnLeft"));
+    func_commandRow("TurnRight", "[→] " + tr("TurnRight"));
     func_commandRow("Custom1", tr("Custom1"));
     func_commandRow("Custom2", tr("Custom2"));
     func_commandRow("Custom3", tr("Custom3"));
