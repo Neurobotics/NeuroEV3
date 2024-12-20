@@ -6,7 +6,7 @@
 #include "Common.h"
 #include "ev3/EV3.h"
 
-class Settings : public QObject
+class Settings : public QSettings
 {
     Q_OBJECT
 public:
@@ -14,6 +14,9 @@ public:
 
     EV3::ConnectionType getConnectionType();
     void setConnectionType(EV3::ConnectionType type);
+
+    bool ev3Mode();
+    void setEV3mode(bool on);
 
     bool getMentalStateEnabled(int state);
     void setMentalStateEnabled(int state, bool enabled);
@@ -32,7 +35,6 @@ public:
     QString getMultiplayerControl();
 
 protected:
-    QSettings *m_settings = nullptr;
     QString mentalStateHeader(int state);    
 
 };

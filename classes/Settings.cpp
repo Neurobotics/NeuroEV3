@@ -1,30 +1,41 @@
 #include "Settings.h"
+#include <QStandardPaths>
 
-Settings::Settings(QObject *parent) : QObject{parent}
+Settings::Settings(QObject *parent) : QSettings(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/app.ini", QSettings::Format::IniFormat, parent)
 {
-    m_settings = new QSettings("neuroev3.settings", QSettings::Format::IniFormat);
+
 }
 
 EV3::ConnectionType Settings::getConnectionType()
 {
-    return m_settings->value("ev3/connection", "wifi").toString() == "wifi" ? EV3::WiFi : EV3::Bluetooth;
+    return value("ev3/connection", "wifi").toString() == "wifi" ? EV3::WiFi : EV3::Bluetooth;
 }
 
 void Settings::setConnectionType(EV3::ConnectionType type)
 {
-    m_settings->setValue("ev3/connection", type == EV3::WiFi ? "wifi" : "bluetooth");
+    setValue("ev3/connection", type == EV3::WiFi ? "wifi" : "bluetooth");
+}
+
+bool Settings::ev3Mode()
+{
+    return value("mode", "ev3").toString() == "ev3";
+}
+
+void Settings::setEV3mode(bool on)
+{
+    setValue("mode", on ? "ev3" : "com");
 }
 
 bool Settings::getMentalStateEnabled(int state)
 {
     QString header = mentalStateHeader(state);
-    return m_settings->value(header + "/enabled", false).toBool();
+    return value(header + "/enabled", false).toBool();
 }
 
 void Settings::setMentalStateEnabled(int state, bool enabled)
 {
     QString header = mentalStateHeader(state);
-    m_settings->setValue(header + "/enabled", enabled);
+    setValue(header + "/enabled", enabled);
 }
 
 QVector<int> Settings::getMentalStateDrives(int state)
@@ -32,7 +43,7 @@ QVector<int> Settings::getMentalStateDrives(int state)
     QVector<int> drives;
     QString header = mentalStateHeader(state);
     for (int i = 1; i<=4; i++) {
-        drives << m_settings->value(header + "/drive" + QString::number(i), 0).toInt();
+        drives << value(header + "/drive" + QString::number(i), 0).toInt();
     }
     return drives;
 }
@@ -41,18 +52,18 @@ void Settings::setMentalStateDrives(int state, QVector<int> drives)
 {
     QString header = mentalStateHeader(state);
     for (int i = 0; i<drives.length(); i++) {
-        m_settings->setValue(header + "/drive" + QString::number(i + 1), drives[i]);
+        setValue(header + "/drive" + QString::number(i + 1), drives[i]);
     }
 }
 
 void Settings::setMentalStateDrive(int state, int motorIndex, int value)
 {
-    m_settings->setValue(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), value);
+    setValue(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), value);
 }
 
 int Settings::getMentalStateDrive(int state, int motorIndex)
 {
-    return m_settings->value(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), 0).toInt();
+    return value(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), 0).toInt();
 }
 
 QString Settings::mentalStateHeader(int state)
@@ -62,30 +73,30 @@ QString Settings::mentalStateHeader(int state)
 
 void Settings::setMetaIndexDriveEnabled(QString metaIndex, int motorIndex, bool enable)
 {
-     m_settings->setValue(metaIndex + "/drive" + QString::number(motorIndex) + "/enabled", enable);
+     setValue(metaIndex + "/drive" + QString::number(motorIndex) + "/enabled", enable);
 }
 
 void Settings::setMetaIndexDriveCoeff(QString metaIndex, int motorIndex, double coeff)
 {
-     m_settings->setValue(QString(metaIndex) + "/drive" + QString::number(motorIndex) + "/coeff", coeff);
+     setValue(QString(metaIndex) + "/drive" + QString::number(motorIndex) + "/coeff", coeff);
 }
 
 bool Settings::getMetaIndexDriveEnabled(QString metaIndex, int motorIndex)
 {
-    return m_settings->value(metaIndex + "/drive" + QString::number(motorIndex) + "/enabled", false).toBool();
+    return value(metaIndex + "/drive" + QString::number(motorIndex) + "/enabled", false).toBool();
 }
 
 double Settings::getMetaIndexDriveCoeff(QString metaIndex, int motorIndex)
 {
-    return m_settings->value(metaIndex + "/drive" + QString::number(motorIndex) + "/coeff", 1).toDouble();
+    return value(metaIndex + "/drive" + QString::number(motorIndex) + "/coeff", 1).toDouble();
 }
 
 void Settings::setMultiplayerControl(QString control)
 {
-    m_settings->setValue("muliplayer/control", control);
+    setValue("muliplayer/control", control);
 }
 
 QString Settings::getMultiplayerControl()
 {
-    return m_settings->value("muliplayer/control", "meditation").toString();
+    return value("muliplayer/control", "meditation").toString();
 }
