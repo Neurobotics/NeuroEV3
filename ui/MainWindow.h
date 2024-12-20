@@ -72,12 +72,6 @@ protected:
 
     QTabWidget *m_tabs = nullptr;
 
-    template <typename T> QString EnumToString(T value)
-    {
-        QMetaEnum metaEnum = QMetaEnum::fromType<T>();
-        return QString(metaEnum.valueToKey(value));
-    }
-
     void control();
     void setDeviceMode(DeviceMode mode);
 };

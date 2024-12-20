@@ -2,6 +2,7 @@
 #include "ev3/EV3_Motor.h"
 #include "MotorsWidget.h"
 #include "MotorsCoeffWidget.h"
+#include "com/ComProfileWidget.h"
 
 #include <QUrl>
 #include <QDir>
@@ -28,6 +29,8 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    auto profile = new ComProfile();
+
     autoDetectLanguage();
 
     m_deviceWidgets.insert(Device_EV3, QList<QWidget*>());
@@ -62,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto labelConnected = new QLabel("?");
     auto func_connected = [=]() {
         auto st = m_ev3->connectionState();
-        labelConnected->setText(EnumToString<EV3::ConnectionState>(st));
+        labelConnected->setText(Common::EnumToString<EV3::ConnectionState>(st));
         btnEV3Connected->setActive(st == EV3::ConnectionState::Connected);
     };
 
@@ -129,12 +132,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         auto lay = new QVBoxLayout();
         lay->addWidget(checkbox);
         lay->addWidget(motors);
-
         bciStateMotorsLayout->addLayout(lay);
     }
     bciStateMotorsLayout->insertWidget(0, currentMentalStateWidget);
 
-    auto comProfile = new QLabel("123");
+    auto comProfile = new ComProfileWidget(profile);
     m_deviceWidgets[Device_COM] << comProfile;
 
     m_tabs = new QTabWidget();
@@ -278,16 +280,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         ChangeBackground(line2, toggled ? colorBlue : colorGray);
     });
 
-    auto layoutConnectionType = new QVBoxLayout();
-    layoutConnectionType->setContentsMargins(0,0,0,0);
-    layoutConnectionType->setSpacing(0);
+    auto widgetEV3connectionType = new QWidget();
+    auto layoutEV3connectionType = new QVBoxLayout(widgetEV3connectionType);
+    layoutEV3connectionType->setContentsMargins(0,0,0,0);
+    layoutEV3connectionType->setSpacing(0);
     auto btnBluetooth = func_iconButton(":/resources/bluetooth.svg", QSize(20, 20), QSize(16, 16));
     btnBluetooth->setCheckable(true);
     auto btnWiFi = func_iconButton(":/resources/wifi.svg", QSize(20, 20), QSize(16, 16));
     btnWiFi->setCheckable(true);
 
-    layoutConnectionType->addWidget(btnWiFi);
-    layoutConnectionType->addWidget(btnBluetooth);
+    layoutEV3connectionType->addWidget(btnWiFi);
+    layoutEV3connectionType->addWidget(btnBluetooth);
 
     auto func_setMode = [=](EV3::ConnectionType type) {
         m_settings->setConnectionType(type);
@@ -318,7 +321,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto headerLayout = new QHBoxLayout();
     headerLayout->addLayout(layoutDeviceSelection);
     headerLayout->addWidget(btnEV3Connect);
-    headerLayout->addLayout(layoutConnectionType);
+    headerLayout->addLayout(layoutEV3connectionType);
     headerLayout->addWidget(btnEV3Connected);
     headerLayout->addWidget(labelConnected);
     headerLayout->addWidget(line1, 100);
@@ -402,7 +405,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
 
     //TODO: Apply settings
-    radioDeviceEV3->setChecked(true);
+    if (m_settings->ev3Mode()) {
+        radioDeviceEV3->setChecked(true);
+    } else {
+        radioDeviceCOM->setChecked(true);
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
@@ -484,6 +491,8 @@ void MainWindow::setDeviceMode(DeviceMode mode)
             widget->setVisible(visible);
         }
     }
+
+    m_settings->setEV3mode(mode == Device_EV3);
 }
 
 QString MainWindow::OS()
