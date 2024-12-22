@@ -24,11 +24,11 @@ ComDeviceControl::ComDeviceControl(QWidget *parent) : QWidget(parent)
 
     auto central = new QWidget();
     auto grid = new QGridLayout(central);
-    grid->addWidget(func_btn("Forward", "↑", "QPushButton { font-size: 24px }"), 0, 1);
-    grid->addWidget(func_btn("TurnLeft", "←", "QPushButton { font-size: 24px }"), 1, 0);
-    grid->addWidget(func_btn("Stop", "X", "QPushButton { font-size: 24px; color: #C30 }"), 1, 1);
-    grid->addWidget(func_btn("TurnRight", "→", "QPushButton { font-size: 24px }"), 1, 2);
-    grid->addWidget(func_btn("Backwards", "↓", "QPushButton { font-size: 24px }"), 2, 1);
+    grid->addWidget(func_btn(ComDevice::FORWARD, "↑", "QPushButton { font-size: 24px }"), 0, 1);
+    grid->addWidget(func_btn(ComDevice::TURNLEFT, "←", "QPushButton { font-size: 24px }"), 1, 0);
+    grid->addWidget(func_btn(ComDevice::STOP, "X", "QPushButton { font-size: 24px; color: #C30 }"), 1, 1);
+    grid->addWidget(func_btn(ComDevice::TURNRIGHT, "→", "QPushButton { font-size: 24px }"), 1, 2);
+    grid->addWidget(func_btn(ComDevice::BACKWARDS, "↓", "QPushButton { font-size: 24px }"), 2, 1);
 
     grid->addWidget(new QLabel(" "), 3, 0);
 

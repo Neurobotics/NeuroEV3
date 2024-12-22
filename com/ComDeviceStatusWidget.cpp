@@ -13,7 +13,7 @@ ComDeviceStatusWidget::ComDeviceStatusWidget(ComDevice *com, QWidget *parent) : 
 
         setActive(com->isConnected());
 
-        setText(QString(com->profile()->getPort()).replace("COM", "COM "));
+        setText(QString(com->profile()->port()).replace("COM", "COM "));
     }
 
     setLabelStyle("font-size: 10px; line-height: 10px");

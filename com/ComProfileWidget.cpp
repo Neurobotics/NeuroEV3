@@ -27,7 +27,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
     auto func_fillPorts = [=]() {
         comboPorts->blockSignals(true);
         comboPorts->clear();
-        QString lastPort = m_profile->getPort();
+        QString lastPort = m_profile->port();
         auto infos = QSerialPortInfo::availablePorts();
         foreach (auto p, infos) {
             auto name = p.portName();
@@ -130,15 +130,9 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
     func_addRow("");
     func_addRow(tr("Commands"));
 
-    func_commandRow("Forward",  "[ ↑ ] " + tr("Forward"));
-    func_commandRow("Backwards", "[ ↓ ] " + tr("Backwards"));
-    func_commandRow("Stop", "[ Х ] " + tr("Stop"));
-    func_commandRow("TurnLeft", "[←] " + tr("TurnLeft"));
-    func_commandRow("TurnRight", "[→] " + tr("TurnRight"));
-    func_commandRow("Custom1", tr("Custom1"));
-    func_commandRow("Custom2", tr("Custom2"));
-    func_commandRow("Custom3", tr("Custom3"));
-
+    foreach (auto command, ComDevice::Commands()) {
+        func_commandRow(command.key, (command.symbol.isEmpty() ? "" : "[" + command.symbol + "] ") + command.title);
+    }
     grid->setColumnStretch(1, 100);
 
     auto vbox = new QVBoxLayout(this);

@@ -1,8 +1,12 @@
 #include "ComDevice.h"
+#include <QCoreApplication>
 
 ComDevice::ComDevice(QObject *parent) : QObject(parent)
 {
     m_profile = new ComProfile();
+    connect(m_profile, &ComProfile::propertyChanged, [=]() {
+        updatePortSettings();
+    });
 
     m_port = new QSerialPort();
     connect(m_port, &QSerialPort::readyRead, [=]() {
@@ -64,6 +68,22 @@ bool ComDevice::isConnected()
     return m_port && m_port->isOpen();
 }
 
+QList<ComDeviceCommand> ComDevice::Commands()
+{
+    static QList<ComDeviceCommand> coms = {
+        ComDeviceCommand(FORWARD, QCoreApplication::translate("Generic", "Forward"), "↑"),
+        ComDeviceCommand(BACKWARDS, QCoreApplication::translate("Generic", "Backwards"), "↓"),
+        ComDeviceCommand(STOP, QCoreApplication::translate("Generic", "Stop"), "Х"),
+        ComDeviceCommand(TURNLEFT, QCoreApplication::translate("Generic", "TurnLeft"), "←"),
+        ComDeviceCommand(TURNRIGHT, QCoreApplication::translate("Generic", "TurnRight"), "→"),
+        ComDeviceCommand(CUSTOM1, QCoreApplication::translate("Generic", "Custom1")),
+        ComDeviceCommand(CUSTOM2, QCoreApplication::translate("Generic", "Custom2")),
+        ComDeviceCommand(CUSTOM3, QCoreApplication::translate("Generic", "Custom3"))
+    };
+
+    return coms;
+}
+
 void ComDevice::updatePortSettings()
 {
     if (!m_port) return;
@@ -72,7 +92,7 @@ void ComDevice::updatePortSettings()
 
     emit disconnected();
 
-    m_port->setPortName(m_profile->getPort());
+    m_port->setPortName(m_profile->port());
     m_port->setBaudRate(m_profile->baudRate());
     m_port->setParity(m_profile->parity());
     m_port->setDataBits(m_profile->dataBits());
