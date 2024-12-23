@@ -9,8 +9,10 @@
 
 #include "ev3/EV3.h"
 #include "com/ComDevice.h"
+
 #include "classes/Settings.h"
 #include "classes/NeuroPlayAppConnector.h"
+
 #include "ui/DeviceProportionalControl.h"
 #include "ui/DeviceMultiplayerControl.h"
 #include "ui/DeviceBiosignalStateControl.h"

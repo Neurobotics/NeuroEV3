@@ -123,9 +123,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
     func_addRow(QCoreApplication::translate("Generic", "Parity"), comboParity);
     func_addRow(QCoreApplication::translate("Generic", "DataBits"), comboDataBits);
 
-    int r = grid->rowCount();
-    int c = grid->columnCount();
-    grid->addWidget(new ComDeviceStatusWidget(com), 0, 0, r, c, Qt::AlignRight|Qt::AlignBottom);
+    grid->addWidget(new ComDeviceStatusWidget(com), 2, 1, 4, 1, Qt::AlignRight|Qt::AlignBottom);
 
     func_addRow("");
     func_addRow(tr("Commands"));

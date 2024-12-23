@@ -1,6 +1,4 @@
 #include "MainWindow.h"
-#include "ev3/EV3_Motor.h"
-#include "MotorsWidget.h"
 
 #include "com/ui/ComProfileWidget.h"
 #include "com/ui/ComDeviceStatusWidget.h"

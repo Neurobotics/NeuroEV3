@@ -11,24 +11,28 @@ DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
 
 SOURCES += \
     com/ComDevice.cpp \
+    com/ComProfile.cpp \
+    \
     com/ui/ComDeviceBiosignalControl.cpp \
     com/ui/ComDeviceManualControl.cpp \
     com/ui/ComDeviceProportionalControl.cpp \
     com/ui/ComDeviceStatusWidget.cpp \
-    com/ComProfile.cpp \
     com/ui/ComProfileWidget.cpp \
-    classes/NeuroPlayAppConnector.cpp \
     com/ui/ComDeviceMultiplayerControl.cpp \
+    \
+    classes/Common.cpp \
+    classes/Settings.cpp \
+    classes/NeuroPlayAppConnector.cpp \
+    \
+    ev3/EV3.cpp \
+    ev3/EV3_Command.cpp \
+    ev3/EV3_Motor.cpp \
+    \
     ev3/ui/EV3BiosignalStateControl.cpp \
     ev3/ui/EV3ManualControl.cpp \
     ev3/ui/EV3MultiplayerControl.cpp \
     ev3/ui/EV3ProportionalControl.cpp \
-    main.cpp \
-    classes/Common.cpp \
-    classes/Settings.cpp \
-    ev3/EV3.cpp \
-    ev3/EV3_Command.cpp \
-    ev3/EV3_Motor.cpp \
+    \
     ui/BaseMotorsWidget.cpp \
     ui/DeviceBiosignalStateControl.cpp \
     ui/DeviceMultiplayerControl.cpp \
@@ -37,37 +41,43 @@ SOURCES += \
     ui/MotorsCoeffWidget.cpp \
     ui/MotorsWidget.cpp \
     ui/MainWindow.cpp \
-    ui/UICommon.cpp
+    ui/UICommon.cpp \
+    \
+    main.cpp
 
 HEADERS += \
     com/ComDevice.h \
+    com/ComProfile.h \
+    \
     com/ui/ComDeviceBiosignalControl.h \
     com/ui/ComDeviceManualControl.h \
     com/ui/ComDeviceProportionalControl.h \
     com/ui/ComDeviceStatusWidget.h \
-    com/ComProfile.h \
     com/ui/ComProfileWidget.h \
-    classes/Common.h \
-    classes/NeuroPlayAppConnector.h \
-    classes/Settings.h \
     com/ui/ComDeviceMultiplayerControl.h \
+    \
+    classes/Common.h \
+    classes/Settings.h \
+    classes/NeuroPlayAppConnector.h \
+    \
     ev3/EV3.h \
     ev3/EV3_Command.h \
-    ev3/EV3_ByteCodes.h \
     ev3/EV3_Motor.h \
+    \
     ev3/ui/EV3BiosignalStateControl.h \
     ev3/ui/EV3ManualControl.h \
     ev3/ui/EV3MultiplayerControl.h \
     ev3/ui/EV3ProportionalControl.h \
+    \
     ui/BaseMotorsWidget.h \
     ui/DeviceBiosignalStateControl.h \
     ui/DeviceMultiplayerControl.h \
     ui/DeviceProportionalControl.h \
     ui/IconLabel.h \
-    ui/MainWindow.h \
     ui/MotorsCoeffWidget.h \
     ui/MotorsWidget.h \
-    ui/UICommon.h
+    ui/MainWindow.h \
+    ui/UICommon.h \
 
 
 # Default rules for deployment.
