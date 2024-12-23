@@ -108,6 +108,29 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
         m_profile->setTimeoutMs(spinTimeout->value());
     });
 
+    // Speed format
+    auto speedFormatter = new QWidget();
+    speedFormatter->setContentsMargins(0,0,0,0);
+    auto laySpeedFormat = new QHBoxLayout(speedFormatter);
+    laySpeedFormat->setContentsMargins(0,0,0,0);
+    auto txtPrefix = new QLineEdit(m_profile->speedPrefix());
+    txtPrefix->setMinimumWidth(32);
+    txtPrefix->setAlignment(Qt::AlignRight);
+    connect(txtPrefix, &QLineEdit::editingFinished, [=]() {
+        m_profile->setSpeedPrefix(txtPrefix->text());
+    });
+    auto txtSuffix = new QLineEdit(m_profile->speedSuffix());
+    txtSuffix->setMinimumWidth(32);
+    connect(txtSuffix, &QLineEdit::editingFinished, [=]() {
+        m_profile->setSpeedPrefix(txtSuffix->text());
+    });
+    auto labelN = new QLabel("-100...100");
+    labelN->setStyleSheet("QLabel { color: #159 }");
+    laySpeedFormat->addWidget(txtPrefix, 0);
+    laySpeedFormat->addWidget(labelN, 0);
+    laySpeedFormat->addWidget(txtSuffix, 0);
+    laySpeedFormat->addStretch(1);
+
     auto grid = new QGridLayout();
     auto func_addRow = [=](QString title, QWidget *editor = nullptr) {
         int row = grid->rowCount();
@@ -139,6 +162,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
 
     func_addRow("");
     func_addRow(QCoreApplication::translate("Generic", "Commands"));
+    func_addRow(QCoreApplication::translate("Generic", "Speed format"), speedFormatter);
 
     foreach (auto command, ComDevice::Commands()) {
         func_commandRow(command.key, (command.symbol.isEmpty() ? "" : "[" + command.symbol + "] ") + command.title);
