@@ -14,6 +14,7 @@ public:
 protected:
     ComDevice *m_com = nullptr;
     void innerSetValue() override;
+    QString m_prefix = "k";
 };
 
 #endif // COMDEVICEPROPORTIONALCONTROL_H

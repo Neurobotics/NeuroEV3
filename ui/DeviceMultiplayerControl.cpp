@@ -116,8 +116,3 @@ void DeviceMultiplayerControl::addWidget(QWidget *widget, Qt::Alignment align)
 {
     if (m_layout) m_layout->addWidget(widget, 100, align);
 }
-
-void DeviceMultiplayerControl::onSetValues()
-{
-
-}

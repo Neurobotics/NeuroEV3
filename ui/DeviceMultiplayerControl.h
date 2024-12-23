@@ -34,7 +34,7 @@ protected:
 
     QLabel *m_labelMix = nullptr;
 
-    virtual void onSetValues();
+    virtual void onSetValues() = 0;
 };
 
 #endif // DEVICEMULTIPLAYERCONTROL_H
