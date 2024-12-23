@@ -43,7 +43,7 @@ void DeviceBiosignalStateControl::init()
     auto statesLayout = new QVBoxLayout(statesWidget);
 
     for (int i = 1; i<=MAX_MENTAL_STATES; i++) {
-        auto group = new QGroupBox(tr("State") + " " + QString::number(i));
+        auto group = new QGroupBox(QCoreApplication::translate("Generic", "State") + " " + QString::number(i));
         group->setCheckable(true);
         group->setChecked(m_settings->getMentalStateEnabled(i, m_stateEnabledPrefix));
         connect(group, &QGroupBox::toggled, [=](bool toggled) {

@@ -47,7 +47,7 @@ ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) 
 
     int r = grid->rowCount();
     for (int i = 0; i<3; i++) {
-        grid->addWidget(func_btn("Custom" + QString::number(i+1), "Custom \n" + QString::number(i+1)), r, i);
+        grid->addWidget(func_btn("Custom" + QString::number(i+1), QCoreApplication::translate("Generic", "Custom") + " \n" + QString::number(i+1)), r, i);
     }
 
     grid->addWidget(new QLabel(" "), grid->rowCount(), 0);
@@ -58,4 +58,3 @@ ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) 
 
     m_com = com;
 }
-

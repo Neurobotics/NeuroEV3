@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include "IconLabel.h"
 #include "classes/Common.h"
+#include <QCoreApplication>
 
 MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
 {
@@ -30,7 +31,7 @@ MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
         auto btnZero = new QPushButton();
         btnZero->setIcon(QIcon(":/resources/zero.svg"));
         btnZero->setCursor(Qt::PointingHandCursor);
-        btnZero->setToolTip(tr("Set to zero"));
+        btnZero->setToolTip(QCoreApplication::translate("Generic", "Set to zero"));
         btnZero->setFixedSize(24, 24);
         connect(btnZero, &QPushButton::clicked, [=]() {
             motorPower->setValue(0);

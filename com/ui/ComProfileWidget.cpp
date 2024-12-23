@@ -40,7 +40,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
         comboPorts->blockSignals(false);
     };
 
-    auto btnRefresh = new QPushButton(tr("Refresh"));
+    auto btnRefresh = new QPushButton(QCoreApplication::translate("Generic", "Refresh"));
     connect(btnRefresh, &QPushButton::clicked, this, func_fillPorts);
 
     auto portWidget = new QWidget();
@@ -101,7 +101,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
     // Timeout
     auto spinTimeout = new QSpinBox();
     spinTimeout->setRange(0, 10000);
-    spinTimeout->setSuffix("ms");
+    spinTimeout->setSuffix(" " + QCoreApplication::translate("Generic", "ms"));
     spinTimeout->setMaximumWidth(200);
     spinTimeout->setValue(m_profile->timeoutMs());
     connect(spinTimeout, &QSpinBox::valueChanged, [=]() {
@@ -119,7 +119,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
 
     auto func_commandRow = [=](QString commandKey, QString commandTitle) {
         auto txt = new QLineEdit(m_profile->command(commandKey));
-        txt->setPlaceholderText(tr("Enter command"));
+        txt->setPlaceholderText(QCoreApplication::translate("Generic", "Enter command"));
         connect(txt, &QLineEdit::editingFinished, [=]() {
             m_profile->setCommand(commandKey, txt->text());
         });
@@ -127,7 +127,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
         return txt;
     };
 
-    func_addRow(tr("Port settings"));
+    func_addRow(QCoreApplication::translate("Generic", "Port settings"));
 
     func_addRow(QCoreApplication::translate("Generic", "Port"), portWidget);
     func_addRow(QCoreApplication::translate("Generic", "BaudRate"), comboBaudRate);
@@ -138,7 +138,7 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
     grid->addWidget(new ComDeviceStatusWidget(com), 2, 1, 5, 1, Qt::AlignRight|Qt::AlignBottom);
 
     func_addRow("");
-    func_addRow(tr("Commands"));
+    func_addRow(QCoreApplication::translate("Generic", "Commands"));
 
     foreach (auto command, ComDevice::Commands()) {
         func_commandRow(command.key, (command.symbol.isEmpty() ? "" : "[" + command.symbol + "] ") + command.title);

@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_deviceWidgets[Device_COM] << comProfileWidget;
 
     m_tabs = new QTabWidget();
-    m_tabs->addTab(comProfileWidget, tr("Profile"));
+    m_tabs->addTab(comProfileWidget, QCoreApplication::translate("Generic", "Profile"));
     addTab(QCoreApplication::translate("Generic", "Manual"),
            new EV3ManualControl(m_ev3),
            new ComDeviceManualControl(m_com));
@@ -214,10 +214,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addWidget(btnNeuroPlayConnected);
     headerLayout->addWidget(btnNeuroPlay);
 
-    auto btnNeurobotics = flatButton("", QIcon(":/resources/neurobotics-logo.svg"), tr("Visit neurobotics.ru"), QUrl("https://neurobotics.ru"));
+    auto btnNeurobotics = flatButton("", QIcon(":/resources/neurobotics-logo.svg"), QCoreApplication::translate("Generic", "Visit neurobotics.ru"), QUrl("https://neurobotics.ru"));
     btnNeurobotics->setIconSize(QSize(68, 24));
 
-    auto btnGithub = flatButton("", QIcon(":/resources/github.svg"), tr("Visit NeuroEV3 GitHub repo"), QUrl("https://github.com/neurobotics/neuroev3"));
+    auto btnGithub = flatButton("", QIcon(":/resources/github.svg"), QCoreApplication::translate("Generic", "Visit NeuroEV3 GitHub repo"), QUrl("https://github.com/neurobotics/neuroev3"));
     btnGithub->setIconSize(QSize(24, 24));
 
     auto bottomLayout = new QHBoxLayout();
@@ -467,7 +467,7 @@ QWidget *MainWindow::newVersionButton()
     if (o.value("valid").toBool() == true) {
         const QString link = o.value("link").toString();
         const QString version = o.value("version").toString();
-        auto btnNewVersion = flatButton(tr("New version available") + " " + version, QIcon(), tr("Download new version"), QUrl(link));
+        auto btnNewVersion = flatButton(QCoreApplication::translate("Generic", "New version available") + " " + version, QIcon(), QCoreApplication::translate("Generic", "Download new version"), QUrl(link));
         btnNewVersion->setStyleSheet("QPushButton { color: #159; text-decoration: underline } QPushButton:hover { color: #37B; }");
         return btnNewVersion;
     }
