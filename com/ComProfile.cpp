@@ -83,6 +83,18 @@ void ComProfile::setCommand(QString key, QString value)
     setValue(COMMAND + key, value);
 }
 
+int ComProfile::timeoutMs()
+{
+    return qBound(0, value(TIMEOUT, 0).toInt(), 10000);
+}
+
+void ComProfile::setTimeoutMs(int timeMs)
+{
+    timeMs = qBound(0, timeMs, 10000);
+    setValue(TIMEOUT, timeMs);
+    emit timeoutChanged(timeMs);
+}
+
 QString ComProfile::action(const QString &name)
 {
     return value(ACTION + name, "").toString();

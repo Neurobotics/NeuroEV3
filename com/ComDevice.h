@@ -31,8 +31,8 @@ public:
 
     void stop();
 
-    void sendMessage(QString msg);
-    void sendCommand(QString command);
+    void sendMessage(const QString &msg);
+    void sendCommand(const QString &command);
     void sendSpeed(int speed);
 
     bool performAction(const QString &name);
@@ -59,12 +59,21 @@ signals:
     void disconnected();
 
 protected:
+    int m_limitMessageTimeoutMs = 1000;
+    qint64 m_lastMessage = 0;
+    QTimer *m_messageTimer = nullptr;
+
     ComProfile *m_profile = nullptr;
     QSerialPort *m_port = nullptr;
     QTimer *m_connectionTimer = nullptr;
 
     bool m_isEnabled = false;
     void updatePortSettings();
+
+    QString m_message;
+
+
+    void _sendMessage(const QString &msg);
 };
 
 #endif // COMDEVICE_H

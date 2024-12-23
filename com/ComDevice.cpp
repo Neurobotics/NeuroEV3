@@ -1,11 +1,17 @@
 #include "ComDevice.h"
 #include <QCoreApplication>
+#include <QDateTime>
 
 ComDevice::ComDevice(QObject *parent) : QObject(parent)
 {
     m_profile = new ComProfile();
     connect(m_profile, &ComProfile::propertyChanged, [=]() {
         updatePortSettings();
+    });
+
+    m_limitMessageTimeoutMs = m_profile->timeoutMs();
+    connect(m_profile, &ComProfile::timeoutChanged, [=](int timeMs) {
+        m_limitMessageTimeoutMs = timeMs;
     });
 
     m_port = new QSerialPort();
@@ -24,6 +30,15 @@ ComDevice::ComDevice(QObject *parent) : QObject(parent)
         }
     });
     m_connectionTimer->start(5000);
+
+    m_messageTimer = new QTimer(this);
+    connect(m_messageTimer, &QTimer::timeout, this, [=]() {
+        if (isConnected() && !m_message.isEmpty()) {
+            _sendMessage(m_message);
+            m_message = "";
+        }
+    });
+    m_messageTimer->start(1000);
 }
 
 void ComDevice::setEnabled(bool on)
@@ -46,16 +61,36 @@ void ComDevice::stop()
     sendCommand(STOP);
 }
 
-void ComDevice::sendMessage(QString msg)
+void ComDevice::sendMessage(const QString &msg)
+{
+    if (m_limitMessageTimeoutMs == 0) {
+        _sendMessage(msg);
+    } else {
+        qint64 ts = QDateTime::currentMSecsSinceEpoch();
+        if (m_lastMessage == 0 || ts - m_lastMessage > m_limitMessageTimeoutMs) {
+            _sendMessage(msg);
+        } else {
+            qDebug() << "Too fast";
+            m_message = msg;
+        }
+    }
+}
+
+void ComDevice::_sendMessage(const QString &msg)
 {
     if (m_port && m_port->isOpen()) {
-        qDebug() << "COM >>" << msg;
+        if (m_limitMessageTimeoutMs) {
+            m_lastMessage = QDateTime::currentMSecsSinceEpoch();
+            m_messageTimer->stop();
+            m_messageTimer->start();
+        }
+        qDebug() << QDateTime::currentDateTime() << "COM >>" << msg;
         m_port->write(msg.toUtf8());
         m_port->waitForBytesWritten();
     }
 }
 
-void ComDevice::sendCommand(QString command)
+void ComDevice::sendCommand(const QString &command)
 {
     QString cmd = m_profile->command(command);
     if (!cmd.isEmpty()) {
