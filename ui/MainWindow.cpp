@@ -1,9 +1,15 @@
 #include "MainWindow.h"
 #include "ev3/EV3_Motor.h"
 #include "MotorsWidget.h"
-#include "com/ComProfileWidget.h"
-#include "com/ComDeviceStatusWidget.h"
-#include "com/ComDeviceControl.h"
+
+#include "com/ui/ComProfileWidget.h"
+#include "com/ui/ComDeviceStatusWidget.h"
+#include "com/ui/ComDeviceManualControl.h"
+#include "com/ui/ComDeviceProportionalControl.h"
+#include "com/ui/ComDeviceBiosignalControl.h"
+#include "com/ui/ComDeviceMultiplayerControl.h"
+
+#include "ev3/ui/EV3ManualControl.h"
 #include "ev3/ui/EV3ProportionalControl.h"
 #include "ev3/ui/EV3MultiplayerControl.h"
 #include "ev3/ui/EV3BiosignalStateControl.h"
@@ -82,51 +88,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         else m_ev3->disconnect();
     });
 
-    auto manualMotors = new MotorsWidget();
-    connect(manualMotors, &MotorsWidget::motorValueChangeRequest, [=](int motorIndex, int value) {
-        auto motor = m_ev3->motor(motorIndex);
-        if (!motor) return;
-        if (value == 0) {
-            motor->stop();
-        } else {
-            motor->setPower(value);
-        }
-    });
-
     auto comProfileWidget = new ComProfileWidget(m_com);
     m_deviceWidgets[Device_COM] << comProfileWidget;
 
-    auto comControlWidget = new ComDeviceControl();
-    comControlWidget->setComDevice(m_com);
-
-    auto ev3biosignalControl = new EV3BiosignalStateControl(m_ev3, m_settings);
-    m_biosignalStateControls << ev3biosignalControl;
-
     m_tabs = new QTabWidget();
     m_tabs->addTab(comProfileWidget, tr("Profile"));
-    m_tabs->addTab(deviceConditionalWidget(manualMotors, comControlWidget), tr("Manual"));
-    m_tabs->addTab(ev3biosignalControl, tr("Mental states"));
+    addTab(QCoreApplication::translate("Generic", "Manual"),
+           new EV3ManualControl(m_ev3),
+           new ComDeviceManualControl(m_com));
 
-    auto ev3Meditation = new EV3ProportionalControl(m_ev3, m_settings, true);
-    auto ev3Concentration = new EV3ProportionalControl(m_ev3, m_settings, false);
+    addTab(QCoreApplication::translate("Generic", "Mental states"),
+           new EV3BiosignalStateControl(m_ev3, m_settings),
+           new ComDeviceBiosignalControl(m_com, m_settings));
 
-    m_meditationControls << ev3Meditation;
-    m_concentrationControls << ev3Concentration;
+    addTab(QCoreApplication::translate("Generic", "Meditation"),
+           new EV3ProportionalControl(m_ev3, m_settings, true),
+           new ComDeviceProportionalControl(m_com, m_settings, true), true);
 
-    m_tabs->addTab(ev3Meditation, QCoreApplication::translate("Generic", "Meditation"));
-    m_tabs->addTab(ev3Concentration, QCoreApplication::translate("Generic", "Concentration"));
+    addTab(QCoreApplication::translate("Generic", "Concentration"),
+           new EV3ProportionalControl(m_ev3, m_settings, false),
+           new ComDeviceProportionalControl(m_com, m_settings, false),  false);
 
-
-    auto ev3Multiplayer = new EV3MultiplayerControl(m_ev3, m_settings);
-    m_multiplayerControls << ev3Multiplayer;
-
-    m_tabs->addTab(ev3Multiplayer, tr("Multiplayer"));
+    addTab(QCoreApplication::translate("Generic", "Multiplayer"),
+           new EV3MultiplayerControl(m_ev3, m_settings),
+           new ComDeviceMultiplayerControl(m_com, m_settings));
 
     connect(m_tabs, &QTabWidget::currentChanged, [=](int index) {
-        m_multiplayer = index == m_tabs->count()-1;
-        m_ev3->stopMotors();
+        if (m_ev3) m_ev3->stopMotors();
+        if (m_com) m_com->stop();
         m_controlState = (ControlState)index;
-        m_neuroplayConnector->start(m_multiplayer);
+        m_neuroplayConnector->start(m_controlState == Multiplayer);
     });
 
     static QColor colorBlue = QColor(0x00CCFF);
@@ -147,10 +138,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto radioDeviceCOM = new QRadioButton("COM");
     radioGroup->addButton(radioDeviceEV3);
     radioGroup->addButton(radioDeviceCOM);
-    connect(radioDeviceEV3, &QRadioButton::toggled, this, [=](bool on) {
+    connect(radioDeviceEV3, &QRadioButton::toggled, this, [=](bool ) {
         setDeviceMode(Device_EV3);
     });
-    connect(radioDeviceCOM, &QRadioButton::toggled, this, [=](bool on) {
+    connect(radioDeviceCOM, &QRadioButton::toggled, this, [=](bool ) {
         setDeviceMode(Device_COM);
     });
 
@@ -272,7 +263,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         }
     });
 
-    m_neuroplayConnector->start(m_multiplayer);
+    m_neuroplayConnector->start(m_controlState == Multiplayer);
 
 #if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
     setMinimumWidth(650);
@@ -356,7 +347,7 @@ void MainWindow::setDeviceMode(DeviceMode mode)
     m_settings->setEV3mode(mode == Device_EV3);
 }
 
-QWidget *MainWindow::deviceConditionalWidget(QWidget *widgetForEV3, QWidget *widgetForCOM)
+void MainWindow::addTab(QString title, QWidget *widgetForEV3, QWidget *widgetForCOM)
 {
     auto holder = new QWidget();
     holder->setContentsMargins(0,0,0,0);
@@ -366,7 +357,31 @@ QWidget *MainWindow::deviceConditionalWidget(QWidget *widgetForEV3, QWidget *wid
     lay->addWidget(widgetForCOM);
     m_deviceWidgets[Device_EV3] << widgetForEV3;
     m_deviceWidgets[Device_COM] << widgetForCOM;
-    return holder;
+
+    auto func_addDeviceControl = [=](QWidget *w) {
+        auto b = dynamic_cast<DeviceBiosignalStateControl*>(w);
+        if (b) m_biosignalStateControls << b;
+
+        auto m = dynamic_cast<DeviceMultiplayerControl*>(w);
+        if (m) m_multiplayerControls << m;
+    };
+
+    func_addDeviceControl(widgetForCOM);
+    func_addDeviceControl(widgetForEV3);
+
+    m_tabs->addTab(holder, title);
+}
+
+void MainWindow::addTab(QString title, DeviceProportionalControl *widgetForEV3, DeviceProportionalControl *widgetForCOM, bool isMeditation)
+{
+    addTab(title, widgetForEV3, widgetForCOM);
+    if (isMeditation) {
+        if (widgetForEV3) m_meditationControls << widgetForEV3;
+        if (widgetForCOM) m_meditationControls << widgetForCOM;
+    } else {
+        if (widgetForEV3) m_concentrationControls << widgetForEV3;
+        if (widgetForCOM) m_concentrationControls << widgetForCOM;
+    }
 }
 
 QString MainWindow::OS()

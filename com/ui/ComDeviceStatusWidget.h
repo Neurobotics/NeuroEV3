@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "ui/IconLabel.h"
-#include "ComDevice.h"
+#include "com/ComDevice.h"
 
 class ComDeviceStatusWidget : public IconLabel
 {

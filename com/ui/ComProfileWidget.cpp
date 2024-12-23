@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include "classes/Common.h"
 #include <QLineEdit>
-#include "com/ComDeviceStatusWidget.h"
+#include "com/ui/ComDeviceStatusWidget.h"
 
 ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(parent)
 {

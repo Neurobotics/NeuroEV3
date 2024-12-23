@@ -11,14 +11,16 @@ DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
 
 SOURCES += \
     com/ComDevice.cpp \
-    com/ComDeviceControl.cpp \
-    com/ComDeviceMentalControl.cpp \
-    com/ComDeviceProportionalControl.cpp \
-    com/ComDeviceStatusWidget.cpp \
+    com/ui/ComDeviceBiosignalControl.cpp \
+    com/ui/ComDeviceManualControl.cpp \
+    com/ui/ComDeviceProportionalControl.cpp \
+    com/ui/ComDeviceStatusWidget.cpp \
     com/ComProfile.cpp \
-    com/ComProfileWidget.cpp \
+    com/ui/ComProfileWidget.cpp \
     classes/NeuroPlayAppConnector.cpp \
+    com/ui/ComDeviceMultiplayerControl.cpp \
     ev3/ui/EV3BiosignalStateControl.cpp \
+    ev3/ui/EV3ManualControl.cpp \
     ev3/ui/EV3MultiplayerControl.cpp \
     ev3/ui/EV3ProportionalControl.cpp \
     main.cpp \
@@ -39,20 +41,22 @@ SOURCES += \
 
 HEADERS += \
     com/ComDevice.h \
-    com/ComDeviceControl.h \
-    com/ComDeviceMentalControl.h \
-    com/ComDeviceProportionalControl.h \
-    com/ComDeviceStatusWidget.h \
+    com/ui/ComDeviceBiosignalControl.h \
+    com/ui/ComDeviceManualControl.h \
+    com/ui/ComDeviceProportionalControl.h \
+    com/ui/ComDeviceStatusWidget.h \
     com/ComProfile.h \
-    com/ComProfileWidget.h \
+    com/ui/ComProfileWidget.h \
     classes/Common.h \
     classes/NeuroPlayAppConnector.h \
     classes/Settings.h \
+    com/ui/ComDeviceMultiplayerControl.h \
     ev3/EV3.h \
     ev3/EV3_Command.h \
     ev3/EV3_ByteCodes.h \
     ev3/EV3_Motor.h \
     ev3/ui/EV3BiosignalStateControl.h \
+    ev3/ui/EV3ManualControl.h \
     ev3/ui/EV3MultiplayerControl.h \
     ev3/ui/EV3ProportionalControl.h \
     ui/BaseMotorsWidget.h \

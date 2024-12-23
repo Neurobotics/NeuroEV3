@@ -29,6 +29,8 @@ public:
 
     ComProfile *profile() const;
 
+    void stop();
+
     void sendMessage(QString msg);
     void sendCommand(QString command);
 

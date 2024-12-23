@@ -2,8 +2,8 @@
 #include "ev3/EV3_Motor.h"
 #include "ui/MotorsCoeffWidget.h"
 
-EV3ProportionalControl::EV3ProportionalControl(EV3 *ev3, Settings *settings, bool meditation, bool useProportional, int threshold, QWidget *parent)
-    : DeviceProportionalControl(meditation, useProportional, threshold, parent)
+EV3ProportionalControl::EV3ProportionalControl(EV3 *ev3, Settings *settings, bool meditation, QWidget *parent)
+    : DeviceProportionalControl(settings, "ev3", meditation, parent)
 {
     m_ev3 = ev3;
     m_settings = settings;

@@ -41,6 +41,11 @@ ComProfile *ComDevice::profile() const
     return m_profile;
 }
 
+void ComDevice::stop()
+{
+    sendCommand(STOP);
+}
+
 void ComDevice::sendMessage(QString msg)
 {
     if (m_port && m_port->isOpen()) {

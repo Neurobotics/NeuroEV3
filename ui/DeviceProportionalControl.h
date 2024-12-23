@@ -6,12 +6,13 @@
 #include <QProgressBar>
 #include <QCheckBox>
 #include <QSpinBox>
+#include "classes/Settings.h"
 
 class DeviceProportionalControl : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DeviceProportionalControl(bool meditation, bool useProportional = true, int threshold = 50, QWidget *parent = nullptr);
+    explicit DeviceProportionalControl(Settings *settings, QString prefix, bool meditation, QWidget *parent = nullptr);
     void setValue(int value);
 
 signals:
@@ -29,7 +30,7 @@ protected:
     QSpinBox *m_spinThreshold = nullptr;
     QProgressBar *m_bar = nullptr;
 
-    virtual void innerSetValue();
+    virtual void innerSetValue() = 0;
     virtual void innerSetProportional();
     virtual void innerSetThreshold();
 };

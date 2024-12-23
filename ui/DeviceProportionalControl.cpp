@@ -3,11 +3,14 @@
 #include "ui/UICommon.h"
 #include <QHBoxLayout>
 
-DeviceProportionalControl::DeviceProportionalControl(bool meditation, bool useProportional, int threshold, QWidget *parent) : QWidget{parent}
+DeviceProportionalControl::DeviceProportionalControl(Settings *settings, QString prefix, bool meditation, QWidget *parent) : QWidget{parent}
 {
     m_isUseMeditation = meditation;
-    m_useProportional = useProportional;
-    m_threshold = threshold;
+
+    // TODO: add proportional and settings
+
+    // m_useProportional = prefix;
+    // m_threshold = threshold;
 
     m_bar = meditation ? UICommon::meditationBar() : UICommon::concentrationBar();
 
@@ -17,7 +20,7 @@ DeviceProportionalControl::DeviceProportionalControl(bool meditation, bool usePr
         m_useProportional = on;
         emit onUseProportional(on);
         innerSetProportional();
-        m_spinThreshold->setVisible(!on);
+        // m_spinThreshold->setVisible(!on);
     });
 
     m_spinThreshold = new QSpinBox();
@@ -33,8 +36,8 @@ DeviceProportionalControl::DeviceProportionalControl(bool meditation, bool usePr
     });
 
     auto row = new QHBoxLayout();
-    row->addWidget(m_checkboxProportional);
-    row->addWidget(m_spinThreshold);
+    // row->addWidget(m_checkboxProportional);
+    // row->addWidget(m_spinThreshold);
     row->addStretch(100);
 
     m_layout = new QVBoxLayout(this);

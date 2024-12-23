@@ -1,10 +1,10 @@
-#include "ComDeviceControl.h"
+#include "ComDeviceManualControl.h"
 #include <QPushButton>
 #include <QGridLayout>
 #include <QCoreApplication>
 #include <QLabel>
 
-ComDeviceControl::ComDeviceControl(QWidget *parent) : QWidget(parent)
+ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) : QWidget(parent)
 {
     auto func_btn = [=](QString command, QString text, QString style = "") {
         auto btn = new QPushButton(text);
@@ -36,14 +36,9 @@ ComDeviceControl::ComDeviceControl(QWidget *parent) : QWidget(parent)
         grid->addWidget(func_btn("Custom" + QString::number(i+1), "Custom \n" + QString::number(i+1)), 4, i);
     }
 
-    setEnabled(false);
-
     auto lay = new QVBoxLayout(this);
     lay->addWidget(central, 0, Qt::AlignCenter);
+
+    m_com = com;
 }
 
-void ComDeviceControl::setComDevice(ComDevice *com)
-{
-    m_com = com;
-    setEnabled(com != nullptr);
-}

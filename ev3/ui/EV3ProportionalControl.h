@@ -9,7 +9,7 @@ class EV3ProportionalControl : public DeviceProportionalControl
 {
     Q_OBJECT
 public:
-    explicit EV3ProportionalControl(EV3 *ev3, Settings *settings, bool meditation, bool useProportional = true, int threshold = 50, QWidget *parent = nullptr);
+    explicit EV3ProportionalControl(EV3 *ev3, Settings *settings, bool meditation, QWidget *parent = nullptr);
 
 protected:
     EV3 *m_ev3 = nullptr;

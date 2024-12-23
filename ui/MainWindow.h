@@ -36,10 +36,12 @@ public:
     Q_ENUM(DeviceMode)
 
     enum ControlState {
+        None,
         Manual,
         MentalState,
         Meditation,
-        Concentration
+        Concentration,
+        Multiplayer
     };
     Q_ENUM(ControlState)
 
@@ -67,8 +69,6 @@ protected:
 
     Settings *m_settings = nullptr;
 
-    bool m_multiplayer = false;
-
     NeuroPlayAppConnector *m_neuroplayConnector = nullptr;
 
     QWidget *newVersionButton();
@@ -81,7 +81,8 @@ protected:
     void control();
     void setDeviceMode(DeviceMode mode);
 
-    QWidget *deviceConditionalWidget(QWidget *widgetForEV3, QWidget *widgetForCOM);
+    void addTab(QString title, QWidget *widgetForEV3, QWidget *widgetForCOM);
+    void addTab(QString title, DeviceProportionalControl *widgetForEV3, DeviceProportionalControl *widgetForCOM, bool isMeditation);
 
     QList<DeviceProportionalControl*> m_meditationControls;
     QList<DeviceProportionalControl*> m_concentrationControls;

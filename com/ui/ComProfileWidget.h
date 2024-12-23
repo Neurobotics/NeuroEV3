@@ -2,7 +2,7 @@
 #define COMPROFILEWIDGET_H
 
 #include <QWidget>
-#include "ComDevice.h"
+#include "com/ComDevice.h"
 
 class ComProfileWidget : public QWidget
 {
