@@ -11,6 +11,7 @@
 #include "com/ComDevice.h"
 #include "classes/Settings.h"
 #include "classes/NeuroPlayAppConnector.h"
+#include "ui/DeviceProportionalControl.h"
 
 struct UserBCI
 {
@@ -79,5 +80,8 @@ protected:
     void setDeviceMode(DeviceMode mode);
 
     QWidget *deviceConditionalWidget(QWidget *widgetForEV3, QWidget *widgetForCOM);
+
+    QList<DeviceProportionalControl*> m_meditationControls;
+    QList<DeviceProportionalControl*> m_concentrationControls;
 };
 #endif // MAINWINDOW_H

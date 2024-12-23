@@ -5,6 +5,8 @@
 #include "com/ComProfileWidget.h"
 #include "com/ComDeviceStatusWidget.h"
 #include "com/ComDeviceControl.h"
+#include "ui/UICommon.h"
+#include "ev3/ui/EV3ProportionalControl.h"
 
 #include <QUrl>
 #include <QDir>
@@ -97,16 +99,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         }
     });
 
-    auto func_progress = [](QString color) {
-        auto progress = new QProgressBar();
-        progress->setRange(0, 100);
-        progress->setStyleSheet("QProgressBar { text-align: center; border: 2px solid grey; border-radius: 5px; background-color: #FFF; } "
-                                "QProgressBar::chunk { background-color: " + color + "; padding: 4px; }");
-        return progress;
-    };
-
-    auto progressMeditation = func_progress("#7c2");
-    auto progressConcentration = func_progress("#C30");
+    // auto progressMeditation = UICommon::meditationBar();
+    // auto progressConcentration = UICommon::concentrationBar();
 
     auto labelMentalState = new QLabel();
     labelMentalState->setStyleSheet("font-weight: bold");
@@ -154,24 +148,33 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_tabs->addTab(deviceConditionalWidget(manualMotors, comControlWidget), tr("Manual"));
     m_tabs->addTab(bciStateMotors, tr("Mental states"));
 
-    auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
-    foreach(auto metaIndex, metaIndexes) {
-        auto bciMetaIndexMotors = new MotorsCoeffWidget();
-        for (int i = 1; i<=MAX_MOTORS; i++) {
-            bciMetaIndexMotors->setMotorCoeff(i, m_settings->getMetaIndexDriveCoeff(metaIndex, i));
-            bciMetaIndexMotors->setMotorEnabled(i, m_settings->getMetaIndexDriveEnabled(metaIndex, i));
-        }
-        connect(bciMetaIndexMotors, &MotorsCoeffWidget::motorEnabledChanged, [=](int motorIndex, bool enabled) {
-            m_settings->setMetaIndexDriveEnabled(metaIndex, motorIndex, enabled);
-        });
-        connect(bciMetaIndexMotors, &MotorsCoeffWidget::motorCoeffChanged, [=](int motorIndex, double coeff) {
-            m_settings->setMetaIndexDriveCoeff(metaIndex, motorIndex, coeff);
-        });
+    auto ev3Meditation = new EV3ProportionalControl(m_ev3, m_settings, true);
+    auto ev3Concentration = new EV3ProportionalControl(m_ev3, m_settings, false);
 
-        bciMetaIndexMotors->addWidgetOnTop(metaIndex == MEDITATION ? progressMeditation : progressConcentration);
+    m_meditationControls << ev3Meditation;
+    m_concentrationControls << ev3Concentration;
 
-        m_tabs->addTab(bciMetaIndexMotors, tr(qPrintable(metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1))));
-    }
+    m_tabs->addTab(ev3Meditation, QCoreApplication::translate("Generic", "Meditation"));
+    m_tabs->addTab(ev3Concentration, QCoreApplication::translate("Generic", "Concentration"));
+
+    // auto metaIndexes = QStringList { MEDITATION, CONCENTRATION };
+    // foreach(auto metaIndex, metaIndexes) {
+    //     auto bciMetaIndexMotors = new MotorsCoeffWidget();
+    //     for (int i = 1; i<=MAX_MOTORS; i++) {
+    //         bciMetaIndexMotors->setMotorCoeff(i, m_settings->getMetaIndexDriveCoeff(metaIndex, i));
+    //         bciMetaIndexMotors->setMotorEnabled(i, m_settings->getMetaIndexDriveEnabled(metaIndex, i));
+    //     }
+    //     connect(bciMetaIndexMotors, &MotorsCoeffWidget::motorEnabledChanged, [=](int motorIndex, bool enabled) {
+    //         m_settings->setMetaIndexDriveEnabled(metaIndex, motorIndex, enabled);
+    //     });
+    //     connect(bciMetaIndexMotors, &MotorsCoeffWidget::motorCoeffChanged, [=](int motorIndex, double coeff) {
+    //         m_settings->setMetaIndexDriveCoeff(metaIndex, motorIndex, coeff);
+    //     });
+
+    //     bciMetaIndexMotors->addWidgetOnTop(metaIndex == MEDITATION ? progressMeditation : progressConcentration);
+
+    //     m_tabs->addTab(bciMetaIndexMotors, tr(qPrintable(metaIndex.mid(0, 1).toUpper() + metaIndex.mid(1))));
+    // }
 
     auto multiplayerWidget = new MotorsCoeffWidget();
 
@@ -186,20 +189,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_settings->setMetaIndexDriveCoeff(MULTIPLAYER, motorIndex, coeff);
     });
 
-    auto progressMeditationU1 = func_progress("#7c2");
-    auto progressConcentrationU1 = func_progress("#C30");
-    auto progressMeditationU2 = func_progress("#7c2");
+    auto progressMeditationU1 = UICommon::meditationBar();
+    auto progressConcentrationU1 = UICommon::concentrationBar();
+    auto progressMeditationU2 = UICommon::meditationBar();
     progressMeditationU2->setLayoutDirection(Qt::RightToLeft);
-    auto progressConcentrationU2 = func_progress("#C30");
+    auto progressConcentrationU2 = UICommon::concentrationBar();
     progressConcentrationU2->setLayoutDirection(Qt::RightToLeft);
 
 
-    auto progressMeditationMix1 = func_progress("#7c2");
+    auto progressMeditationMix1 = UICommon::meditationBar();
     progressMeditationMix1->setLayoutDirection(Qt::RightToLeft);
-    auto progressMeditationMix2 = func_progress("#7c2");
-    auto progressConcentrationMix1 = func_progress("#C30");
+    auto progressMeditationMix2 = UICommon::meditationBar();
+    auto progressConcentrationMix1 = UICommon::concentrationBar();
     progressConcentrationMix1->setLayoutDirection(Qt::RightToLeft);
-    auto progressConcentrationMix2 = func_progress("#C30");
+    auto progressConcentrationMix2 = UICommon::concentrationBar();
 
     auto multipl = new QWidget();
     auto multipleGrid = new QGridLayout(multipl);
@@ -380,8 +383,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_userBCI[userIndex].mentalState = mentalState;
 
         if (!m_multiplayer) {
-            progressMeditation->setValue(m_userBCI[0].meditation);
-            progressConcentration->setValue(m_userBCI[0].concentration);
+            // progressMeditation->setValue(m_userBCI[0].meditation);
+            // progressConcentration->setValue(m_userBCI[0].concentration);
             labelMentalState->setText(QString::number((int)m_userBCI[0].mentalState));
 
             control();
@@ -468,16 +471,29 @@ void MainWindow::control()
     }
     break;
 
-    case Meditation:
-    case Concentration: {
-        QString metaIndex = m_controlState == Meditation ? MEDITATION : CONCENTRATION;
-        double metaIndexValue = m_controlState == Meditation ? m_userBCI[0].meditation : m_userBCI[0].concentration;
-        for (int i = 1; i <= MAX_MOTORS; i++) {
-            int power = m_settings->getMetaIndexDriveEnabled(metaIndex, i) ? m_settings->getMetaIndexDriveCoeff(metaIndex, i) * metaIndexValue : 0;
-            m_ev3->motor(i)->setPower(power);
+    case Meditation: {
+        foreach (auto widget, m_meditationControls) {
+            widget->setValue(m_userBCI[0].meditation);
         }
     }
     break;
+
+    case Concentration: {
+        foreach (auto widget, m_meditationControls) {
+            widget->setValue(m_userBCI[0].concentration);
+        }
+    }
+    break;
+
+    // case Concentration: {
+    //     QString metaIndex = m_controlState == Meditation ? MEDITATION : CONCENTRATION;
+    //     double metaIndexValue = m_controlState == Meditation ? m_userBCI[0].meditation : m_userBCI[0].concentration;
+    //     for (int i = 1; i <= MAX_MOTORS; i++) {
+    //         int power = m_settings->getMetaIndexDriveEnabled(metaIndex, i) ? m_settings->getMetaIndexDriveCoeff(metaIndex, i) * metaIndexValue : 0;
+    //         m_ev3->motor(i)->setPower(power);
+    //     }
+    // }
+    // break;
 
     default: break;
     }

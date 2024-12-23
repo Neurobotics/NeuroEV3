@@ -12,10 +12,13 @@ DEFINES += APP_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
 SOURCES += \
     com/ComDevice.cpp \
     com/ComDeviceControl.cpp \
+    com/ComDeviceMentalControl.cpp \
+    com/ComDeviceProportionalControl.cpp \
     com/ComDeviceStatusWidget.cpp \
     com/ComProfile.cpp \
     com/ComProfileWidget.cpp \
     classes/NeuroPlayAppConnector.cpp \
+    ev3/ui/EV3ProportionalControl.cpp \
     main.cpp \
     classes/Common.cpp \
     classes/Settings.cpp \
@@ -23,14 +26,18 @@ SOURCES += \
     ev3/EV3_Command.cpp \
     ev3/EV3_Motor.cpp \
     ui/BaseMotorsWidget.cpp \
+    ui/DeviceProportionalControl.cpp \
     ui/IconLabel.cpp \
     ui/MotorsCoeffWidget.cpp \
     ui/MotorsWidget.cpp \
-    ui/MainWindow.cpp
+    ui/MainWindow.cpp \
+    ui/UICommon.cpp
 
 HEADERS += \
     com/ComDevice.h \
     com/ComDeviceControl.h \
+    com/ComDeviceMentalControl.h \
+    com/ComDeviceProportionalControl.h \
     com/ComDeviceStatusWidget.h \
     com/ComProfile.h \
     com/ComProfileWidget.h \
@@ -41,11 +48,14 @@ HEADERS += \
     ev3/EV3_Command.h \
     ev3/EV3_ByteCodes.h \
     ev3/EV3_Motor.h \
+    ev3/ui/EV3ProportionalControl.h \
     ui/BaseMotorsWidget.h \
+    ui/DeviceProportionalControl.h \
     ui/IconLabel.h \
     ui/MainWindow.h \
     ui/MotorsCoeffWidget.h \
-    ui/MotorsWidget.h
+    ui/MotorsWidget.h \
+    ui/UICommon.h
 
 
 # Default rules for deployment.
