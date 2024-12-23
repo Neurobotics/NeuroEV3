@@ -18,6 +18,7 @@ SOURCES += \
     com/ComProfile.cpp \
     com/ComProfileWidget.cpp \
     classes/NeuroPlayAppConnector.cpp \
+    ev3/ui/EV3BiosignalStateControl.cpp \
     ev3/ui/EV3MultiplayerControl.cpp \
     ev3/ui/EV3ProportionalControl.cpp \
     main.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     ev3/EV3_Command.cpp \
     ev3/EV3_Motor.cpp \
     ui/BaseMotorsWidget.cpp \
+    ui/DeviceBiosignalStateControl.cpp \
     ui/DeviceMultiplayerControl.cpp \
     ui/DeviceProportionalControl.cpp \
     ui/IconLabel.cpp \
@@ -50,9 +52,11 @@ HEADERS += \
     ev3/EV3_Command.h \
     ev3/EV3_ByteCodes.h \
     ev3/EV3_Motor.h \
+    ev3/ui/EV3BiosignalStateControl.h \
     ev3/ui/EV3MultiplayerControl.h \
     ev3/ui/EV3ProportionalControl.h \
     ui/BaseMotorsWidget.h \
+    ui/DeviceBiosignalStateControl.h \
     ui/DeviceMultiplayerControl.h \
     ui/DeviceProportionalControl.h \
     ui/IconLabel.h \

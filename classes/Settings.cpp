@@ -26,15 +26,15 @@ void Settings::setEV3mode(bool on)
     setValue("mode", on ? "ev3" : "com");
 }
 
-bool Settings::getMentalStateEnabled(int state)
+bool Settings::getMentalStateEnabled(int state, QString prefix)
 {
-    QString header = mentalStateHeader(state);
+    QString header = prefix + mentalStateHeader(state);
     return value(header + "/enabled", false).toBool();
 }
 
-void Settings::setMentalStateEnabled(int state, bool enabled)
+void Settings::setMentalStateEnabled(int state, bool enabled, QString prefix)
 {
-    QString header = mentalStateHeader(state);
+    QString header = prefix + mentalStateHeader(state);
     setValue(header + "/enabled", enabled);
 }
 

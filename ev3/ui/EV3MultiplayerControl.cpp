@@ -2,8 +2,7 @@
 #include "ev3/EV3_Motor.h"
 #include "ui/MotorsCoeffWidget.h"
 
-EV3MultiplayerControl::EV3MultiplayerControl(EV3 *ev3, Settings *settings, QWidget *parent)
-    : DeviceMultiplayerControl(settings, parent)
+EV3MultiplayerControl::EV3MultiplayerControl(EV3 *ev3, Settings *settings, QWidget *parent) : DeviceMultiplayerControl(settings, parent)
 {
     m_ev3 = ev3;
 

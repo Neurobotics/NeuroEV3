@@ -6,21 +6,16 @@
 #include "com/ComDeviceControl.h"
 #include "ev3/ui/EV3ProportionalControl.h"
 #include "ev3/ui/EV3MultiplayerControl.h"
+#include "ev3/ui/EV3BiosignalStateControl.h"
 
 #include <QUrl>
 #include <QDir>
 #include <QLabel>
-#include <QTimer>
 #include <QDebug>
-#include <QSlider>
-#include <QSpinBox>
 #include <QSysInfo>
-#include <QCheckBox>
-#include <QComboBox>
 #include <QEventLoop>
 #include <QJsonObject>
 #include <QTranslator>
-#include <QProgressBar>
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QNetworkReply>
@@ -98,51 +93,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         }
     });
 
-    auto labelMentalState = new QLabel();
-    labelMentalState->setStyleSheet("font-weight: bold");
-
-    auto currentMentalStateWidget = new QWidget();
-    auto currentMentalStateWidgetLayout = new QHBoxLayout(currentMentalStateWidget);
-    currentMentalStateWidgetLayout->setContentsMargins(0,0,0,0);
-    currentMentalStateWidgetLayout->addWidget(new QLabel(tr("Current state:")));
-    currentMentalStateWidgetLayout->addWidget(labelMentalState, 100, Qt::AlignLeft);
-
-    auto bciStateMotors = new QWidget();
-    auto bciStateMotorsLayout = new QVBoxLayout(bciStateMotors);
-    for (int i = 1; i<=MAX_MENTAL_STATES; i++) {
-        auto checkbox = new QCheckBox(tr("State") + " " + QString::number(i));
-        checkbox->setChecked(m_settings->getMentalStateEnabled(i));
-        connect(checkbox, &QCheckBox::toggled, [=](bool toggled) {
-            m_settings->setMentalStateEnabled(i, toggled);
-        });
-
-        auto motors = new MotorsWidget();
-        motors->layout()->setContentsMargins(0,0,0,0);
-        for (int j = 1; j<=MAX_MOTORS; j++) {
-            motors->setMotorValue(j, m_settings->getMentalStateDrive(i, j));
-        }
-
-        connect(motors, &MotorsWidget::motorValueChangeRequest, [=](int motorIndex, int value) {
-            m_settings->setMentalStateDrive(i, motorIndex, value);
-        });
-
-        auto lay = new QVBoxLayout();
-        lay->addWidget(checkbox);
-        lay->addWidget(motors);
-        bciStateMotorsLayout->addLayout(lay);
-    }
-    bciStateMotorsLayout->insertWidget(0, currentMentalStateWidget);
-
     auto comProfileWidget = new ComProfileWidget(m_com);
     m_deviceWidgets[Device_COM] << comProfileWidget;
 
     auto comControlWidget = new ComDeviceControl();
     comControlWidget->setComDevice(m_com);
 
+    auto ev3biosignalControl = new EV3BiosignalStateControl(m_ev3, m_settings);
+    m_biosignalStateControls << ev3biosignalControl;
+
     m_tabs = new QTabWidget();
     m_tabs->addTab(comProfileWidget, tr("Profile"));
     m_tabs->addTab(deviceConditionalWidget(manualMotors, comControlWidget), tr("Manual"));
-    m_tabs->addTab(bciStateMotors, tr("Mental states"));
+    m_tabs->addTab(ev3biosignalControl, tr("Mental states"));
 
     auto ev3Meditation = new EV3ProportionalControl(m_ev3, m_settings, true);
     auto ev3Concentration = new EV3ProportionalControl(m_ev3, m_settings, false);
@@ -300,10 +263,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         m_userBCI[userIndex].concentration = concentration;
         m_userBCI[userIndex].mentalState = mentalState;
 
-        if (!m_multiplayer) {
-            labelMentalState->setText(QString::number((int)m_userBCI[0].mentalState));
-            control();
-        }
+        if (userIndex == 0) control();
     }, Qt::QueuedConnection);
 
     connect(m_neuroplayConnector, &NeuroPlayAppConnector::userPairBCI, this, [=](QPair<float, float> meditation, QPair<float, float> concentration) {
@@ -339,33 +299,14 @@ MainWindow::~MainWindow()
 void MainWindow::control()
 {
     if (m_controlState != Manual && !m_canControl) {
-        m_ev3->stopMotors();
-        return;
-    }
-
-    if (m_multiplayer) {
-        bool isMed = m_settings->getMultiplayerControl() == "meditation";
-        float val = isMed ? m_userBCI[0].meditation - m_userBCI[1].meditation : m_userBCI[0].concentration - m_userBCI[1].concentration;
-        for (int i = 1; i <= MAX_MOTORS; i++) {
-            if (m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i)) {
-                m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) * val);
-            } else {
-                m_ev3->motor(i)->setPower(0);
-            }
-        }
+        if (m_ev3) m_ev3->stopMotors();
         return;
     }
 
     switch (m_controlState) {
     case MentalState: {
-        auto state = m_userBCI[0].mentalState;
-        if (m_settings->getMentalStateEnabled(state)) {
-            auto drives = m_settings->getMentalStateDrives(m_userBCI[0].mentalState);
-            for (int i = 0; i < drives.length(); i++) {
-                m_ev3->motor(i + 1)->setPower(drives[i]);
-            }
-        } else {
-            m_ev3->stopMotors();
+        foreach (auto biosignalControl, m_biosignalStateControls) {
+            biosignalControl->setCurrentState((int)m_userBCI[0].mentalState);
         }
     }
     break;

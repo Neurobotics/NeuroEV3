@@ -48,7 +48,6 @@ MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
 
         m_layout->addLayout(motorLayout);
     }
-    m_layout->addWidget(new QLabel(), 100);
 }
 
 void MotorsWidget::setMotorValue(int motorIndex, int value)

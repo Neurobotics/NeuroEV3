@@ -18,8 +18,8 @@ public:
     bool ev3Mode();
     void setEV3mode(bool on);
 
-    bool getMentalStateEnabled(int state);
-    void setMentalStateEnabled(int state, bool enabled);
+    bool getMentalStateEnabled(int state, QString prefix = "");
+    void setMentalStateEnabled(int state, bool enabled, QString prefix = "");
 
     QVector<int> getMentalStateDrives(int state);
     void setMentalStateDrives(int state, QVector<int> drives);
