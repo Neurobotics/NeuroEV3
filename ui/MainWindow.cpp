@@ -264,7 +264,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_neuroplayConnector->start(m_controlState == Multiplayer);
 
 #if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
-    setMinimumWidth(650);
+    setMinimumWidth(520);
 #endif
 
     if (m_settings->ev3Mode()) {

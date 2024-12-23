@@ -16,10 +16,6 @@
         <file>resources/github.svg</file>
         <file>resources/bluetooth.svg</file>
         <file>resources/wifi.svg</file>
-        <file>resources/style.css</file>
-        <file>resources/check.svg</file>
-        <file>resources/chevron-down.svg</file>
-        <file>resources/chevron-up.svg</file>
         <file>resources/neuroEV3.icns</file>
         <file>resources/translations/NeuroEV3_en-US.qm</file>
         <file>resources/translations/NeuroEV3_ru-RU.qm</file>
