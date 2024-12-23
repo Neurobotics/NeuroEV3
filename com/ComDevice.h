@@ -34,6 +34,7 @@ public:
     void sendMessage(QString msg);
     void sendCommand(QString command);
 
+    bool performAction(const QString &name);
     QString action(const QString &name);
     void setAction(const QString &name, const QString &value);
 

@@ -63,6 +63,19 @@ void ComDevice::sendCommand(QString command)
     }
 }
 
+bool ComDevice::performAction(const QString &name)
+{
+    auto a = action(name);
+    if (!a.isEmpty()) {
+        auto cmd = m_profile->command(a);
+        if (!cmd.isEmpty()) {
+            sendMessage(cmd);
+        }
+        return true;
+    }
+    return false;
+}
+
 QString ComDevice::action(const QString &name)
 {
     return m_profile->action(name);

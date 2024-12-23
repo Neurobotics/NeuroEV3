@@ -14,7 +14,14 @@ ComDeviceBiosignalControl::ComDeviceBiosignalControl(ComDevice *com, Settings *s
 
 void ComDeviceBiosignalControl::onSetCurrentState(int state)
 {
-
+    if (m_com && isVisible())
+    {
+        if (m_settings->getMentalStateEnabled(state, m_stateEnabledPrefix)) {
+            m_com->performAction("State" +QString::number(state));
+        } else {
+            m_com->stop();
+        }
+    }
 }
 
 QWidget *ComDeviceBiosignalControl::createStateWidget(int state, Qt::Alignment align)

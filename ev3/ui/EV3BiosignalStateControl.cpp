@@ -29,7 +29,7 @@ void EV3BiosignalStateControl::onSetCurrentState(int state)
 {
     if (!m_ev3 || !isVisible()) return;
 
-    if (m_settings->getMentalStateEnabled(state)) {
+    if (m_settings->getMentalStateEnabled(state, m_stateEnabledPrefix)) {
         auto drives = m_settings->getMentalStateDrives(state);
         for (int i = 0; i < drives.length(); i++) {
             m_ev3->motor(i + 1)->setPower(drives[i]);
