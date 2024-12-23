@@ -63,6 +63,16 @@ void ComDevice::sendCommand(QString command)
     }
 }
 
+QString ComDevice::action(const QString &name)
+{
+    return m_profile->action(name);
+}
+
+void ComDevice::setAction(const QString &name, const QString &value)
+{
+    m_profile->setAction(name, value);
+}
+
 void ComDevice::reconnect()
 {
     updatePortSettings();

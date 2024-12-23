@@ -82,3 +82,13 @@ void ComProfile::setCommand(QString key, QString value)
     if (key.isEmpty()) return;
     setValue(COMMAND + key, value);
 }
+
+QString ComProfile::action(const QString &name)
+{
+    return value(ACTION + name, "").toString();
+}
+
+void ComProfile::setAction(const QString &name, const QString &value)
+{
+    setValue(ACTION + name, value);
+}

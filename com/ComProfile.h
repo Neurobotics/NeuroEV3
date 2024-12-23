@@ -31,6 +31,11 @@ public:
     inline static QString DATABITS = "dataBits";
     inline static QString PORTNAME = "port";
     inline static QString COMMAND = "command";
+    inline static QString ACTION = "action";
+
+
+    QString action(const QString &name);
+    void setAction(const QString &name, const QString &value);
 
 signals:
     void portChanged(QString port);

@@ -34,6 +34,9 @@ public:
     void sendMessage(QString msg);
     void sendCommand(QString command);
 
+    QString action(const QString &name);
+    void setAction(const QString &name, const QString &value);
+
     void reconnect();
 
     bool isConnected();

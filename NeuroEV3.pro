@@ -13,6 +13,7 @@ SOURCES += \
     com/ComDevice.cpp \
     com/ComProfile.cpp \
     \
+    com/ui/ComCommandSelector.cpp \
     com/ui/ComDeviceBiosignalControl.cpp \
     com/ui/ComDeviceManualControl.cpp \
     com/ui/ComDeviceProportionalControl.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     com/ComDevice.h \
     com/ComProfile.h \
     \
+    com/ui/ComCommandSelector.h \
     com/ui/ComDeviceBiosignalControl.h \
     com/ui/ComDeviceManualControl.h \
     com/ui/ComDeviceProportionalControl.h \
