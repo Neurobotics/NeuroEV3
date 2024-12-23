@@ -54,43 +54,48 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="122"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="145"/>
         <source>Enter command</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="130"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="153"/>
         <source>Port settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="132"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="155"/>
         <source>Port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="133"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="156"/>
         <source>BaudRate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="134"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="157"/>
         <source>Parity</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="135"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="158"/>
         <source>DataBits</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="136"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="159"/>
         <source>Timeout</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComProfileWidget.cpp" line="141"/>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="164"/>
         <source>Commands</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/ComProfileWidget.cpp" line="165"/>
+        <source>Speed format</source>
         <translation></translation>
     </message>
     <message>
@@ -184,6 +189,11 @@
     <message>
         <location filename="../../com/ui/ComDeviceManualControl.cpp" line="50"/>
         <source>Custom</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="22"/>
+        <source>Multiplier</source>
         <translation></translation>
     </message>
 </context>
