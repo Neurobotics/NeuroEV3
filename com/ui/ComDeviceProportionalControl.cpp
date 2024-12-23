@@ -8,5 +8,5 @@ ComDeviceProportionalControl::ComDeviceProportionalControl(ComDevice *com, Setti
 
 void ComDeviceProportionalControl::innerSetValue()
 {
-
+    m_com->sendSpeed(m_value);
 }

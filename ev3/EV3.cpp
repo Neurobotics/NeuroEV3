@@ -1,6 +1,5 @@
 #include "EV3.h"
 #include "EV3_Motor.h"
-#include <QTimer>
 #include <QtBluetooth/QBluetoothLocalDevice>
 #include <QDebug>
 #include <QDateTime>

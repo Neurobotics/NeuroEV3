@@ -11,7 +11,7 @@ ComDevice::ComDevice(QObject *parent) : QObject(parent)
     m_port = new QSerialPort();
     connect(m_port, &QSerialPort::readyRead, [=]() {
         auto msg = m_port->readAll();
-        qDebug() << "COM << " << msg.toHex(' ');
+        qDebug() << "COM MESSAGE <<< " << msg.toHex(' ') << QString::fromLatin1(msg);
     });
 
     reconnect();
@@ -23,7 +23,7 @@ ComDevice::ComDevice(QObject *parent) : QObject(parent)
             reconnect();
         }
     });
-    m_connectionTimer->start(1000);
+    m_connectionTimer->start(5000);
 }
 
 void ComDevice::setEnabled(bool on)
@@ -61,6 +61,11 @@ void ComDevice::sendCommand(QString command)
     if (!cmd.isEmpty()) {
         sendMessage(cmd);
     }
+}
+
+void ComDevice::sendSpeed(int speed)
+{
+    sendMessage(QString::number(speed, 'f', 0) + ";");
 }
 
 bool ComDevice::performAction(const QString &name)

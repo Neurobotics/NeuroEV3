@@ -33,6 +33,7 @@ public:
 
     void sendMessage(QString msg);
     void sendCommand(QString command);
+    void sendSpeed(int speed);
 
     bool performAction(const QString &name);
     QString action(const QString &name);
