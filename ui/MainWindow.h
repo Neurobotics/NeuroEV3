@@ -12,6 +12,7 @@
 #include "classes/Settings.h"
 #include "classes/NeuroPlayAppConnector.h"
 #include "ui/DeviceProportionalControl.h"
+#include "ui/DeviceMultiplayerControl.h"
 
 struct UserBCI
 {
@@ -83,5 +84,6 @@ protected:
 
     QList<DeviceProportionalControl*> m_meditationControls;
     QList<DeviceProportionalControl*> m_concentrationControls;
+    QList<DeviceMultiplayerControl*> m_multiplayerControls;
 };
 #endif // MAINWINDOW_H

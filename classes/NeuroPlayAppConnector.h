@@ -21,6 +21,7 @@ signals:
     void connected();
     void disconnected();
     void userBCI(int userIndex, float meditation, float concentration, int mentalState);
+    void userPairBCI(QPair<float, float> meditation, QPair<float, float> concentration);
 
 protected:
     bool m_isConnected = false;
@@ -29,7 +30,7 @@ protected:
     bool m_multiplayer = false;
 
     void setConnected(bool connected);
-    void parseSingleJson(QJsonObject obj, int userIndex = 0);
+    QPair<float, float> parseSingleJson(QJsonObject obj, int userIndex = 0);
 
 };
 

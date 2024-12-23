@@ -18,18 +18,25 @@ NeuroPlayAppConnector::NeuroPlayAppConnector(QObject *parent) : QObject(parent)
         QJsonObject resp = json.object();
 
         auto resultsObject = resp["results"];
-        if (resultsObject.isArray())
-        {
+        if (resultsObject.isArray()) {
             auto devices = resultsObject.toArray();
+            QList<int> meditations = { 0, 0 };
+            QList<int> concentrations = { 0, 0 };
             int index = 0;
-            foreach (auto dev, devices)
-            {
-                if (dev.isObject())
-                {
-                   parseSingleJson(dev.toObject(), index);
+            foreach (auto dev, devices) {
+                if (dev.isObject()) {
+                   auto medCon = parseSingleJson(dev.toObject(), index);
+                    if (index < meditations.length()) {
+                       meditations[index] = medCon.first;
+                       concentrations[index] = medCon.second;
+                    } else {
+                        meditations << medCon.first;
+                        concentrations << medCon.second;
+                    }
                 }
                 index ++;
             }
+            emit userPairBCI(QPair<float, float> { meditations[0], meditations[1] }, QPair<float, float> { concentrations[0], concentrations[1] });
         }
         else
         {
@@ -89,7 +96,7 @@ void NeuroPlayAppConnector::setConnected(bool connected)
     else emit this->disconnected();
 }
 
-void NeuroPlayAppConnector::parseSingleJson(QJsonObject obj, int userIndex)
+QPair<float, float> NeuroPlayAppConnector::parseSingleJson(QJsonObject obj, int userIndex)
 {
     float meditation = 0;
     auto med = obj["meditation"];
@@ -110,4 +117,5 @@ void NeuroPlayAppConnector::parseSingleJson(QJsonObject obj, int userIndex)
     }
 
     emit userBCI(userIndex, meditation, concentration, mentalState);
+    return QPair<float, float>(meditation, concentration);
 }
