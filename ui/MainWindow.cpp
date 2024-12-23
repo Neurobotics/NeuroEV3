@@ -308,7 +308,7 @@ void MainWindow::control()
     break;
 
     case Concentration: {
-        foreach (auto widget, m_meditationControls) {
+        foreach (auto widget, m_concentrationControls) {
             widget->setValue(m_userBCI[0].concentration);
         }
     }
