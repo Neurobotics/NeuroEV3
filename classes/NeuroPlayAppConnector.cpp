@@ -114,6 +114,11 @@ QPair<float, float> NeuroPlayAppConnector::parseSingleJson(QJsonObject obj, int 
     auto st = obj["mental_state"];
     if (!st.isNull()) {
         mentalState = st.toInt();
+    } else {
+        st = obj["biosignal_state"];
+        if (!st.isNull()) {
+            mentalState = st.toInt();
+        }
     }
 
     emit userBCI(userIndex, meditation, concentration, mentalState);
