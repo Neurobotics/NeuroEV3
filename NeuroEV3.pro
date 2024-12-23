@@ -39,6 +39,7 @@ SOURCES += \
     ui/DeviceMultiplayerControl.cpp \
     ui/DeviceProportionalControl.cpp \
     ui/IconLabel.cpp \
+    ui/ImpovedSlider.cpp \
     ui/MotorsCoeffWidget.cpp \
     ui/MotorsWidget.cpp \
     ui/MainWindow.cpp \
@@ -76,6 +77,7 @@ HEADERS += \
     ui/DeviceMultiplayerControl.h \
     ui/DeviceProportionalControl.h \
     ui/IconLabel.h \
+    ui/ImpovedSlider.h \
     ui/MotorsCoeffWidget.h \
     ui/MotorsWidget.h \
     ui/MainWindow.h \

@@ -9,6 +9,7 @@
 #include "classes/Common.h"
 #include <QLineEdit>
 #include "com/ui/ComDeviceStatusWidget.h"
+#include <QSpinBox>
 
 ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(parent)
 {
@@ -97,6 +98,16 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
         m_profile->setDataBits(comboDataBits->currentText().toInt());
     });
 
+    // Timeout
+    auto spinTimeout = new QSpinBox();
+    spinTimeout->setRange(0, 10000);
+    spinTimeout->setSuffix("ms");
+    spinTimeout->setMaximumWidth(200);
+    spinTimeout->setValue(m_profile->timeoutMs());
+    connect(spinTimeout, &QSpinBox::valueChanged, [=]() {
+        m_profile->setTimeoutMs(spinTimeout->value());
+    });
+
     auto grid = new QGridLayout();
     auto func_addRow = [=](QString title, QWidget *editor = nullptr) {
         int row = grid->rowCount();
@@ -122,8 +133,9 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
     func_addRow(QCoreApplication::translate("Generic", "BaudRate"), comboBaudRate);
     func_addRow(QCoreApplication::translate("Generic", "Parity"), comboParity);
     func_addRow(QCoreApplication::translate("Generic", "DataBits"), comboDataBits);
+    func_addRow(QCoreApplication::translate("Generic", "Timeout"), spinTimeout);
 
-    grid->addWidget(new ComDeviceStatusWidget(com), 2, 1, 4, 1, Qt::AlignRight|Qt::AlignBottom);
+    grid->addWidget(new ComDeviceStatusWidget(com), 2, 1, 5, 1, Qt::AlignRight|Qt::AlignBottom);
 
     func_addRow("");
     func_addRow(tr("Commands"));
