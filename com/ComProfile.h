@@ -36,9 +36,17 @@ public:
     inline static QString COMMAND = "command";
     inline static QString ACTION = "action";
     inline static QString TIMEOUT = "timeout";
+    inline static QString SPEEDPREFIX = "speedPrefix";
+    inline static QString SPEEDSUFFIX = "speedSuffix";
 
     QString action(const QString &name);
     void setAction(const QString &name, const QString &value);
+
+    QString speedPrefix();
+    QString speedSuffix();
+
+    void setSpeedPrefix(const QString &prefix);
+    void setSpeedSuffix(const QString &suffix);
 
 signals:
     void portChanged(QString port);

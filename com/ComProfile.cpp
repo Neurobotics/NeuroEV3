@@ -104,3 +104,23 @@ void ComProfile::setAction(const QString &name, const QString &value)
 {
     setValue(ACTION + name, value);
 }
+
+QString ComProfile::speedPrefix()
+{
+    return value(SPEEDPREFIX, "").toString();
+}
+
+QString ComProfile::speedSuffix()
+{
+    return value(SPEEDSUFFIX, ";").toString();
+}
+
+void ComProfile::setSpeedPrefix(const QString &prefix)
+{
+    setValue(SPEEDPREFIX, prefix);
+}
+
+void ComProfile::setSpeedSuffix(const QString &suffix)
+{
+    setValue(SPEEDSUFFIX, suffix);
+}

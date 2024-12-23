@@ -100,7 +100,7 @@ void ComDevice::sendCommand(const QString &command)
 
 void ComDevice::sendSpeed(int speed)
 {
-    sendMessage(QString::number(speed, 'f', 0) + ";");
+    sendMessage(m_profile->speedPrefix() + QString::number(qBound(-100, speed, 100), 'f', 0) + m_profile->speedSuffix());
 }
 
 bool ComDevice::performAction(const QString &name)
