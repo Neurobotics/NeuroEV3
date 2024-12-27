@@ -20,10 +20,13 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
 
     // Port selector
     auto comboPorts = new QComboBox();
-    connect(comboPorts, &QComboBox::currentIndexChanged, [=]() {
+
+    auto func_setPort =[=]() {
         auto port = comboPorts->currentData().toString();
         m_profile->setPort(port);
-    });
+    };
+
+    connect(comboPorts, &QComboBox::currentIndexChanged, func_setPort);
 
     auto func_fillPorts = [=]() {
         comboPorts->blockSignals(true);
@@ -36,6 +39,9 @@ ComProfileWidget::ComProfileWidget(ComDevice *com, QWidget *parent) : QWidget(pa
             if (name == lastPort) {
                 comboPorts->setCurrentIndex(comboPorts->count() - 1);
             }
+        }
+        if (!comboPorts->currentText().isEmpty()) {
+            func_setPort();
         }
         comboPorts->blockSignals(false);
     };

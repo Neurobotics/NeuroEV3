@@ -20,12 +20,18 @@ ComDevice::ComDevice(QObject *parent) : QObject(parent)
         qDebug() << "COM MESSAGE <<< " << msg.toHex(' ') << QString::fromLatin1(msg);
     });
 
+    connect(m_port, &QSerialPort::errorOccurred, [=](QSerialPort::SerialPortError err) {
+        if (err != QSerialPort::NoError) {
+            qWarning() << "SerialPort Error: " << err;
+        }
+    });
+
     reconnect();
 
     m_connectionTimer = new QTimer(this);
     connect(m_connectionTimer, &QTimer::timeout, this, [=]() {
         if (!isConnected() && m_isEnabled) {
-            qDebug() << "Reconnecting";
+            qDebug() << "Reconnecting" << m_profile->port() << m_profile->parity() << m_profile->baudRate();
             reconnect();
         }
     });
