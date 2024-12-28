@@ -286,9 +286,16 @@ void MainWindow::control()
 
     switch (m_controlState) {
     case MentalState: {
-        foreach (auto biosignalControl, m_biosignalStateControls) {
-            biosignalControl->setCurrentState((int)m_userBCI[0].biosignalState);
+        static qint64 bsTimestamp = 0;
+        qint64 ts = QDateTime::currentMSecsSinceEpoch();
+        // Limit to twice per second
+        if ((ts - bsTimestamp) > 500) {
+            bsTimestamp = ts;
+            foreach (auto biosignalControl, m_biosignalStateControls) {
+                biosignalControl->setCurrentState((int)m_userBCI[0].biosignalState);
+            }
         }
+
     }
     break;
 
