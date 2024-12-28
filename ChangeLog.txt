@@ -1,3 +1,13 @@
+1.4.2 (2024-12-28)
+<ru-RU>
++ Получение биосигнальных состояний не чаще, чем дважды в секунду
++ Возможность работы с биосигнальными состояниями как со словами (длина слова, количество повторов одного символа, количество символов)
+</ru-RU>
+<en-EN>
++ Fetch biosignal states twice per second
++ Capability to work with biosignal states as words (word length, amount of repeats, amount of symbols)
+</en-EN>
+
 1.4.1 (2024-12-27)
 <ru-RU>
 + Исправлен выбор единственного порта
