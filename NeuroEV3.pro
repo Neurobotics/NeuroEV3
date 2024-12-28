@@ -33,15 +33,15 @@ SOURCES += \
     ev3/ui/EV3ManualControl.cpp \
     ev3/ui/EV3MultiplayerControl.cpp \
     ev3/ui/EV3ProportionalControl.cpp \
+    ev3/ui/BaseMotorsWidget.cpp \
+    ev3/ui/MotorsCoeffWidget.cpp \
+    ev3/ui/MotorsWidget.cpp \
     \
-    ui/BaseMotorsWidget.cpp \
     ui/DeviceBiosignalStateControl.cpp \
     ui/DeviceMultiplayerControl.cpp \
     ui/DeviceProportionalControl.cpp \
     ui/IconLabel.cpp \
     ui/ImpovedSlider.cpp \
-    ui/MotorsCoeffWidget.cpp \
-    ui/MotorsWidget.cpp \
     ui/MainWindow.cpp \
     ui/UICommon.cpp \
     \
@@ -71,15 +71,15 @@ HEADERS += \
     ev3/ui/EV3ManualControl.h \
     ev3/ui/EV3MultiplayerControl.h \
     ev3/ui/EV3ProportionalControl.h \
+    ev3/ui/BaseMotorsWidget.h \
+    ev3/ui/MotorsCoeffWidget.h \
+    ev3/ui/MotorsWidget.h \
     \
-    ui/BaseMotorsWidget.h \
     ui/DeviceBiosignalStateControl.h \
     ui/DeviceMultiplayerControl.h \
     ui/DeviceProportionalControl.h \
     ui/IconLabel.h \
     ui/ImpovedSlider.h \
-    ui/MotorsCoeffWidget.h \
-    ui/MotorsWidget.h \
     ui/MainWindow.h \
     ui/UICommon.h \
 
@@ -89,8 +89,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-RESOURCES += \
-    resources.qrc
+RESOURCES += resources.qrc
 
 win32: RC_ICONS += resources/neuroEV3.ico
 

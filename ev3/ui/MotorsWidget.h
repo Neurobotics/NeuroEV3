@@ -2,7 +2,7 @@
 #define MOTORSWIDGET_H
 
 #include "BaseMotorsWidget.h"
-#include "ImpovedSlider.h"
+#include "ui/ImpovedSlider.h"
 
 class MotorsWidget : public BaseMotorsWidget
 {

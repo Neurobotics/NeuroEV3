@@ -10,6 +10,8 @@
 
 class EV3_Motor;
 
+const int EV3_MAX_MOTORS = 4;
+
 #define EV3_UDP_PORT 3015
 #define EV3_TCP_PORT 5555
 

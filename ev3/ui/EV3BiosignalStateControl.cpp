@@ -1,7 +1,7 @@
 #include "EV3BiosignalStateControl.h"
 #include <QCheckBox>
 #include "ev3/EV3_Motor.h"
-#include "ui/MotorsWidget.h"
+#include "ev3/ui/MotorsWidget.h"
 
 EV3BiosignalStateControl::EV3BiosignalStateControl(EV3 *ev3, Settings *settings, QWidget *parent)
     : DeviceBiosignalStateControl(settings, "", parent)
@@ -14,7 +14,7 @@ QWidget *EV3BiosignalStateControl::createStateWidget(int state, Qt::Alignment al
 {
     auto motors = new MotorsWidget();
     motors->layout()->setContentsMargins(0,0,0,0);
-    for (int j = 1; j<=MAX_MOTORS; j++) {
+    for (int j = 1; j<=EV3_MAX_MOTORS; j++) {
         motors->setMotorValue(j, m_settings->getMentalStateDrive(state, j));
     }
 

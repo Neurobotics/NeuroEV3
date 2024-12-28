@@ -3,10 +3,11 @@
 #include <QLabel>
 #include <QPushButton>
 #include "classes/Common.h"
+#include "ev3/EV3.h"
 
 MotorsCoeffWidget::MotorsCoeffWidget(QWidget *parent) : BaseMotorsWidget(parent)
 {
-    for (int i = 1; i<=MAX_MOTORS; i++) {
+    for (int i = 1; i <= EV3_MAX_MOTORS; i++) {
         auto motorSocket = Common::Instance()->motorSocket(i);
 
         auto checkbox = new QCheckBox();

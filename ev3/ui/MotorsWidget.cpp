@@ -2,14 +2,15 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include "IconLabel.h"
+#include "ui/IconLabel.h"
 #include "classes/Common.h"
 #include <QCoreApplication>
+#include "ev3/EV3.h"
 
 MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
 {
     m_layout->setSpacing(2);
-    for (int i = 1; i<=MAX_MOTORS; i++) {
+    for (int i = 1; i <= EV3_MAX_MOTORS; i++) {
         auto motorPowerLabel = new QLabel("0");
         motorPowerLabel->setMinimumWidth(50);
 

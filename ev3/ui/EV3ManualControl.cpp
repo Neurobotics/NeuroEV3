@@ -1,6 +1,6 @@
 #include "EV3ManualControl.h"
 #include "ev3/EV3_Motor.h"
-#include "ui/MotorsWidget.h"
+#include "ev3/ui/MotorsWidget.h"
 
 EV3ManualControl::EV3ManualControl(EV3 *ev3, QWidget *parent) : QWidget{parent}
 {

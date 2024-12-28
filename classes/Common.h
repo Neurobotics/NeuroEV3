@@ -11,7 +11,6 @@ const QString CONCENTRATION = "concentration";
 const QString MENTALSTATE = "mentalState";
 
 const int MAX_MENTAL_STATES = 4;
-const int MAX_MOTORS = 4;
 const QString MULTIPLAYER = "multiplayer";
 
 class Common {

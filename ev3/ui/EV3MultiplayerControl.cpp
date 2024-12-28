@@ -1,13 +1,13 @@
 #include "EV3MultiplayerControl.h"
 #include "ev3/EV3_Motor.h"
-#include "ui/MotorsCoeffWidget.h"
+#include "ev3/ui/MotorsCoeffWidget.h"
 
 EV3MultiplayerControl::EV3MultiplayerControl(EV3 *ev3, Settings *settings, QWidget *parent) : DeviceMultiplayerControl(settings, parent)
 {
     m_ev3 = ev3;
 
     auto multiplayerWidget = new MotorsCoeffWidget();
-    for (int i = 1; i<=MAX_MOTORS; i++) {
+    for (int i = 1; i <= EV3_MAX_MOTORS; i++) {
         multiplayerWidget->setMotorCoeff(i, m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i));
         multiplayerWidget->setMotorEnabled(i, m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i));
     }
@@ -25,7 +25,7 @@ void EV3MultiplayerControl::onSetValues()
 {
     if (m_ev3 && isVisible()) {
         float val = m_useMeditation ? m_meditationMix : m_concentrationMix;
-        for (int i = 1; i <= MAX_MOTORS; i++) {
+        for (int i = 1; i <= EV3_MAX_MOTORS; i++) {
             if (m_settings->getMetaIndexDriveEnabled(MULTIPLAYER, i)) {
                 m_ev3->motor(i)->setPower(m_settings->getMetaIndexDriveCoeff(MULTIPLAYER, i) * val);
             } else {
