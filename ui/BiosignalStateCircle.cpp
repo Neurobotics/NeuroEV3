@@ -1,11 +1,15 @@
 #include "BiosignalStateCircle.h"
 #include <QPainter>
 #include "ui/UICommon.h"
+#include <QTimer>
 
 BiosignalStateCircle::BiosignalStateCircle(int state, bool filled, QSize size, QWidget *parent) : QWidget(parent)
 {
     setFixedSize(size);
     setStateAndFilled(state, filled);
+    QTimer::singleShot(500, [=]() {
+        update();
+    });
 }
 
 void BiosignalStateCircle::setState(int state)
@@ -26,12 +30,23 @@ void BiosignalStateCircle::setStateAndFilled(int state, bool filled)
     update();
 }
 
+void BiosignalStateCircle::setSquare(bool on)
+{
+    m_square = on;
+    update();
+}
+
+int BiosignalStateCircle::state()
+{
+    return m_state;
+}
+
 void BiosignalStateCircle::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
     p.fillRect(rect(), Qt::transparent);
 
-    if (m_state == 0) return;
+    // if (m_state == 0) return;
 
     int w = width();
     int h = height();
@@ -39,7 +54,7 @@ void BiosignalStateCircle::paintEvent(QPaintEvent *)
 
     if (s < 4) return;
 
-    p.translate((w-s)/2 - 0.5, (h-s)/2 - 0.5);
+    p.translate((w-s)/2, (h-s)/2);
 
     p.setRenderHint(QPainter::Antialiasing);
 
@@ -56,7 +71,11 @@ void BiosignalStateCircle::paintEvent(QPaintEvent *)
     }
 
     QRect r(0, 0, s, s);
-    p.drawEllipse(r);
+    if (m_square) {
+        p.drawRect(r);
+    } else {
+        p.drawEllipse(r);
+    }
 
     if (m_state <= 0) return;
     auto font = p.font();

@@ -13,9 +13,14 @@ public:
     void setFilled(bool filled);
     void setStateAndFilled(int state, bool filled);
 
+    void setSquare(bool on);
+
+    int state();
+
 protected:
     int m_state = -1;
     bool m_filled = false;
+    bool m_square = false;
     QString m_stateStr = "";
 
     void paintEvent(QPaintEvent *) override;
