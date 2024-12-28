@@ -41,6 +41,7 @@ SOURCES += \
     ui/DeviceBiosignalStateControl.cpp \
     ui/DeviceMultiplayerControl.cpp \
     ui/DeviceProportionalControl.cpp \
+    ui/GroupBox.cpp \
     ui/IconLabel.cpp \
     ui/ImpovedSlider.cpp \
     ui/MainWindow.cpp \
@@ -82,12 +83,15 @@ HEADERS += \
     ui/DeviceBiosignalStateControl.h \
     ui/DeviceMultiplayerControl.h \
     ui/DeviceProportionalControl.h \
+    ui/GroupBox.h \
     ui/IconLabel.h \
     ui/ImpovedSlider.h \
     ui/MainWindow.h \
     ui/UICommon.h \
     ui/nscrollviewer.h \
     ui/nstackpanel.h
+
+CONFIG += force_debug_info
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

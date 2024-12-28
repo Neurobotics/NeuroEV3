@@ -58,6 +58,7 @@ QWidget *NScrollViewer::itemAt(int index)
 
 void NScrollViewer::addWidget(QWidget *widget)
 {
+    m_stack->setSpacing(0);
     m_stack->add(widget);
     checkPlaceholder();
 }
