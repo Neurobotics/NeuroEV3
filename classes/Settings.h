@@ -35,7 +35,7 @@ public:
     QString getMultiplayerControl();
 
 protected:
-    QString mentalStateHeader(int state);    
+    QString biosignalStateHeader(int state);    
 
 };
 

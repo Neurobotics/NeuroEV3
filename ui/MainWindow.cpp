@@ -12,11 +12,13 @@
 #include "ev3/ui/EV3MultiplayerControl.h"
 #include "ev3/ui/EV3BiosignalStateControl.h"
 
+#include "ui/UICommon.h"
+
 #include <QUrl>
 #include <QDir>
 #include <QLabel>
 #include <QDebug>
-#include <QSysInfo>
+
 #include <QEventLoop>
 #include <QJsonObject>
 #include <QTranslator>
@@ -45,20 +47,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     }
     QDir::setCurrent(folder);
 
-    QString version = appVersion(true);
+    QString version = Common::appVersion(true);
     setWindowTitle(QCoreApplication::applicationName() + " " + version);
 
     m_settings = new Settings();
-
-    auto func_iconButton = [](QString iconPath, QSize size = QSize(42, 42), QSize iconSize = QSize(32, 32)) {
-        auto btn = new QPushButton();
-        btn->setIcon(QIcon(iconPath));
-        btn->setIconSize(iconSize);
-        btn->setFixedSize(size);
-        btn->setContentsMargins(0,0,0,0);
-        btn->setCursor(Qt::PointingHandCursor);
-        return btn;
-    };
 
     m_com = new ComDevice();
 
@@ -79,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_ev3 = new EV3(m_settings->getConnectionType());
     connect(m_ev3, &EV3::connectionStateChanged, this, func_connected, Qt::QueuedConnection);
 
-    auto btnEV3Connect = func_iconButton(":/resources/EV3.svg");
+    auto btnEV3Connect = UICommon::iconedButton(":/resources/EV3.svg");
     btnEV3Connect->setCheckable(true);
     connect(btnEV3Connect, &QPushButton::toggled, this, [=](bool toggled) {
         if (toggled) m_ev3->searchAndConnect();
@@ -124,12 +116,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto line1 = new QWidget();
     line1->setMaximumHeight(4);
     line1->setMinimumWidth(30);
-    ChangeBackground(line1, colorBlue);
+    UICommon::ChangeBackground(line1, colorBlue);
 
     auto line2 = new QWidget();
     line2->setMaximumHeight(4);
     line2->setMinimumWidth(30);
-    ChangeBackground(line2, colorBlue);
+    UICommon::ChangeBackground(line2, colorBlue);
 
     auto radioGroup = new QButtonGroup();
     auto radioDeviceEV3 = new QRadioButton("EV3");
@@ -151,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     static QIcon iconLink = QIcon(":/resources/link.svg");
     static QIcon iconLinkOff = QIcon(":/resources/link_off.svg");
-    auto btnCanControl = func_iconButton("");
+    auto btnCanControl = UICommon::iconedButton("");
     btnCanControl->setCheckable(true);
     btnCanControl->setChecked(true);
     btnCanControl->setIcon(iconLink);
@@ -159,17 +151,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(btnCanControl, &QPushButton::toggled, [=](bool toggled) {
         btnCanControl->setIcon(toggled ? iconLink : iconLinkOff);
         m_canControl = toggled;
-        ChangeBackground(line1, toggled ? colorBlue : colorGray);
-        ChangeBackground(line2, toggled ? colorBlue : colorGray);
+        UICommon::ChangeBackground(line1, toggled ? colorBlue : colorGray);
+        UICommon::ChangeBackground(line2, toggled ? colorBlue : colorGray);
     });
 
     auto widgetEV3connectionType = new QWidget();
     auto layoutEV3connectionType = new QVBoxLayout(widgetEV3connectionType);
     layoutEV3connectionType->setContentsMargins(0,0,0,0);
     layoutEV3connectionType->setSpacing(0);
-    auto btnBluetooth = func_iconButton(":/resources/bluetooth.svg", QSize(20, 20), QSize(16, 16));
+    auto btnBluetooth = UICommon::iconedButton(":/resources/bluetooth.svg", QSize(20, 20), QSize(16, 16));
     btnBluetooth->setCheckable(true);
-    auto btnWiFi = func_iconButton(":/resources/wifi.svg", QSize(20, 20), QSize(16, 16));
+    auto btnWiFi = UICommon::iconedButton(":/resources/wifi.svg", QSize(20, 20), QSize(16, 16));
     btnWiFi->setCheckable(true);
 
     layoutEV3connectionType->addWidget(btnWiFi);
@@ -196,7 +188,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     func_setMode(m_settings->getConnectionType());
 
     auto btnNeuroPlayConnected = Common::Instance()->connectStatusWidget();
-    auto btnNeuroPlay = func_iconButton(":/resources/neuroplay.png");
+    auto btnNeuroPlay = UICommon::iconedButton(":/resources/neuroplay.png");
     btnNeuroPlay->setFlat(true);
 
     m_deviceWidgets[Device_EV3] << btnEV3Connect;
@@ -214,10 +206,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     headerLayout->addWidget(btnNeuroPlayConnected);
     headerLayout->addWidget(btnNeuroPlay);
 
-    auto btnNeurobotics = flatButton("", QIcon(":/resources/neurobotics-logo.svg"), QCoreApplication::translate("Generic", "Visit neurobotics.ru"), QUrl("https://neurobotics.ru"));
+    auto btnNeurobotics = UICommon::flatButton("", QIcon(":/resources/neurobotics-logo.svg"), QCoreApplication::translate("Generic", "Visit neurobotics.ru"), QUrl("https://neurobotics.ru"));
     btnNeurobotics->setIconSize(QSize(68, 24));
 
-    auto btnGithub = flatButton("", QIcon(":/resources/github.svg"), QCoreApplication::translate("Generic", "Visit NeuroEV3 GitHub repo"), QUrl("https://github.com/neurobotics/neuroev3"));
+    auto btnGithub = UICommon::flatButton("", QIcon(":/resources/github.svg"), QCoreApplication::translate("Generic", "Visit NeuroEV3 GitHub repo"), QUrl("https://github.com/neurobotics/neuroev3"));
     btnGithub->setIconSize(QSize(24, 24));
 
     auto bottomLayout = new QHBoxLayout();
@@ -245,12 +237,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         btnNeuroPlayConnected->setActive(false);
     });
 
-    connect(m_neuroplayConnector, &NeuroPlayAppConnector::userBCI, this, [=](int userIndex, float meditation, float concentration, int mentalState) {
+    connect(m_neuroplayConnector, &NeuroPlayAppConnector::userBCI, this, [=](int userIndex, float meditation, float concentration, int biosignalState) {
         if (userIndex < 0 || userIndex >= m_userBCI.length()) return;
 
         m_userBCI[userIndex].meditation = meditation;
         m_userBCI[userIndex].concentration = concentration;
-        m_userBCI[userIndex].mentalState = mentalState;
+        m_userBCI[userIndex].biosignalState = biosignalState;
 
         if (userIndex == 0) control();
     }, Qt::QueuedConnection);
@@ -295,7 +287,7 @@ void MainWindow::control()
     switch (m_controlState) {
     case MentalState: {
         foreach (auto biosignalControl, m_biosignalStateControls) {
-            biosignalControl->setCurrentState((int)m_userBCI[0].mentalState);
+            biosignalControl->setCurrentState((int)m_userBCI[0].biosignalState);
         }
     }
     break;
@@ -382,43 +374,6 @@ void MainWindow::addTab(QString title, DeviceProportionalControl *widgetForEV3, 
     }
 }
 
-QString MainWindow::OS()
-{
-    static QString _os = "";
-    if (_os.isEmpty()) {
-        auto os = QSysInfo::productType().toLower();
-
-        if (os.contains("windows") || os.contains("winrt")) _os = "windows";
-
-        else if (os.contains("android")) _os = "android";
-
-        else if (os.contains("osx") || os.contains("mac")) _os = "macos";
-
-        else if (os.contains("ios")) _os = "ios";
-        else if (os.contains("tvos")) _os = "tvos";
-        else if (os.contains("watchos")) _os = "watchos";
-        else if (os.contains("ubuntu") ||
-                 os.contains("linux") ||
-                 os.contains("manjaro") ||
-                 os.contains("centos") ||
-                 os.contains("fedora") ||
-                 os.contains("raspberry"))
-        {
-            _os = "linux";
-        }
-        else _os = "unix";
-    }
-    return _os;
-}
-
-void MainWindow::ChangeBackground(QWidget *w, QColor color)
-{
-    QPalette pal(w->palette());
-    pal.setColor(QPalette::Window, color);
-    w->setAutoFillBackground(true);
-    w->setPalette(pal);
-}
-
 QString MainWindow::autoDetectLanguage(QString settingsFile)
 {
     QString lang = "en-US";
@@ -448,8 +403,8 @@ QString MainWindow::autoDetectLanguage(QString settingsFile)
 
 QWidget *MainWindow::newVersionButton()
 {
-    QString version = appVersion(true);
-    QUrl url = "https://neurobotics.ru/repo/version.php?app="+QCoreApplication::applicationName()+"&version="+version + "&platform=" + OS();
+    QString version = Common::appVersion(true);
+    QUrl url = "https://neurobotics.ru/repo/version.php?app="+QCoreApplication::applicationName()+"&version="+version + "&platform=" + Common::OS();
 
     QEventLoop connection_loop;
     QNetworkAccessManager networkManager;
@@ -467,33 +422,9 @@ QWidget *MainWindow::newVersionButton()
     if (o.value("valid").toBool() == true) {
         const QString link = o.value("link").toString();
         const QString version = o.value("version").toString();
-        auto btnNewVersion = flatButton(QCoreApplication::translate("Generic", "New version available") + " " + version, QIcon(), QCoreApplication::translate("Generic", "Download new version"), QUrl(link));
+        auto btnNewVersion = UICommon::flatButton(QCoreApplication::translate("Generic", "New version available") + " " + version, QIcon(), QCoreApplication::translate("Generic", "Download new version"), QUrl(link));
         btnNewVersion->setStyleSheet("QPushButton { color: #159; text-decoration: underline } QPushButton:hover { color: #37B; }");
         return btnNewVersion;
     }
     return nullptr;
-}
-
-QPushButton *MainWindow::flatButton(QString text, QIcon icon, QString tooltip, QUrl url)
-{
-    auto btn = new QPushButton(icon, text);
-    btn->setFlat(true);
-    btn->setCursor(Qt::PointingHandCursor);
-    btn->setToolTip(tooltip);
-    if (!url.isEmpty()) {
-        connect(btn, &QPushButton::clicked, [=]() {
-            QDesktopServices::openUrl(url);
-        });
-    }
-    return btn;
-}
-
-QString MainWindow::appVersion(bool withBuild)
-{
-    QStringList versions = QCoreApplication::applicationVersion().split(".");
-    int m = withBuild ? 3 : 2;
-    while (versions.length() > m) {
-        versions.removeLast();
-    }
-    return versions.join(".");
 }

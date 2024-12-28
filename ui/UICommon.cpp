@@ -1,7 +1,7 @@
 #include "UICommon.h"
+#include <QDesktopServices>
 
-UICommon::UICommon(QObject *parent)
-    : QObject{parent}
+UICommon::UICommon(QObject *parent) : QObject(parent)
 {}
 
 QProgressBar *UICommon::progressBar(QString color)
@@ -21,4 +21,37 @@ QProgressBar *UICommon::meditationBar()
 QProgressBar *UICommon::concentrationBar()
 {
     return progressBar(ColorConcentration);
+}
+
+void UICommon::ChangeBackground(QWidget *w, QColor color)
+{
+    QPalette pal(w->palette());
+    pal.setColor(QPalette::Window, color);
+    w->setAutoFillBackground(true);
+    w->setPalette(pal);
+}
+
+QPushButton *UICommon::iconedButton(QString iconPath, QSize size, QSize iconSize)
+{
+    auto btn = new QPushButton();
+    btn->setIcon(QIcon(iconPath));
+    btn->setIconSize(iconSize);
+    btn->setFixedSize(size);
+    btn->setContentsMargins(0,0,0,0);
+    btn->setCursor(Qt::PointingHandCursor);
+    return btn;
+}
+
+QPushButton *UICommon::flatButton(QString text, QIcon icon, QString tooltip, QUrl url)
+{
+    auto btn = new QPushButton(icon, text);
+    btn->setFlat(true);
+    btn->setCursor(Qt::PointingHandCursor);
+    btn->setToolTip(tooltip);
+    if (!url.isEmpty()) {
+        connect(btn, &QPushButton::clicked, [=]() {
+            QDesktopServices::openUrl(url);
+        });
+    }
+    return btn;
 }

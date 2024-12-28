@@ -28,20 +28,20 @@ void Settings::setEV3mode(bool on)
 
 bool Settings::getMentalStateEnabled(int state, QString prefix)
 {
-    QString header = prefix + mentalStateHeader(state);
+    QString header = prefix + biosignalStateHeader(state);
     return value(header + "/enabled", false).toBool();
 }
 
 void Settings::setMentalStateEnabled(int state, bool enabled, QString prefix)
 {
-    QString header = prefix + mentalStateHeader(state);
+    QString header = prefix + biosignalStateHeader(state);
     setValue(header + "/enabled", enabled);
 }
 
 QVector<int> Settings::getMentalStateDrives(int state)
 {
     QVector<int> drives;
-    QString header = mentalStateHeader(state);
+    QString header = biosignalStateHeader(state);
     for (int i = 1; i<=4; i++) {
         drives << value(header + "/drive" + QString::number(i), 0).toInt();
     }
@@ -50,7 +50,7 @@ QVector<int> Settings::getMentalStateDrives(int state)
 
 void Settings::setMentalStateDrives(int state, QVector<int> drives)
 {
-    QString header = mentalStateHeader(state);
+    QString header = biosignalStateHeader(state);
     for (int i = 0; i<drives.length(); i++) {
         setValue(header + "/drive" + QString::number(i + 1), drives[i]);
     }
@@ -58,15 +58,15 @@ void Settings::setMentalStateDrives(int state, QVector<int> drives)
 
 void Settings::setMentalStateDrive(int state, int motorIndex, int value)
 {
-    setValue(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), value);
+    setValue(biosignalStateHeader(state) + "/drive" + QString::number(motorIndex), value);
 }
 
 int Settings::getMentalStateDrive(int state, int motorIndex)
 {
-    return value(mentalStateHeader(state) + "/drive" + QString::number(motorIndex), 0).toInt();
+    return value(biosignalStateHeader(state) + "/drive" + QString::number(motorIndex), 0).toInt();
 }
 
-QString Settings::mentalStateHeader(int state)
+QString Settings::biosignalStateHeader(int state)
 {
     return MENTALSTATE + QString::number(state);
 }

@@ -19,7 +19,7 @@
 
 struct UserBCI
 {
-    int mentalState = -1;
+    int biosignalState = -1;
     int meditation = 0;
     int concentration = 0;
 };
@@ -47,11 +47,6 @@ public:
     };
     Q_ENUM(ControlState)
 
-    QString appVersion(bool withBuild = false);
-    QString OS();
-
-    static void ChangeBackground(QWidget *w, QColor color);
-
     QString autoDetectLanguage(QString settingsFile = "");
 
 protected:
@@ -73,8 +68,7 @@ protected:
 
     NeuroPlayAppConnector *m_neuroplayConnector = nullptr;
 
-    QWidget *newVersionButton();
-    QPushButton *flatButton(QString text, QIcon icon = QIcon(), QString tooltip = "", QUrl url = QUrl());
+    QWidget *newVersionButton();    
 
     QMap<DeviceMode, QList<QWidget*>> m_deviceWidgets;
 

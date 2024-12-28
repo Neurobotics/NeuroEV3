@@ -9,6 +9,7 @@
 const QString MEDITATION = "meditation";
 const QString CONCENTRATION = "concentration";
 const QString MENTALSTATE = "mentalState";
+const QString BIOSIGNALSTATE = "biosignalState";
 
 const int MAX_MENTAL_STATES = 4;
 const QString MULTIPLAYER = "multiplayer";
@@ -52,6 +53,9 @@ public:
         }
         return values;
     }
+
+    static QString appVersion(bool withBuild = false);
+    static QString OS();
 
 protected:
     Common();
