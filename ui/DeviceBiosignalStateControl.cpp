@@ -1,38 +1,31 @@
 #include "DeviceBiosignalStateControl.h"
 #include "classes/Common.h"
-#include <QLabel>
 #include <QHBoxLayout>
 #include <QCoreApplication>
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QLabel>
 
 DeviceBiosignalStateControl::DeviceBiosignalStateControl(Settings *settings, QString stateEnabledPrefix, QWidget *parent) : QWidget(parent)
 {
     m_settings = settings;
     m_stateEnabledPrefix = stateEnabledPrefix;
-
-    m_labelCurrentState = new QLabel("?");
 }
 
 void DeviceBiosignalStateControl::setCurrentState(int state)
 {
-    QString stateStr = QString::number(state);
-
-    QString st = "<span style=\"font-weight: bold; font-size: 20px\">[" + stateStr + "]</span>";
-
-    int n = m_lastStates.length();
-    if (n > 0) {
-        for (int i = m_lastStates.length() - 1; i >= 0; i--) {
-            st += " [" + m_lastStates[i] + "]";
-        }
-    }
-
-    m_lastStates << stateStr;
-    while (m_lastStates.length() > 19) {
+    m_lastStates << state;
+    while (m_lastStates.length() > m_maxDisplayedStates) {
         m_lastStates.removeFirst();
     }
 
-    m_labelCurrentState->setText(st);
+    int n = m_lastStates.length();
+
+    for (int i = 0, m = m_stateCircles.length(); i < m; i++) {
+        auto circle = m_stateCircles[i];
+        int index = n - 1 - i;
+        circle->setState(index > 0 ? m_lastStates[index] : 0);
+    }
 
     onSetCurrentState(state);
 }
@@ -40,9 +33,19 @@ void DeviceBiosignalStateControl::setCurrentState(int state)
 void DeviceBiosignalStateControl::init()
 {
     auto statesWidget = new QWidget();
+    auto stateCirclesLayout = new QHBoxLayout();
+    stateCirclesLayout->setSpacing(0);
+
+    for (int i = 0; i < m_maxDisplayedStates; i++) {
+        auto circle = new BiosignalStateCircle(0, false, i == 0 ? QSize(40,40) : QSize(24, 24));
+        stateCirclesLayout->addWidget(circle);
+        m_stateCircles << circle;
+    }
+    stateCirclesLayout->addStretch(100);
+
     auto statesLayout = new QVBoxLayout(statesWidget);
 
-    for (int i = 1; i<=MAX_MENTAL_STATES; i++) {
+    for (int i = 1; i <= MAX_MENTAL_STATES; i++) {
         auto group = new QGroupBox(QCoreApplication::translate("Generic", "State") + " " + QString::number(i));
         group->setCheckable(true);
         group->setChecked(m_settings->getMentalStateEnabled(i, m_stateEnabledPrefix));
@@ -66,6 +69,6 @@ void DeviceBiosignalStateControl::init()
 
     auto layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(QCoreApplication::translate("Generic", "Current state:")));
-    layout->addWidget(m_labelCurrentState);
+    layout->addLayout(stateCirclesLayout);
     layout->addWidget(scroll);
 }

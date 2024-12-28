@@ -37,6 +37,7 @@ SOURCES += \
     ev3/ui/MotorsCoeffWidget.cpp \
     ev3/ui/MotorsWidget.cpp \
     \
+    ui/BiosignalStateCircle.cpp \
     ui/DeviceBiosignalStateControl.cpp \
     ui/DeviceMultiplayerControl.cpp \
     ui/DeviceProportionalControl.cpp \
@@ -75,6 +76,7 @@ HEADERS += \
     ev3/ui/MotorsCoeffWidget.h \
     ev3/ui/MotorsWidget.h \
     \
+    ui/BiosignalStateCircle.h \
     ui/DeviceBiosignalStateControl.h \
     ui/DeviceMultiplayerControl.h \
     ui/DeviceProportionalControl.h \
