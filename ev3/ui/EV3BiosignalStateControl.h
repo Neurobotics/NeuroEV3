@@ -14,7 +14,7 @@ public:
 protected:
     EV3* m_ev3 = nullptr;
 
-    QWidget *createStateWidget(int state, Qt::Alignment align = Qt::Alignment()) override;
+    QWidget *createStateWidget(int state) override;
     void onSetCurrentState(int state) override;
 };
 

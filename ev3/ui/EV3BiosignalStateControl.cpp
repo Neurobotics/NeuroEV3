@@ -10,7 +10,7 @@ EV3BiosignalStateControl::EV3BiosignalStateControl(EV3 *ev3, Settings *settings,
     init();
 }
 
-QWidget *EV3BiosignalStateControl::createStateWidget(int state, Qt::Alignment align)
+QWidget *EV3BiosignalStateControl::createStateWidget(int state)
 {
     auto motors = new MotorsWidget();
     motors->layout()->setContentsMargins(0,0,0,0);
@@ -21,7 +21,6 @@ QWidget *EV3BiosignalStateControl::createStateWidget(int state, Qt::Alignment al
     connect(motors, &MotorsWidget::motorValueChangeRequest, [=](int motorIndex, int value) {
         m_settings->setMentalStateDrive(state, motorIndex, value);
     });
-
     return motors;
 }
 

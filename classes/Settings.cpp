@@ -100,3 +100,33 @@ QString Settings::getMultiplayerControl()
 {
     return value("muliplayer/control", "meditation").toString();
 }
+
+int Settings::getBiosignalStatesAmountToControl()
+{
+    return qBound(1, value("bsAmountToControl", 1).toInt(), 10);
+}
+
+void Settings::setBiosignalStatesAmountToControl(int value)
+{
+    setValue("bsAmountToControl", qBound(1, value, 10));
+}
+
+int Settings::getBiosignalStatesMax()
+{
+    return qBound(2, value("bsMax", 3).toInt(), MAX_MENTAL_STATES);
+}
+
+void Settings::setBiosignalStatesMax(int value)
+{
+    setValue("bsMax", qBound(2, value, MAX_MENTAL_STATES));
+}
+
+int Settings::getBiosignalStatesWordLength()
+{
+    return qBound(1, value("bsWord", 2).toInt(), MAX_BIOSIGNAL_STATE_WORD_LENGTH);
+}
+
+void Settings::setBiosignalStatesWordLength(int value)
+{
+    setValue("bsWord", qBound(1, value, MAX_BIOSIGNAL_STATE_WORD_LENGTH));
+}

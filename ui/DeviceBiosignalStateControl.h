@@ -6,6 +6,8 @@
 #include "classes/Settings.h"
 #include <QScrollArea>
 #include "ui/BiosignalStateCircle.h"
+#include <QVBoxLayout>
+#include "ui/nscrollviewer.h"
 
 class DeviceBiosignalStateControl : public QWidget
 {
@@ -27,8 +29,14 @@ protected:
 
     void init();
 
+    void rebuildStateControls();
+
     virtual void onSetCurrentState(int state) = 0;
-    virtual QWidget *createStateWidget(int state, Qt::Alignment align = Qt::Alignment()) = 0;
+    virtual QWidget *createStateWidget(int state) = 0;
+
+    NScrollViewer *m_scroll = nullptr;
+
+    QList<int> statesForWord(int maxStates, int wordLength);
 };
 
 #endif // DEVICEBIOSIGNALSTATECONTROL_H

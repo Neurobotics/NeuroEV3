@@ -15,7 +15,7 @@ protected:
     ComDevice *m_com = nullptr;
 
     void onSetCurrentState(int state) override;
-    QWidget *createStateWidget(int state, Qt::Alignment align = Qt::Alignment()) override;
+    QWidget *createStateWidget(int state) override;
 };
 
 #endif // COMDEVICEBIOSIGNALCONTROL_H

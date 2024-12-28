@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <QSettings>
-#include "Common.h"
 #include "ev3/EV3.h"
+#include "Common.h"
+
+const int MAX_BIOSIGNAL_STATE_WORD_LENGTH = 3;
 
 class Settings : public QSettings
 {
@@ -34,9 +36,17 @@ public:
     void setMultiplayerControl(QString control);
     QString getMultiplayerControl();
 
-protected:
-    QString biosignalStateHeader(int state);    
+    int getBiosignalStatesAmountToControl();
+    void setBiosignalStatesAmountToControl(int value);
 
+    int getBiosignalStatesMax();
+    void setBiosignalStatesMax(int value);
+
+    int getBiosignalStatesWordLength();
+    void setBiosignalStatesWordLength(int value);
+
+protected:
+    QString biosignalStateHeader(int state);
 };
 
 #endif // SETTINGS_H

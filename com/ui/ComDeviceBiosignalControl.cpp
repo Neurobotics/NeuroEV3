@@ -24,7 +24,7 @@ void ComDeviceBiosignalControl::onSetCurrentState(int state)
     }
 }
 
-QWidget *ComDeviceBiosignalControl::createStateWidget(int state, Qt::Alignment align)
+QWidget *ComDeviceBiosignalControl::createStateWidget(int state)
 {    
     return new ComCommandSelector(m_com, "State" +QString::number(state));
 }
