@@ -31,6 +31,13 @@ protected:
 
     void rebuildStateControls();
 
+    QList<BiosignalStateCircle*> m_controlStateCirles;
+    QList<BiosignalStateCircle*> m_lastControlStateCirles;
+
+    QList<int> m_controlAccum;
+    int m_controlIndex = 0;
+    int m_controlState = 0;
+
     virtual void onSetCurrentState(int state) = 0;
     virtual QWidget *createStateWidget(int state) = 0;
 

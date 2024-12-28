@@ -6,6 +6,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QSpinBox>
+#include <QTimer>
 
 DeviceBiosignalStateControl::DeviceBiosignalStateControl(Settings *settings, QString stateEnabledPrefix, QWidget *parent) : QWidget(parent)
 {
@@ -16,7 +17,7 @@ DeviceBiosignalStateControl::DeviceBiosignalStateControl(Settings *settings, QSt
 void DeviceBiosignalStateControl::setCurrentState(int state)
 {
     m_lastStates << state;
-    while (m_lastStates.length() > m_maxDisplayedStates) {
+    while (m_lastStates.length() - 1 > m_maxDisplayedStates) {
         m_lastStates.removeFirst();
     }
 
@@ -28,7 +29,69 @@ void DeviceBiosignalStateControl::setCurrentState(int state)
         circle->setState(index > 0 ? m_lastStates[index] : 0);
     }
 
-    onSetCurrentState(state);
+    int amountToControl = m_settings->getBiosignalStatesAmountToControl();
+    // int maxStates = m_settings->getBiosignalStatesMax();
+    int wordLength = m_settings->getBiosignalStatesWordLength();
+
+    if (amountToControl == 1 && wordLength == 1) {
+        onSetCurrentState(state);
+        return;
+    }
+
+    int controlSymbol = 0;
+    bool controlFetched = false;
+    if (amountToControl == 1) {
+        controlSymbol = state;
+        controlFetched = true;
+    } else {
+        if (m_controlAccum.length() == 0) {
+            m_controlAccum << state;
+        } else {
+            if (m_controlAccum.last() == state) {
+                m_controlAccum << state;
+            } else {
+                m_controlAccum.clear();
+                m_controlAccum << state;
+            }
+        }
+
+        controlFetched = m_controlAccum.length() == amountToControl;
+
+        if (controlFetched) {
+            controlSymbol = m_controlAccum.last();
+            m_controlAccum.clear();
+        }
+    }
+
+    if (controlFetched) {
+        // qDebug() << "NEW SYMBOL" << controlSymbol << m_controlIndex << (wordLength - 1 - m_controlIndex) << m_controlStateCirles.length();
+        m_controlStateCirles[wordLength - 1 - m_controlIndex]->setState(controlSymbol);
+
+        if (m_controlState == 0) {
+            m_controlState = controlSymbol;
+        } else {
+            m_controlState += controlSymbol * pow(10, m_controlIndex);
+        }
+
+
+        m_controlIndex ++;
+        if (m_controlIndex >= wordLength) {
+            m_controlIndex = 0;
+            for(int i = 0; i<m_controlStateCirles.length(); i++) {
+                m_lastControlStateCirles[i]->setState(m_controlStateCirles[i]->state());
+            }
+
+            QTimer::singleShot(200, [=]() {
+                for(int i = 0; i<m_controlStateCirles.length(); i++) {
+                    m_controlStateCirles[i]->setState(0);
+                }
+            });
+
+            onSetCurrentState(state);
+            m_controlAccum.clear();
+            m_controlState = 0;
+        }
+    }
 }
 
 void DeviceBiosignalStateControl::init()
@@ -79,14 +142,32 @@ void DeviceBiosignalStateControl::init()
     settingsLayout->addStretch(1);
 
     m_scroll = new NScrollViewer();
-    m_scroll->setSpacing(8);
-    m_scroll->setItemPadding(8);
+    m_scroll->setSpacing(0);
+
+    auto controlStatesLayout = new QHBoxLayout();
+    controlStatesLayout->setSpacing(0);
+    for (int i = 0; i < MAX_BIOSIGNAL_STATE_WORD_LENGTH; i++) {
+        auto square = new BiosignalStateCircle(0, false, QSize(32,32));
+        square->setSquare(true);
+        m_controlStateCirles << square;
+        controlStatesLayout->addWidget(square);
+    }
+    controlStatesLayout->addSpacing(20);
+    for (int i = 0; i < MAX_BIOSIGNAL_STATE_WORD_LENGTH; i++) {
+        auto square = new BiosignalStateCircle(0, false, QSize(24,24));
+        square->setSquare(true);
+        m_lastControlStateCirles << square;
+        controlStatesLayout->addWidget(square);
+    }
+
+    controlStatesLayout->addStretch(100);
 
     auto layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(QCoreApplication::translate("Generic", "Current state:")), 0);
     layout->addLayout(stateCirclesLayout, 0);
     layout->addSpacing(10);
     layout->addLayout(settingsLayout, 0);
+    layout->addLayout(controlStatesLayout, 0);
     layout->addWidget(m_scroll, 100);
 
     rebuildStateControls();
@@ -96,7 +177,9 @@ void DeviceBiosignalStateControl::rebuildStateControls()
 {
     m_scroll->clear();
 
-    auto states = statesForWord(m_settings->getBiosignalStatesMax(), m_settings->getBiosignalStatesWordLength());
+    int wordLength = m_settings->getBiosignalStatesWordLength();
+
+    auto states = statesForWord(m_settings->getBiosignalStatesMax(), wordLength);
     foreach (auto state, states) {
         auto groupWidget = new QWidget();
         auto groupWidgetLayout = new QHBoxLayout(groupWidget);
@@ -117,6 +200,11 @@ void DeviceBiosignalStateControl::rebuildStateControls()
         groupWidgetLayout->addWidget(group, 0, Qt::AlignLeft);
 
         m_scroll->addWidget(groupWidget);
+    }
+
+    for (int i = 0; i<m_controlStateCirles.length(); i++) {
+        m_controlStateCirles[i]->setVisible(i < wordLength);
+        m_lastControlStateCirles[i]->setVisible(i < wordLength);
     }
 }
 
