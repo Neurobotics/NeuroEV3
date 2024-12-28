@@ -1,4 +1,4 @@
-QT += core gui network widgets websockets bluetooth serialport
+QT += core gui network widgets websockets bluetooth serialport svg
 CONFIG += c++14
 
 VER_MAJ = 1
@@ -46,7 +46,9 @@ SOURCES += \
     ui/MainWindow.cpp \
     ui/UICommon.cpp \
     \
-    main.cpp
+    main.cpp \
+    ui/nscrollviewer.cpp \
+    ui/nstackpanel.cpp
 
 HEADERS += \
     com/ComDevice.h \
@@ -84,7 +86,8 @@ HEADERS += \
     ui/ImpovedSlider.h \
     ui/MainWindow.h \
     ui/UICommon.h \
-
+    ui/nscrollviewer.h \
+    ui/nstackpanel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
