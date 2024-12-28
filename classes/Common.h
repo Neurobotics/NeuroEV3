@@ -2,8 +2,6 @@
 #define COMMON_H
 
 #include <QString>
-#include <QIcon>
-#include "ui/IconLabel.h"
 #include <QMetaEnum>
 
 const QString MEDITATION = "meditation";
@@ -16,18 +14,6 @@ const QString MULTIPLAYER = "multiplayer";
 
 class Common {
 public:
-    static Common* Instance();
-
-    QIcon iconSocket;
-    QIcon iconSocketActive;
-    QIcon iconConnected;
-    QIcon iconDisconnected;
-
-    IconLabel *motorSocket(int motorIndex);
-    IconLabel *connectStatusWidget();
-
-    static QString motorString(int motorIndex);
-
     template <typename T> static QString EnumToString(T value)
     {
         QMetaEnum metaEnum = QMetaEnum::fromType<T>();
@@ -59,7 +45,6 @@ public:
 
 protected:
     Common();
-    static Common* _instance;
 };
 
 #endif // COMMON_H

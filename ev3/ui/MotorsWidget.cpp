@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "ui/IconLabel.h"
-#include "classes/Common.h"
+#include "ui/UICommon.h"
 #include <QCoreApplication>
 #include "ev3/EV3.h"
 
@@ -14,7 +14,7 @@ MotorsWidget::MotorsWidget(QWidget *parent) : BaseMotorsWidget(parent)
         auto motorPowerLabel = new QLabel("0");
         motorPowerLabel->setMinimumWidth(50);
 
-        auto motorSocket = Common::Instance()->motorSocket(i);
+        auto motorSocket = UICommon::Instance()->motorSocket(i);
 
         auto motorPower = new ImprovedSlider();
         motorPower->setRange(-100, 100);

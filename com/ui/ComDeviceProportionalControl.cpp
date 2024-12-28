@@ -1,6 +1,7 @@
 #include "ComDeviceProportionalControl.h"
 #include <QDoubleSpinBox>
 #include <QCoreApplication>
+#include <QLabel>
 
 ComDeviceProportionalControl::ComDeviceProportionalControl(ComDevice *com, Settings *settings, bool meditation, QWidget *parent)
     : DeviceProportionalControl(settings, "com", meditation, parent)

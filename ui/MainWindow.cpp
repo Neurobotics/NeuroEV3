@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_com = new ComDevice();
 
-    auto ev3ConnectedStatus = Common::Instance()->connectStatusWidget();
+    auto ev3ConnectedStatus = UICommon::Instance()->connectStatusWidget();
     m_deviceWidgets[Device_EV3] << ev3ConnectedStatus;
 
     auto comConnectedStatus = new ComDeviceStatusWidget(m_com);
@@ -187,7 +187,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     func_setMode(m_settings->getConnectionType());
 
-    auto btnNeuroPlayConnected = Common::Instance()->connectStatusWidget();
+    auto btnNeuroPlayConnected = UICommon::Instance()->connectStatusWidget();
     auto btnNeuroPlay = UICommon::iconedButton(":/resources/neuroplay.png");
     btnNeuroPlay->setFlat(true);
 
