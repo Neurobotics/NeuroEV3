@@ -72,6 +72,8 @@ DeviceMultiplayerControl::DeviceMultiplayerControl(Settings *settings, QWidget *
         foreach (auto p, m_concentrationBars) {
             p->setVisible(!m_useMeditation);
         }
+
+        onSetControlMode();
     };
 
     multipleControlCombo->setCurrentIndex(multipleControlComboIndex);
