@@ -211,22 +211,22 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="209"/>
+        <location filename="../../ui/MainWindow.cpp" line="215"/>
         <source>Visit neurobotics.ru</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="212"/>
+        <location filename="../../ui/MainWindow.cpp" line="218"/>
         <source>Visit NeuroEV3 GitHub repo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="432"/>
+        <location filename="../../ui/MainWindow.cpp" line="438"/>
         <source>New version available</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="432"/>
+        <location filename="../../ui/MainWindow.cpp" line="438"/>
         <source>Download new version</source>
         <translation></translation>
     </message>
@@ -244,6 +244,19 @@
         <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="20"/>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="23"/>
         <source>Multiplier</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <source>Turn BCI link off</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <source>Turn BCI link on</source>
         <translation></translation>
     </message>
 </context>

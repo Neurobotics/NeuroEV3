@@ -20,6 +20,9 @@ public:
     bool ev3Mode();
     void setEV3mode(bool on);
 
+    bool bciLinked();
+    void setBciLinked(bool on);
+
     bool getMentalStateEnabled(int state, QString prefix = "");
     void setMentalStateEnabled(int state, bool enabled, QString prefix = "");
 

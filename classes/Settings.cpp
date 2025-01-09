@@ -26,6 +26,16 @@ void Settings::setEV3mode(bool on)
     setValue("mode", on ? "ev3" : "com");
 }
 
+bool Settings::bciLinked()
+{
+    return value("bciLinked", "true").toBool();
+}
+
+void Settings::setBciLinked(bool on)
+{
+    setValue("bciLinked", on);
+}
+
 bool Settings::getMentalStateEnabled(int state, QString prefix)
 {
     QString header = prefix + biosignalStateHeader(state);

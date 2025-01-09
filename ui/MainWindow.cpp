@@ -145,15 +145,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     static QIcon iconLinkOff = QIcon(":/resources/link_off.svg");
     auto btnCanControl = UICommon::iconedButton("");
     btnCanControl->setCheckable(true);
-    btnCanControl->setChecked(true);
-    btnCanControl->setIcon(iconLink);
+    btnCanControl->setChecked(m_settings->bciLinked());
 
-    connect(btnCanControl, &QPushButton::toggled, [=](bool toggled) {
+    auto func_bciLink = [=]() {
+        auto toggled = btnCanControl->isChecked();
         btnCanControl->setIcon(toggled ? iconLink : iconLinkOff);
         m_canControl = toggled;
         UICommon::ChangeBackground(line1, toggled ? colorBlue : colorGray);
         UICommon::ChangeBackground(line2, toggled ? colorBlue : colorGray);
-    });
+
+        btnCanControl->setToolTip(toggled ? tr("Turn BCI link off") : tr("Turn BCI link on"));
+        m_settings->setBciLinked(toggled);
+    };
+
+    connect(btnCanControl, &QPushButton::toggled, func_bciLink);
+    func_bciLink();
 
     auto widgetEV3connectionType = new QWidget();
     auto layoutEV3connectionType = new QVBoxLayout(widgetEV3connectionType);

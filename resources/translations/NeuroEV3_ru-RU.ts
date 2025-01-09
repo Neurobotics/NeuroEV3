@@ -212,22 +212,22 @@
         <translation>Мультиплеер</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="209"/>
+        <location filename="../../ui/MainWindow.cpp" line="215"/>
         <source>Visit neurobotics.ru</source>
         <translation>Открыть neurobotics.ru</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="212"/>
+        <location filename="../../ui/MainWindow.cpp" line="218"/>
         <source>Visit NeuroEV3 GitHub repo</source>
         <translation>Открыть репозиторий NeuroEV3 на GitHub</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="432"/>
+        <location filename="../../ui/MainWindow.cpp" line="438"/>
         <source>New version available</source>
         <translation>Доступна новая версия</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="432"/>
+        <location filename="../../ui/MainWindow.cpp" line="438"/>
         <source>Download new version</source>
         <translation>Скачать новую версию</translation>
     </message>
@@ -301,6 +301,16 @@
     <message>
         <source>Download new version</source>
         <translation type="vanished">Скачать новую версию</translation>
+    </message>
+    <message>
+        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <source>Turn BCI link off</source>
+        <translation>Выключить связь с нейроинтерфейсом</translation>
+    </message>
+    <message>
+        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <source>Turn BCI link on</source>
+        <translation>Включить связь с нейроинтерфейсом</translation>
     </message>
 </context>
 <context>
