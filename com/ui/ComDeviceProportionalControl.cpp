@@ -10,6 +10,8 @@ ComDeviceProportionalControl::ComDeviceProportionalControl(ComDevice *com, Setti
 
     m_prefix = meditation ? "meditationK" : "concentrationK";
 
+    QString control = meditation ? QCoreApplication::translate("Generic", "Meditation") : QCoreApplication::translate("Generic", "Concentration");
+
     auto spinCoeff = new QDoubleSpinBox();
     spinCoeff->setRange(-2, 2);
     spinCoeff->setSingleStep(0.1);
@@ -21,7 +23,11 @@ ComDeviceProportionalControl::ComDeviceProportionalControl(ComDevice *com, Setti
 
     m_layout->addWidget(new QLabel(""));
     m_layout->addWidget(new QLabel(QCoreApplication::translate("Generic", "Multiplier")));
-    m_layout->addWidget(spinCoeff, 100, Qt::AlignTop | Qt::AlignLeft);
+    m_layout->addWidget(spinCoeff, 0, Qt::AlignLeft);
+
+    m_layout->addWidget(new QLabel(""));
+    m_layout->addWidget(new QLabel("<span style=\"color: #159\">" + QCoreApplication::translate("Generic", "Speed") + "</span> = k * " + control));
+    m_layout->addStretch(1);
 }
 
 void ComDeviceProportionalControl::innerSetValue()
