@@ -46,8 +46,6 @@ void BiosignalStateCircle::paintEvent(QPaintEvent *)
     QPainter p(this);
     p.fillRect(rect(), Qt::transparent);
 
-    // if (m_state == 0) return;
-
     int w = width();
     int h = height();
     int s = qMin(w, h) - 4;
@@ -60,7 +58,17 @@ void BiosignalStateCircle::paintEvent(QPaintEvent *)
 
     QColor color = UICommon::Instance()->biosignalStateColor(m_state);
 
-    if (m_filled) {
+    bool filled = m_filled && isEnabled();
+
+    if (!isEnabled()) {
+        // Grayscale color
+        quint8 gray = color.green() * 0.5 + color.blue() * 0.25 + color.red() * 0.25;
+        color.setRed(gray);
+        color.setGreen(gray);
+        color.setBlue(gray);
+    }
+
+    if (filled) {
         p.setPen(Qt::NoPen);
         p.setBrush(color);
     } else {
