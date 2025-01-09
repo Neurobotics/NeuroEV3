@@ -159,16 +159,34 @@
         <translation>Текущее состояние:</translation>
     </message>
     <message>
+        <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="13"/>
         <location filename="../../ui/DeviceMultiplayerControl.cpp" line="29"/>
         <location filename="../../ui/MainWindow.cpp" line="94"/>
         <source>Meditation</source>
         <translation>Медитация</translation>
     </message>
     <message>
+        <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="13"/>
         <location filename="../../ui/DeviceMultiplayerControl.cpp" line="30"/>
         <location filename="../../ui/MainWindow.cpp" line="98"/>
         <source>Concentration</source>
         <translation>Концентрация</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="42"/>
+        <source>Meditation difference</source>
+        <translation>Разница медитации</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="42"/>
+        <source>Concentration difference</source>
+        <translation>Разница концентрации</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="43"/>
+        <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="29"/>
+        <source>Speed</source>
+        <translation>Скорость</translation>
     </message>
     <message>
         <location filename="../../ui/DeviceMultiplayerControl.cpp" line="44"/>
@@ -243,7 +261,7 @@
     </message>
     <message>
         <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="20"/>
-        <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="23"/>
+        <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="25"/>
         <source>Multiplier</source>
         <translation>Множитель</translation>
     </message>

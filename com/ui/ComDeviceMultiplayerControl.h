@@ -3,6 +3,7 @@
 
 #include "ui/DeviceMultiplayerControl.h"
 #include "com/ComDevice.h"
+#include <QLabel>
 
 class ComDeviceMultiplayerControl : public DeviceMultiplayerControl
 {
@@ -15,6 +16,9 @@ protected:
     QString m_prefix = "multiK";
 
     void onSetValues() override;
+    void onSetControlMode() override;
+
+    QLabel *m_labelControlMode = nullptr;
 };
 
 #endif // COMMULTIPLAYERCONTROL_H

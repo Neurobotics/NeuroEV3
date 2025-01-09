@@ -18,7 +18,15 @@ ComDeviceMultiplayerControl::ComDeviceMultiplayerControl(ComDevice *com, Setting
 
     m_layout->addWidget(new QLabel(""));
     m_layout->addWidget(new QLabel(QCoreApplication::translate("Generic", "Multiplier")), 0, Qt::AlignCenter);
-    m_layout->addWidget(spinCoeff, 100, Qt::AlignTop | Qt::AlignCenter);
+    m_layout->addWidget(spinCoeff, 0, Qt::AlignCenter);
+
+    m_labelControlMode = new QLabel();
+
+    m_layout->addWidget(new QLabel(""));
+    m_layout->addWidget(m_labelControlMode, 0, Qt::AlignCenter);
+    m_layout->addStretch(1);
+
+    onSetControlMode();
 }
 
 void ComDeviceMultiplayerControl::onSetValues()
@@ -27,4 +35,12 @@ void ComDeviceMultiplayerControl::onSetValues()
         float val = m_useMeditation ? m_meditationMix : m_concentrationMix;
         m_com->sendSpeed(val * m_com->profile()->value(m_prefix, 1).toDouble());
     }
+}
+
+void ComDeviceMultiplayerControl::onSetControlMode()
+{
+    if (!m_labelControlMode) return;
+
+    QString control = m_useMeditation ? QCoreApplication::translate("Generic", "Meditation difference") : QCoreApplication::translate("Generic", "Concentration difference");
+    m_labelControlMode->setText("<span style=\"color: #159\">" + QCoreApplication::translate("Generic", "Speed") + "</span> = k * (" + control + ")");
 }
