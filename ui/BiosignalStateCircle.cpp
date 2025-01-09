@@ -58,14 +58,11 @@ void BiosignalStateCircle::paintEvent(QPaintEvent *)
 
     QColor color = UICommon::Instance()->biosignalStateColor(m_state);
 
-    bool filled = m_filled && isEnabled();
+    bool enabled = isEnabled();
+    bool filled = m_filled && enabled;
 
-    if (!isEnabled()) {
-        // Grayscale color
-        quint8 gray = color.green() * 0.5 + color.blue() * 0.25 + color.red() * 0.25;
-        color.setRed(gray);
-        color.setGreen(gray);
-        color.setBlue(gray);
+    if (!enabled) {
+        color = Qt::gray;
     }
 
     if (filled) {
@@ -91,7 +88,7 @@ void BiosignalStateCircle::paintEvent(QPaintEvent *)
     font.setBold(true);
     p.setFont(font);
     p.translate(0, -qMax(1, s / 12));
-    p.setPen(Qt::black);
+    p.setPen(enabled ? Qt::black : Qt::gray);
 
     p.drawText(r, m_stateStr, QTextOption(Qt::AlignCenter));
 }
