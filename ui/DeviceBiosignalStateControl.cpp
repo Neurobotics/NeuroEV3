@@ -8,6 +8,7 @@
 #include <QSpinBox>
 #include <QTimer>
 #include "ui/GroupBox.h"
+#include "ui/LabelWithIcon.h"
 
 DeviceBiosignalStateControl::DeviceBiosignalStateControl(Settings *settings, QString stateEnabledPrefix, QWidget *parent) : QWidget(parent)
 {
@@ -109,6 +110,7 @@ void DeviceBiosignalStateControl::init()
 
     for (int i = 0; i < m_maxDisplayedStates; i++) {
         auto circle = new BiosignalStateCircle(0, false, i == 0 ? QSize(40,40) : QSize(24, 24));
+        circle->setToolTip(tr("Biosignal state history"));
         stateCirclesLayout->addWidget(circle);
         m_stateCircles << circle;
     }
@@ -138,13 +140,13 @@ void DeviceBiosignalStateControl::init()
     });
 
     auto settingsLayout = new QHBoxLayout();
-    settingsLayout->addWidget(new QLabel("Состояний"));
+    settingsLayout->addWidget(new LabelWithIcon(QIcon(":/resources/help.svg"), tr("States"), tr("Amount of supported states\n(important if word length is greater than 1)")));
     settingsLayout->addWidget(spinBSMax);
-    settingsLayout->addSpacing(10);
-    settingsLayout->addWidget(new QLabel("Повторы"));
+    settingsLayout->addSpacing(20);
+    settingsLayout->addWidget(new LabelWithIcon(QIcon(":/resources/help.svg"), tr("Repeats"), tr("The number of repetitions of the same state to count it as a state")));
     settingsLayout->addWidget(spinBSRepeats);
-    settingsLayout->addSpacing(10);
-    settingsLayout->addWidget(new QLabel("Длина слова"));
+    settingsLayout->addSpacing(20);
+    settingsLayout->addWidget(new LabelWithIcon(QIcon(":/resources/help.svg"), tr("Word length"), tr("The amount of symbols in metastate word")));
     settingsLayout->addWidget(spinBSWordLength);
     settingsLayout->addStretch(1);
 
@@ -155,6 +157,7 @@ void DeviceBiosignalStateControl::init()
     controlStatesLayout->setSpacing(0);
     for (int i = 0; i < MAX_BIOSIGNAL_STATE_WORD_LENGTH; i++) {
         auto square = new BiosignalStateCircle(0, false, QSize(32,32));
+        square->setToolTip(tr("Last state"));
         square->setSquare(true);
         m_controlStateCirles << square;
         controlStatesLayout->addWidget(square);
@@ -164,6 +167,7 @@ void DeviceBiosignalStateControl::init()
         auto square = new BiosignalStateCircle(0, false, QSize(24,24));
         square->setFilled(true);
         square->setSquare(true);
+        square->setToolTip(tr("Previous state"));
         m_lastControlStateCirles << square;
         controlStatesLayout->addWidget(square);
     }
@@ -201,10 +205,7 @@ void DeviceBiosignalStateControl::rebuildStateControls()
         auto group = new GroupBox(QCoreApplication::translate("Generic", "State"), true);
         auto groupWidget = new QWidget();
         auto groupWidgetLayout = new QHBoxLayout(groupWidget);
-        // auto group = new QGroupBox(QCoreApplication::translate("Generic", "State") + " " + QString::number(state));
-        // group->setCheckable(true);
         group->setChecked(m_settings->getMentalStateEnabled(state, m_stateEnabledPrefix));
-        // connect(group, &QGroupBox::toggled, [=](bool toggled) {
         connect(group, &GroupBox::toggled, [=](bool toggled) {
             m_settings->setMentalStateEnabled(state, toggled, m_stateEnabledPrefix);
         });
@@ -228,20 +229,13 @@ void DeviceBiosignalStateControl::rebuildStateControls()
             group->addWidget(b);
         }
 
-        group->addHeaderWidget(new QLabel("->"));
+        group->addHeaderWidget(new QLabel(" → "));
 
-
-        // auto lay = new QVBoxLayout(group);
-        auto w = createStateWidget(state);
-        if (w) {
-            // lay->addWidget(w);
-            group->addWidget(w);
-        }
+        group->addWidget(createStateWidget(state));
 
         groupWidgetLayout->addWidget(group, 0, Qt::AlignLeft);
 
         m_scroll->addWidget(groupWidget);
-        // m_scroll->addWidget(group);
     }
 
     for (int i = 0; i<m_controlStateCirles.length(); i++) {
