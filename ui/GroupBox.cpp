@@ -1,15 +1,14 @@
 #include "GroupBox.h"
-#include "UICommon.h"
 
 GroupBox::GroupBox(QString title, bool linear, QWidget *parent) : QWidget(parent)
 {
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(0,0,0,0);
-    setObjectName("gb");
 
     m_check = new QCheckBox(title);
     connect(m_check, &QCheckBox::toggled, [=](bool on) {
         emit toggled(on);
+        manageWidgetsEnabled();
     });
 
     m_linear = linear;
@@ -26,6 +25,8 @@ GroupBox::GroupBox(QString title, bool linear, QWidget *parent) : QWidget(parent
     layout->addLayout(m_contentLayout);
 
     setContentsMargins(0,0,0,0);
+
+    manageWidgetsEnabled();
 }
 
 bool GroupBox::isChecked()
@@ -41,6 +42,8 @@ void GroupBox::setChecked(bool checked)
 void GroupBox::addHeaderWidget(QWidget *w)
 {
     m_headerLayout->addWidget(w);
+    m_widgets << w;
+    manageWidgetsEnabled();
 }
 
 void GroupBox::addWidget(QWidget *w)
@@ -50,9 +53,19 @@ void GroupBox::addWidget(QWidget *w)
     } else {
         m_contentLayout->addWidget(w);
     }
+    m_widgets << w;
+    manageWidgetsEnabled();
 }
 
 void GroupBox::addHeaderSpacing(int spacing)
 {
     m_headerLayout->addSpacing(spacing);
+}
+
+void GroupBox::manageWidgetsEnabled()
+{
+    bool on = isChecked();
+    foreach (auto w, m_widgets) {
+        w->setEnabled(on);
+    }
 }

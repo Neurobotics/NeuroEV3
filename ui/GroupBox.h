@@ -27,6 +27,9 @@ protected:
     QCheckBox *m_check = nullptr;
     QVBoxLayout *m_contentLayout = nullptr;
     QHBoxLayout *m_headerLayout = nullptr;
+    QList<QWidget*> m_widgets;
+
+    void manageWidgetsEnabled();
 };
 
 #endif // GROUPBOX_H
