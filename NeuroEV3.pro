@@ -44,6 +44,7 @@ SOURCES += \
     ui/GroupBox.cpp \
     ui/IconLabel.cpp \
     ui/ImpovedSlider.cpp \
+    ui/LabelWithIcon.cpp \
     ui/MainWindow.cpp \
     ui/UICommon.cpp \
     \
@@ -86,6 +87,7 @@ HEADERS += \
     ui/GroupBox.h \
     ui/IconLabel.h \
     ui/ImpovedSlider.h \
+    ui/LabelWithIcon.h \
     ui/MainWindow.h \
     ui/UICommon.h \
     ui/nscrollviewer.h \
