@@ -47,11 +47,34 @@ ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) 
 
     int r = grid->rowCount();
     for (int i = 0; i<3; i++) {
-        grid->addWidget(func_btn("Custom" + QString::number(i+1), QCoreApplication::translate("Generic", "Custom") + " \n" + QString::number(i+1)), r, i);
+        grid->addWidget(func_btn("Custom" + QString::number(i+1), "C" + QString::number(i+1), "QPushButton { font-size: 24px }"), r, i);
+    }
+    r = grid->rowCount();
+    for (int i = 0; i<3; i++) {
+        grid->addWidget(func_btn("Custom" + QString::number(i+4), "C" + QString::number(i+4), "QPushButton { font-size: 24px }"), r, i);
     }
 
     grid->addWidget(new QLabel(" "), grid->rowCount(), 0);
+    grid->addWidget(new QLabel(QCoreApplication::translate("Generic", "Speed")), grid->rowCount(), 0, 1, grid->columnCount(), Qt::AlignCenter);
+
+    auto btnZero = new QPushButton("");
+    btnZero->setIcon(QIcon(":/resources/zero.svg"));
+    btnZero->setCursor(Qt::PointingHandCursor);
+    btnZero->setToolTip(QCoreApplication::translate("Generic", "Set to zero"));
+    btnZero->setFixedSize(24, 24);
+    connect(btnZero, &QPushButton::clicked, [=]() {
+        speedSlider->setValue(0);
+    });
+
+    auto speedLayout = new QHBoxLayout();
+
+    speedLayout->setContentsMargins(0,0,0,0);
+    speedLayout->addWidget(new QLabel("-100%"));
+    speedLayout->addWidget(btnZero, 100, Qt::AlignCenter);
+    speedLayout->addWidget(new QLabel(" 100%"));
+
     grid->addWidget(speedSlider, grid->rowCount(), 0, 1, grid->columnCount());
+    grid->addLayout(speedLayout, grid->rowCount(), 0, 1, grid->columnCount());
 
     auto lay = new QVBoxLayout(this);
     lay->addWidget(central, 0, Qt::AlignCenter);
