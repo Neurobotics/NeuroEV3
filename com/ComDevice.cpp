@@ -145,14 +145,17 @@ bool ComDevice::isConnected()
 QList<ComDeviceCommand> ComDevice::Commands()
 {
     static QList<ComDeviceCommand> coms = {
-        ComDeviceCommand(FORWARD, QCoreApplication::translate("Generic", "Forward"), "↑"),
+        ComDeviceCommand(FORWARD,   QCoreApplication::translate("Generic", "Forward"), "↑"),
         ComDeviceCommand(BACKWARDS, QCoreApplication::translate("Generic", "Backwards"), "↓"),
-        ComDeviceCommand(STOP, QCoreApplication::translate("Generic", "Stop"), "Х"),
-        ComDeviceCommand(TURNLEFT, QCoreApplication::translate("Generic", "TurnLeft"), "←"),
+        ComDeviceCommand(STOP,      QCoreApplication::translate("Generic", "Stop"), "Х"),
+        ComDeviceCommand(TURNLEFT,  QCoreApplication::translate("Generic", "TurnLeft"), "←"),
         ComDeviceCommand(TURNRIGHT, QCoreApplication::translate("Generic", "TurnRight"), "→"),
-        ComDeviceCommand(CUSTOM1, QCoreApplication::translate("Generic", "Custom1")),
-        ComDeviceCommand(CUSTOM2, QCoreApplication::translate("Generic", "Custom2")),
-        ComDeviceCommand(CUSTOM3, QCoreApplication::translate("Generic", "Custom3"))
+        ComDeviceCommand(CUSTOM1,   QCoreApplication::translate("Generic", "Custom1"), "C1"),
+        ComDeviceCommand(CUSTOM2,   QCoreApplication::translate("Generic", "Custom2"), "C2"),
+        ComDeviceCommand(CUSTOM3,   QCoreApplication::translate("Generic", "Custom3"), "C3"),
+        ComDeviceCommand(CUSTOM4,   QCoreApplication::translate("Generic", "Custom4"), "C4"),
+        ComDeviceCommand(CUSTOM5,   QCoreApplication::translate("Generic", "Custom5"), "C5"),
+        ComDeviceCommand(CUSTOM6,   QCoreApplication::translate("Generic", "Custom6"), "C6")
     };
 
     return coms;

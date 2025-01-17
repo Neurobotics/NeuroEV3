@@ -53,6 +53,10 @@ public:
     static inline QString CUSTOM1 = "Custom1";
     static inline QString CUSTOM2 = "Custom2";
     static inline QString CUSTOM3 = "Custom3";
+    static inline QString CUSTOM4 = "Custom4";
+    static inline QString CUSTOM5 = "Custom5";
+    static inline QString CUSTOM6 = "Custom6";
+
 
 signals:
     void connected();
