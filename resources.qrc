@@ -20,5 +20,6 @@
         <file>resources/translations/NeuroEV3_en-US.qm</file>
         <file>resources/translations/NeuroEV3_ru-RU.qm</file>
         <file>resources/help.svg</file>
+        <file>resources/easymode.svg</file>
     </qresource>
 </RCC>

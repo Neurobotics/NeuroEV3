@@ -82,7 +82,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_deviceWidgets[Device_COM] << comProfileWidget;
 
     m_tabs = new QTabWidget();
-    m_tabs->addTab(comProfileWidget, QCoreApplication::translate("Generic", "Profile"));
+
+    addTab(QCoreApplication::translate("Generic", "Profile"),
+           new QLabel(),
+           comProfileWidget);
+
+    // m_tabs->addTab(comProfileWidget, );
     addTab(QCoreApplication::translate("Generic", "Manual"),
            new EV3ManualControl(m_ev3),
            new ComDeviceManualControl(m_com));
@@ -140,6 +145,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     layoutDeviceSelection->setSpacing(0);
     layoutDeviceSelection->addWidget(radioDeviceEV3);
     layoutDeviceSelection->addWidget(radioDeviceCOM);
+
+    m_notEasyWidgets << radioDeviceEV3;
+    m_notEasyWidgets << radioDeviceCOM;
 
     static QIcon iconLink = QIcon(":/resources/link.svg");
     static QIcon iconLinkOff = QIcon(":/resources/link_off.svg");
@@ -219,12 +227,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     btnGithub->setIconSize(QSize(24, 24));
 
     auto bottomLayout = new QHBoxLayout();
-    bottomLayout->addWidget(btnNeurobotics, 0, Qt::AlignLeft);
+    bottomLayout->addWidget(btnNeurobotics);
+    bottomLayout->addStretch(1);
     auto btnNewVersion = newVersionButton();
     if (btnNewVersion) {
-        bottomLayout->addWidget(btnNewVersion, 100, Qt::AlignCenter);
+        bottomLayout->addWidget(btnNewVersion);
     }
-    bottomLayout->addWidget(btnGithub, 0, Qt::AlignRight);
+
+    auto btnEasyMode = new QPushButton(QIcon(":/resources/easymode.svg"), QCoreApplication::translate("Generic", "EasyMode"));
+    btnEasyMode->setCheckable(true);
+    btnEasyMode->setIconSize(QSize(24, 24));
+    connect(btnEasyMode, &QPushButton::toggled, [=](bool on) {
+        setEasyMode(on);
+    });
+    bottomLayout->addWidget(btnEasyMode);
+    bottomLayout->addStretch(1);
+    bottomLayout->addWidget(btnGithub);
 
     auto centralWidget = new QWidget();
     setCentralWidget(centralWidget);
@@ -325,13 +343,29 @@ void MainWindow::control()
 
 void MainWindow::setDeviceMode(DeviceMode mode)
 {
-    m_tabs->setTabVisible(0, mode == Device_COM);
+    // if (!m_easyMode) {
+    //     m_tabs->setCurrentIndex(0);
+    // } else {
+    //     m_tabs->setCurrentIndex(1);
+    // }
+
+    m_tabs->setTabVisible(0, mode == Device_COM && !m_easyMode);
+
+    if (!m_easyMode) {
+        m_tabs->setCurrentIndex(0);
+    } else {
+        m_tabs->setCurrentIndex(1);
+    }
+
+    foreach (auto widget, m_notEasyWidgets) {
+        widget->setVisible(!m_easyMode);
+    }
 
     if (mode != Device_EV3) {
         if (m_ev3) {
             m_ev3->disconnect();
         }
-        m_tabs->setCurrentIndex(0);
+
 
         m_com->setEnabled(true);
     } else {
@@ -347,6 +381,7 @@ void MainWindow::setDeviceMode(DeviceMode mode)
         }
     }
 
+    m_tabs->setTabVisible(m_tabs->count()-1, !m_easyMode);
     m_settings->setEV3mode(mode == Device_EV3);
 }
 
@@ -412,6 +447,12 @@ QString MainWindow::autoDetectLanguage(QString settingsFile)
         qApp->installTranslator(translator);
     }
     return lang;
+}
+
+void MainWindow::setEasyMode(bool on)
+{
+    m_easyMode = on;
+    setDeviceMode(m_deviceMode);
 }
 
 QWidget *MainWindow::newVersionButton()

@@ -49,6 +49,8 @@ public:
 
     QString autoDetectLanguage(QString settingsFile = "");
 
+    void setEasyMode(bool on);
+
 protected:
     void closeEvent(QCloseEvent *) override;
 
@@ -84,5 +86,9 @@ protected:
     QList<DeviceProportionalControl*> m_concentrationControls;
     QList<DeviceMultiplayerControl*> m_multiplayerControls;
     QList<DeviceBiosignalStateControl*> m_biosignalStateControls;
+
+    QList<QWidget*> m_notEasyWidgets;
+    bool m_easyMode = false;
+
 };
 #endif // MAINWINDOW_H

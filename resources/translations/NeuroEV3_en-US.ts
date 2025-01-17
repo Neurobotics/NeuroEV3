@@ -93,6 +93,21 @@
         <translation></translation>
     </message>
     <message>
+        <location filename="../../com/ComDevice.cpp" line="156"/>
+        <source>Custom4</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ComDevice.cpp" line="157"/>
+        <source>Custom5</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ComDevice.cpp" line="158"/>
+        <source>Custom6</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../../com/ui/ComProfileWidget.cpp" line="49"/>
         <source>Refresh</source>
         <translation></translation>
@@ -160,29 +175,30 @@
     <message>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="13"/>
         <location filename="../../ui/DeviceMultiplayerControl.cpp" line="29"/>
-        <location filename="../../ui/MainWindow.cpp" line="94"/>
+        <location filename="../../ui/MainWindow.cpp" line="99"/>
         <source>Meditation</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="13"/>
         <location filename="../../ui/DeviceMultiplayerControl.cpp" line="30"/>
-        <location filename="../../ui/MainWindow.cpp" line="98"/>
+        <location filename="../../ui/MainWindow.cpp" line="103"/>
         <source>Concentration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="42"/>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="44"/>
         <source>Meditation difference</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="42"/>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="44"/>
         <source>Concentration difference</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="43"/>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="58"/>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="45"/>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="29"/>
         <source>Speed</source>
         <translation></translation>
@@ -209,53 +225,54 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="85"/>
+        <location filename="../../ui/MainWindow.cpp" line="86"/>
         <source>Profile</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="86"/>
+        <location filename="../../ui/MainWindow.cpp" line="91"/>
         <source>Manual</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="90"/>
+        <location filename="../../ui/MainWindow.cpp" line="95"/>
         <source>Mental states</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="102"/>
+        <location filename="../../ui/MainWindow.cpp" line="107"/>
         <source>Multiplayer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="215"/>
+        <location filename="../../ui/MainWindow.cpp" line="223"/>
         <source>Visit neurobotics.ru</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="218"/>
+        <location filename="../../ui/MainWindow.cpp" line="226"/>
         <source>Visit NeuroEV3 GitHub repo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="438"/>
+        <location filename="../../ui/MainWindow.cpp" line="237"/>
+        <source>EasyMode</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/MainWindow.cpp" line="479"/>
         <source>New version available</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="438"/>
+        <location filename="../../ui/MainWindow.cpp" line="479"/>
         <source>Download new version</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="63"/>
         <location filename="../../ev3/ui/MotorsWidget.cpp" line="35"/>
         <source>Set to zero</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="50"/>
-        <source>Custom</source>
         <translation></translation>
     </message>
     <message>
@@ -268,12 +285,12 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <location filename="../../ui/MainWindow.cpp" line="165"/>
         <source>Turn BCI link off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <location filename="../../ui/MainWindow.cpp" line="165"/>
         <source>Turn BCI link on</source>
         <translation></translation>
     </message>

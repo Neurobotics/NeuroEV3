@@ -94,6 +94,21 @@
         <translation>Спец. 3</translation>
     </message>
     <message>
+        <location filename="../../com/ComDevice.cpp" line="156"/>
+        <source>Custom4</source>
+        <translation>Спец. 4</translation>
+    </message>
+    <message>
+        <location filename="../../com/ComDevice.cpp" line="157"/>
+        <source>Custom5</source>
+        <translation>Спец. 5</translation>
+    </message>
+    <message>
+        <location filename="../../com/ComDevice.cpp" line="158"/>
+        <source>Custom6</source>
+        <translation>Спец. 6</translation>
+    </message>
+    <message>
         <location filename="../../com/ui/ComProfileWidget.cpp" line="49"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
@@ -161,29 +176,30 @@
     <message>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="13"/>
         <location filename="../../ui/DeviceMultiplayerControl.cpp" line="29"/>
-        <location filename="../../ui/MainWindow.cpp" line="94"/>
+        <location filename="../../ui/MainWindow.cpp" line="99"/>
         <source>Meditation</source>
         <translation>Медитация</translation>
     </message>
     <message>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="13"/>
         <location filename="../../ui/DeviceMultiplayerControl.cpp" line="30"/>
-        <location filename="../../ui/MainWindow.cpp" line="98"/>
+        <location filename="../../ui/MainWindow.cpp" line="103"/>
         <source>Concentration</source>
         <translation>Концентрация</translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="42"/>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="44"/>
         <source>Meditation difference</source>
         <translation>Разница медитации</translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="42"/>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="44"/>
         <source>Concentration difference</source>
         <translation>Разница концентрации</translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="43"/>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="58"/>
+        <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="45"/>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="29"/>
         <source>Speed</source>
         <translation>Скорость</translation>
@@ -210,54 +226,59 @@
         <translation>Порог</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="85"/>
+        <location filename="../../ui/MainWindow.cpp" line="86"/>
         <source>Profile</source>
         <translation>Профиль</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="86"/>
+        <location filename="../../ui/MainWindow.cpp" line="91"/>
         <source>Manual</source>
         <translation>Ручное</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="90"/>
+        <location filename="../../ui/MainWindow.cpp" line="95"/>
         <source>Mental states</source>
         <translation>Ментальные состояния</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="102"/>
+        <location filename="../../ui/MainWindow.cpp" line="107"/>
         <source>Multiplayer</source>
         <translation>Мультиплеер</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="215"/>
+        <location filename="../../ui/MainWindow.cpp" line="223"/>
         <source>Visit neurobotics.ru</source>
         <translation>Открыть neurobotics.ru</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="218"/>
+        <location filename="../../ui/MainWindow.cpp" line="226"/>
         <source>Visit NeuroEV3 GitHub repo</source>
         <translation>Открыть репозиторий NeuroEV3 на GitHub</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="438"/>
+        <location filename="../../ui/MainWindow.cpp" line="237"/>
+        <source>EasyMode</source>
+        <translation>Простой режим</translation>
+    </message>
+    <message>
+        <location filename="../../ui/MainWindow.cpp" line="479"/>
         <source>New version available</source>
         <translation>Доступна новая версия</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="438"/>
+        <location filename="../../ui/MainWindow.cpp" line="479"/>
         <source>Download new version</source>
         <translation>Скачать новую версию</translation>
     </message>
     <message>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="63"/>
         <location filename="../../ev3/ui/MotorsWidget.cpp" line="35"/>
         <source>Set to zero</source>
         <translation>Обнулить</translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="50"/>
         <source>Custom</source>
-        <translation>Спец.</translation>
+        <translation type="vanished">Спец.</translation>
     </message>
     <message>
         <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="20"/>
@@ -321,12 +342,12 @@
         <translation type="vanished">Скачать новую версию</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <location filename="../../ui/MainWindow.cpp" line="165"/>
         <source>Turn BCI link off</source>
         <translation>Выключить связь с нейроинтерфейсом</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.cpp" line="157"/>
+        <location filename="../../ui/MainWindow.cpp" line="165"/>
         <source>Turn BCI link on</source>
         <translation>Включить связь с нейроинтерфейсом</translation>
     </message>
