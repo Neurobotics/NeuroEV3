@@ -21,5 +21,10 @@
         <file>resources/translations/NeuroEV3_ru-RU.qm</file>
         <file>resources/help.svg</file>
         <file>resources/easymode.svg</file>
+        <file>resources/sequence.svg</file>
+        <file>resources/play.svg</file>
+        <file>resources/stop.svg</file>
+        <file>resources/timer.svg</file>
+        <file>resources/delete.svg</file>
     </qresource>
 </RCC>
