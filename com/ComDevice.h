@@ -45,6 +45,8 @@ public:
 
     static QList<ComDeviceCommand> Commands();
 
+    static ComDeviceCommand CommandByName(const QString &key);
+
     static inline QString FORWARD = "Forward";
     static inline QString BACKWARDS = "Backwards";
     static inline QString STOP = "Stop";

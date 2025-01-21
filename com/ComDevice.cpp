@@ -161,6 +161,15 @@ QList<ComDeviceCommand> ComDevice::Commands()
     return coms;
 }
 
+ComDeviceCommand ComDevice::CommandByName(const QString &key)
+{
+    auto coms = Commands();
+    foreach (auto com, coms) {
+        if (com.key == key) return com;
+    }
+    return coms[0];
+}
+
 void ComDevice::updatePortSettings()
 {
     if (!m_port) return;
