@@ -174,13 +174,13 @@ void DeviceBiosignalStateControl::init()
 
     controlStatesLayout->addStretch(100);
 
-    auto layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel(QCoreApplication::translate("Generic", "Current state:")), 0);
-    layout->addLayout(stateCirclesLayout, 0);
-    layout->addSpacing(10);
-    layout->addLayout(settingsLayout, 0);
-    layout->addLayout(controlStatesLayout, 0);
-    layout->addWidget(m_scroll, 100);
+    m_layout = new QVBoxLayout(this);
+    m_layout->addWidget(new QLabel(QCoreApplication::translate("Generic", "Current state:")), 0);
+    m_layout->addLayout(stateCirclesLayout, 0);
+    m_layout->addSpacing(10);
+    m_layout->addLayout(settingsLayout, 0);
+    m_layout->addLayout(controlStatesLayout, 0);
+    m_layout->addWidget(m_scroll, 100);
 
     rebuildStateControls();
 }

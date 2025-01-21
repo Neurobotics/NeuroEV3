@@ -44,6 +44,8 @@ protected:
     NScrollViewer *m_scroll = nullptr;
 
     QList<int> statesForWord(int maxStates, int wordLength);
+
+    QVBoxLayout *m_layout = nullptr;
 };
 
 #endif // DEVICEBIOSIGNALSTATECONTROL_H
