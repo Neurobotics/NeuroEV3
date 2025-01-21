@@ -25,6 +25,7 @@ SOURCES += \
     classes/Settings.cpp \
     classes/NeuroPlayAppConnector.cpp \
     \
+    com/ui/SequencePlayer.cpp \
     ev3/EV3.cpp \
     ev3/EV3_Command.cpp \
     ev3/EV3_Motor.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     classes/Settings.h \
     classes/NeuroPlayAppConnector.h \
     \
+    com/ui/SequencePlayer.h \
     ev3/EV3.h \
     ev3/EV3_Command.h \
     ev3/EV3_Motor.h \

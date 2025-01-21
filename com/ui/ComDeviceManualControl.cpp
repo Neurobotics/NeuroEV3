@@ -4,9 +4,14 @@
 #include <QCoreApplication>
 #include <QLabel>
 #include "ui/ImpovedSlider.h"
+#include "SequencePlayer.h"
 
 ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) : QWidget(parent)
 {
+    m_com = com;
+
+    auto sequence = new SequencePlayer();
+
     auto speedSlider = new ImprovedSlider(Qt::Horizontal);
     speedSlider->setRange(-10, 10);
     speedSlider->setFixedWidth(208);
@@ -28,9 +33,13 @@ ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) 
         }
         connect(btn, &QPushButton::clicked, [=]() {
             speedSlider->setValue(0);
-            if (m_com) {
-                m_com->sendCommand(command);
-            }            
+            if (sequence->sequenceEnabled()) {
+                sequence->addCommand(command, text);
+            } else {
+                if (m_com) {
+                    m_com->sendCommand(command);
+                }
+            }
         });
         return btn;
     };
@@ -77,7 +86,6 @@ ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) 
     grid->addLayout(speedLayout, grid->rowCount(), 0, 1, grid->columnCount());
 
     auto lay = new QVBoxLayout(this);
-    lay->addWidget(central, 0, Qt::AlignCenter);
-
-    m_com = com;
+    lay->addWidget(central, 100, Qt::AlignCenter);
+    lay->addWidget(sequence);
 }
