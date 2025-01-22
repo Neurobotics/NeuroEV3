@@ -63,8 +63,6 @@ SequencePlayer::SequencePlayer(QWidget *parent) : QWidget(parent)
     m_commandsScroll = new NScrollViewer(Qt::Horizontal);
     m_commandsScroll->setMinimumSize(10,10);
     m_commandsScroll->setFixedHeight(64);
-    m_commandsScroll->setSpacing(10);
-    m_commandsScroll->setPadding(2);
     sequenceLayout->addWidget(m_commandsScroll, 100);
     sequenceLayout->addLayout(controlsLayout, 0);
 
@@ -97,15 +95,48 @@ void SequencePlayer::addCommand(QString cmd, QString view)
     connect(btn, &QWidget::customContextMenuRequested, [=]() {
         QMenu menu;
         int index = m_commandsWidgets.indexOf(btn);
+        int n = m_commands.length();
         menu.addAction(QIcon(":/resources/play.svg"), QCoreApplication::translate("Generic", "Play from this command"), [=]() {
-            if (index >= 0 && index < m_commands.length()) {
+            if (index >= 0 && index < n) {
                 playFrom(index, true);
             }
         });
 
         menu.addSeparator();
+        auto func_move = [=](int index, int inc) {
+            auto newIndex = index + inc;
+            if (newIndex >= 0 && newIndex < n) {
+                m_commands.swapItemsAt(index, newIndex);
+
+                auto btn1 = m_commandsWidgets.at(index);
+                auto btn2 = m_commandsWidgets.at(newIndex);
+
+                btn1->setParent(nullptr);
+                btn2->setParent(nullptr);
+
+                auto ind = qMin(index, newIndex);
+                if (newIndex > index) {
+                    m_commandsScroll->insertWidget(ind, btn1);
+                    m_commandsScroll->insertWidget(ind, btn2);
+                } else {
+                    m_commandsScroll->insertWidget(ind, btn2);
+                    m_commandsScroll->insertWidget(ind, btn1);
+                }
+                m_commandsWidgets.swapItemsAt(index, newIndex);
+            }
+        };
+        auto actionLeft = menu.addAction(QCoreApplication::translate("Generic", "Move 1 position to the left"), [=]() {
+            func_move(index, -1);
+        });
+        auto actionRight = menu.addAction(QCoreApplication::translate("Generic", "Move 1 position to the right"), [=]() {
+            func_move(index, 1);
+        });
+        if (index == 0) actionLeft->setDisabled(true);
+        if (index + 1 == n) actionRight->setDisabled(true);
+
+        menu.addSeparator();
         menu.addAction(QIcon(":/resources/delete.svg"), QCoreApplication::translate("Generic", "Remove"), [=]() {
-            if (index >= 0 && index < m_commands.length()) {
+            if (index >= 0 && index < n) {
                 m_commands.removeAt(index);
                 btn->setVisible(false);
                 btn->setParent(nullptr);
@@ -198,12 +229,12 @@ QPushButton *SequencePlayer::squareButton(QIcon icon, QString text, QString tool
 
 void SequencePlayer::nextCommand()
 {
-    qDebug() << "T" << m_commandIndex << m_commands.length();
+    // qDebug() << "T" << m_commandIndex << m_commands.length();
     if (m_commandIndex >= 0) {
         if (m_commandIndex < m_commands.length()) {
             QString cmd = m_commands[m_commandIndex];
             emit command(cmd);
-            qDebug() << "CMD" << cmd;
+            // qDebug() << "CMD" << cmd;
 
             for (int i = 0; i<m_commands.length(); i++) {
                 auto btn = m_commandsWidgets[i];

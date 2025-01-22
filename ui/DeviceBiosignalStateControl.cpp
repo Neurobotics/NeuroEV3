@@ -69,7 +69,7 @@ void DeviceBiosignalStateControl::setCurrentState(int state)
     }
 
     if (controlFetched) {
-        qDebug() << "NEW SYMBOL" << controlSymbol << m_controlIndex << (wordLength - 1 - m_controlIndex) << m_controlStateCirles.length();
+        // qDebug() << "NEW SYMBOL" << controlSymbol << m_controlIndex << (wordLength - 1 - m_controlIndex) << m_controlStateCirles.length();
         int ii = wordLength - 1 - m_controlIndex;
         if (ii >= 0 && ii < m_controlStateCirles.length()) {
             m_controlStateCirles[ii]->setState(controlSymbol);
@@ -81,10 +81,9 @@ void DeviceBiosignalStateControl::setCurrentState(int state)
             m_controlState += controlSymbol * pow(10, m_controlIndex);
         }
 
-
         m_controlIndex ++;
         if (m_controlIndex >= wordLength) {
-            qDebug() << "CTRL" << m_controlState;
+            // qDebug() << "CTRL" << m_controlState;
             m_controlIndex = 0;
             for(int i = 0; i<m_controlStateCirles.length(); i++) {
                 m_lastControlStateCirles[i]->setState(m_controlStateCirles[i]->state());
