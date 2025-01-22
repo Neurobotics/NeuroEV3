@@ -1,3 +1,15 @@
+1.5.0 (2025-01-22)
+<ru-RU>
++ Режим последовательности команд для COM
++ Простой режим (минимум отображаемых настроек)
++ Добавлены команды C4, C5, C6 для COM
+</ru-RU>
+<en-EN>
++ Commands sequence mode for COM
++ Simple mode (minimum displayed settings)
++ Add commands C4, C5, C6 for COM
+</en-EN>
+
 1.4.3 (2025-01-09)
 <ru-RU>
 + Запоминание включенности связи с нейроинтерфейсом
