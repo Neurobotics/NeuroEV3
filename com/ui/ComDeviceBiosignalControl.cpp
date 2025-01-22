@@ -12,6 +12,17 @@ ComDeviceBiosignalControl::ComDeviceBiosignalControl(ComDevice *com, Settings *s
     init();
 
     m_sequence = new SequencePlayer();
+    m_sequence->setInterval(com->profile()->value("StatesSequenceTimeMs", 1000).toInt());
+    connect(m_sequence, &SequencePlayer::intervalChanged, [=](int ms) {
+        com->profile()->setValue("StatesSequenceTimeMs", ms);
+    });
+
+    m_sequence->enableSequence(com->profile()->value("StatesSequenceEnabled", false).toBool());
+    connect(m_sequence, &SequencePlayer::sequenceEnableChanged, [=](bool on) {
+        com->profile()->setValue("StatesSequenceEnabled", on);
+    });
+
+    m_sequence->setCanAcceptCommandVisible(true);
 
     m_layout->addWidget(m_sequence);
 }

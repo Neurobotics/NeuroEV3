@@ -11,6 +11,15 @@ ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) 
     m_com = com;
 
     auto sequence = new SequencePlayer();
+    sequence->setInterval(com->profile()->value("ManualSequenceTimeMs", 1000).toInt());
+    connect(sequence, &SequencePlayer::intervalChanged, [=](int ms) {
+        com->profile()->setValue("ManualSequenceTimeMs", ms);
+    });
+
+    sequence->enableSequence(com->profile()->value("ManualSequenceEnabled", false).toBool());
+    connect(sequence, &SequencePlayer::sequenceEnableChanged, [=](bool on) {
+        com->profile()->setValue("ManualSequenceEnabled", on);
+    });
 
     auto speedSlider = new ImprovedSlider(Qt::Horizontal);
     speedSlider->setRange(-10, 10);

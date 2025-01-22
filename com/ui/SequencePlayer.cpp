@@ -15,6 +15,8 @@ SequencePlayer::SequencePlayer(QWidget *parent) : QWidget(parent)
     connect(m_btnStop, &QPushButton::clicked, [=]() { stop(); });
 
     m_btnCheck = new QPushButton(QIcon(":/resources/sequence.svg"), "Режим последовательности");
+    m_btnCheck->setIconSize(QSize(32, 32));
+    m_btnCheck->setCursor(Qt::PointingHandCursor);
     m_btnCheck->setCheckable(true);
     connect(m_btnCheck, &QPushButton::toggled, [=](bool on) {
         enableSequence(on);
@@ -23,12 +25,18 @@ SequencePlayer::SequencePlayer(QWidget *parent) : QWidget(parent)
     m_spinTimeStep = new QDoubleSpinBox();
     m_spinTimeStep->setRange(0.1, 10);
     m_spinTimeStep->setSingleStep(0.1);
-    m_spinTimeStep->setValue(1000);
+    m_spinTimeStep->setValue(1);
     m_spinTimeStep->setSuffix(QCoreApplication::translate("Generic", "s"));
     m_spinTimeStep->setDecimals(1);
     connect(m_spinTimeStep, &QDoubleSpinBox::valueChanged, [=](double value) {
         setInterval(value * 1000);
         emit intervalChanged(m_intervalMs);
+    });
+
+    m_checkBoxAcceptCommands = new QCheckBox(QCoreApplication::translate("Generic", "Accept commands"));
+    m_checkBoxAcceptCommands->setChecked(true);
+    connect(m_checkBoxAcceptCommands, &QCheckBox::toggled, [=](bool on) {
+        m_canAcceptCommands = on;
     });
 
     auto btnClear = new QPushButton(QIcon(":/resources/delete.svg"), "");
@@ -66,9 +74,13 @@ SequencePlayer::SequencePlayer(QWidget *parent) : QWidget(parent)
     sequenceLayout->addWidget(m_commandsScroll, 100);
     sequenceLayout->addLayout(controlsLayout, 0);
 
+    auto topRow = new QHBoxLayout();
+    topRow->addWidget(m_btnCheck, 0, Qt::AlignLeft);
+    topRow->addWidget(m_checkBoxAcceptCommands, 100, Qt::AlignLeft|Qt::AlignVCenter);
+
     auto vbox = new QVBoxLayout(this);
     vbox->setContentsMargins(0,0,0,0);
-    vbox->addWidget(m_btnCheck, 0, Qt::AlignLeft);
+    vbox->addLayout(topRow, 0);
     vbox->addWidget(m_sequenceWidget);
 
     enableSequence(false);
@@ -82,11 +94,14 @@ SequencePlayer::SequencePlayer(QWidget *parent) : QWidget(parent)
     connect(m_timer, &QTimer::timeout, [=]() {
         nextCommand();
     });
+
+    setCanAcceptCommandVisible(m_isVisibleCanAcceptCommands);
 }
 
 void SequencePlayer::addCommand(QString cmd, QString view)
 {
     if (m_isPlaying) return;
+    if (!m_canAcceptCommands) return;
 
     m_commands << cmd;
     auto btn = squareButton(QIcon(), view, cmd);
@@ -163,6 +178,10 @@ void SequencePlayer::enableSequence(bool on)
     m_btnCheck->blockSignals(true);
     m_btnCheck->setChecked(on);
     m_btnCheck->blockSignals(false);
+
+    m_checkBoxAcceptCommands->setVisible(on && m_isVisibleCanAcceptCommands);
+
+    emit sequenceEnableChanged(on);
 }
 
 void SequencePlayer::clearCommands()
@@ -171,6 +190,12 @@ void SequencePlayer::clearCommands()
     m_commands.clear();
     m_commandsScroll->clear();
     m_commandsWidgets.clear();
+}
+
+void SequencePlayer::setCanAcceptCommandVisible(bool on)
+{
+    m_isVisibleCanAcceptCommands = on;
+    m_checkBoxAcceptCommands->setVisible(m_btnCheck->isChecked() && m_isVisibleCanAcceptCommands);
 }
 
 void SequencePlayer::play(bool on)

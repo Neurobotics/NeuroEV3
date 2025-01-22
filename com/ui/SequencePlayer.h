@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QDoubleSpinBox>
 #include <QTimer>
+#include <QCheckBox>
 
 class SequencePlayer : public QWidget
 {
@@ -26,10 +27,13 @@ public:
 
     void clearCommands();
 
+    void setCanAcceptCommandVisible(bool on);
+
 
 signals:
     void command(QString cmd);
     void intervalChanged(int ms);
+    void sequenceEnableChanged(bool on);
 
 protected:
     QList<QString> m_commands;
@@ -44,12 +48,17 @@ protected:
     QPushButton *m_btnPlay = nullptr;
     QPushButton *m_btnStop = nullptr;
 
+    QCheckBox *m_checkBoxAcceptCommands = nullptr;
+
     QTimer *m_timer = nullptr;
 
     int m_intervalMs = 1000;
 
     bool m_isPlaying = false;
     int m_commandIndex = 0;
+
+    bool m_canAcceptCommands = true;
+    bool m_isVisibleCanAcceptCommands = false;
 
     QPushButton *squareButton(QIcon icon, QString text = "", QString tooltip = "");
 
