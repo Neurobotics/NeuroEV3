@@ -21,6 +21,10 @@ ComDeviceManualControl::ComDeviceManualControl(ComDevice *com, QWidget *parent) 
         com->profile()->setValue("ManualSequenceEnabled", on);
     });
 
+    connect(sequence, &SequencePlayer::command, [=](QString cmd) {
+        m_com->sendCommand(cmd);
+    });
+
     auto speedSlider = new ImprovedSlider(Qt::Horizontal);
     speedSlider->setRange(-10, 10);
     speedSlider->setFixedWidth(208);

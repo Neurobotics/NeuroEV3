@@ -21,6 +21,10 @@ ComDeviceBiosignalControl::ComDeviceBiosignalControl(ComDevice *com, Settings *s
         com->profile()->setValue("StatesSequenceEnabled", on);
     });
 
+    connect(m_sequence, &SequencePlayer::command, [=](QString cmd) {
+        m_com->sendCommand(cmd);
+    });
+
     m_sequence->setCanAcceptCommandVisible(true);
 
     m_layout->addWidget(m_sequence);
