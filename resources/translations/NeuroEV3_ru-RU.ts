@@ -4,49 +4,49 @@
 <context>
     <name>DeviceBiosignalStateControl</name>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="113"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="112"/>
         <source>Biosignal state history</source>
         <translation>История биосигнальных состояний</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="143"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="142"/>
         <source>States</source>
         <translation>Состояния</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="143"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="142"/>
         <source>Amount of supported states
 (important if word length is greater than 1)</source>
         <translation>Количество поддерживаемых состояний
 (важно, если длина слова больше 1)</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="146"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="145"/>
         <source>Repeats</source>
         <translation>Повторы</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="146"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="145"/>
         <source>The number of repetitions of the same state to count it as a state</source>
         <translation>Количество повторов одного и того же состояния, чтобы засчитать его как состояние</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="149"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="148"/>
         <source>Word length</source>
         <translation>Длина слова</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="149"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="148"/>
         <source>The amount of symbols in metastate word</source>
         <translation>Количество символов в слове метасостояния</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="160"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="159"/>
         <source>Last state</source>
         <translation>Последнее состояние</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="170"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="169"/>
         <source>Previous state</source>
         <translation>Предыдущее состояние</translation>
     </message>
@@ -164,12 +164,12 @@
         <translation>Формат скорости</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="205"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="204"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="178"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="177"/>
         <source>Current state:</source>
         <translation>Текущее состояние:</translation>
     </message>
@@ -198,7 +198,7 @@
         <translation>Разница концентрации</translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="58"/>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="76"/>
         <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="45"/>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="29"/>
         <source>Speed</source>
@@ -271,7 +271,7 @@
         <translation>Скачать новую версию</translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="63"/>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="81"/>
         <location filename="../../ev3/ui/MotorsWidget.cpp" line="35"/>
         <source>Set to zero</source>
         <translation>Обнулить</translation>
@@ -285,6 +285,57 @@
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="25"/>
         <source>Multiplier</source>
         <translation>Множитель</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="9"/>
+        <source>Play sequence</source>
+        <translation>Воспроизвести последовательность</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="13"/>
+        <source>Stop sequence</source>
+        <translation>Остановить последовательность</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="29"/>
+        <source>s</source>
+        <translation>с</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="36"/>
+        <source>Accept commands</source>
+        <translation>Принимать команды</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="45"/>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="163"/>
+        <source>Clear sequence</source>
+        <translation>Очистить последовательность</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="50"/>
+        <source>Time step</source>
+        <translation>Время шага</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="114"/>
+        <source>Play from this command</source>
+        <translation>Воспроизвести с этой команды</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="143"/>
+        <source>Move 1 position to the left</source>
+        <translation>Передвинуть команду на 1 позицию влево</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="146"/>
+        <source>Move 1 position to the right</source>
+        <translation>Передвинуть команду на 1 позицию направо</translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="153"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>

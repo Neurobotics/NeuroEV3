@@ -5,8 +5,7 @@
 #include <QLabel>
 #include "com/ui/ComCommandSelector.h"
 
-ComDeviceBiosignalControl::ComDeviceBiosignalControl(ComDevice *com, Settings *settings, QWidget *parent)
-    : DeviceBiosignalStateControl(settings, "com", parent)
+ComDeviceBiosignalControl::ComDeviceBiosignalControl(ComDevice *com, Settings *settings, QWidget *parent) : DeviceBiosignalStateControl(settings, "com", parent)
 {
     m_com = com;
     init();

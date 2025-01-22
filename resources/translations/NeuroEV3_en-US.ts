@@ -4,48 +4,48 @@
 <context>
     <name>DeviceBiosignalStateControl</name>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="113"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="112"/>
         <source>Biosignal state history</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="143"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="142"/>
         <source>States</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="143"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="142"/>
         <source>Amount of supported states
 (important if word length is greater than 1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="146"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="145"/>
         <source>Repeats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="146"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="145"/>
         <source>The number of repetitions of the same state to count it as a state</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="149"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="148"/>
         <source>Word length</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="149"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="148"/>
         <source>The amount of symbols in metastate word</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="160"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="159"/>
         <source>Last state</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="170"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="169"/>
         <source>Previous state</source>
         <translation></translation>
     </message>
@@ -163,12 +163,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="205"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="204"/>
         <source>State</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="178"/>
+        <location filename="../../ui/DeviceBiosignalStateControl.cpp" line="177"/>
         <source>Current state:</source>
         <translation></translation>
     </message>
@@ -197,7 +197,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="58"/>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="76"/>
         <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="45"/>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="29"/>
         <source>Speed</source>
@@ -270,7 +270,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="63"/>
+        <location filename="../../com/ui/ComDeviceManualControl.cpp" line="81"/>
         <location filename="../../ev3/ui/MotorsWidget.cpp" line="35"/>
         <source>Set to zero</source>
         <translation></translation>
@@ -279,6 +279,57 @@
         <location filename="../../com/ui/ComDeviceMultiplayerControl.cpp" line="20"/>
         <location filename="../../com/ui/ComDeviceProportionalControl.cpp" line="25"/>
         <source>Multiplier</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="9"/>
+        <source>Play sequence</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="13"/>
+        <source>Stop sequence</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="29"/>
+        <source>s</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="36"/>
+        <source>Accept commands</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="45"/>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="163"/>
+        <source>Clear sequence</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="50"/>
+        <source>Time step</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="114"/>
+        <source>Play from this command</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="143"/>
+        <source>Move 1 position to the left</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="146"/>
+        <source>Move 1 position to the right</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../com/ui/SequencePlayer.cpp" line="153"/>
+        <source>Remove</source>
         <translation></translation>
     </message>
 </context>
