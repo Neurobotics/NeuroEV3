@@ -12,6 +12,7 @@ public:
 
     ~NStackPanel();
 
+    void insert(int index, QWidget *w);
     void add(QWidget* w);
     void remove(QWidget *w);
     void setSpacing(int spacing);

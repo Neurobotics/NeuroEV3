@@ -33,6 +33,11 @@ void NScrollViewer::add(QWidget *widget)
     addWidget(widget);
 }
 
+void NScrollViewer::insertWidget(int index, QWidget *widget)
+{
+    if (m_stack) m_stack->insert(index, widget);
+}
+
 void NScrollViewer::remove(QWidget *widget)
 {
     if (m_stack) m_stack->remove(widget);

@@ -17,6 +17,7 @@ public:
 
     void addWidget(QWidget* widget);
     void add(QWidget* widget);
+    void insertWidget(int index, QWidget *widget);
     void remove(QWidget *widget);
 
     void setItemPadding(int uniformPadding);

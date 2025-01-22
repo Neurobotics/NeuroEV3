@@ -24,6 +24,13 @@ NStackPanel::~NStackPanel()
 
 }
 
+void NStackPanel::insert(int index, QWidget *w)
+{
+    if (w == nullptr) return;
+    m_lay->insertWidget(index, w);
+    m_widgets << w;
+}
+
 void NStackPanel::add(QWidget *w)
 {
     if (w == nullptr) return;
