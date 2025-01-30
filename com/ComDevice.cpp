@@ -51,7 +51,7 @@ void ComDevice::setEnabled(bool on)
 {
     m_isEnabled = on;
     if (!on) {
-        m_port->close();
+        if (m_port) m_port->close();
     } else {
         reconnect();
     }
@@ -140,6 +140,11 @@ void ComDevice::reconnect()
 bool ComDevice::isConnected()
 {
     return m_port && m_port->isOpen();
+}
+
+bool ComDevice::isEnabled()
+{
+    return m_isEnabled;
 }
 
 QList<ComDeviceCommand> ComDevice::Commands()

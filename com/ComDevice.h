@@ -42,6 +42,7 @@ public:
     void reconnect();
 
     bool isConnected();
+    bool isEnabled();
 
     static QList<ComDeviceCommand> Commands();
 
