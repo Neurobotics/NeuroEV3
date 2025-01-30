@@ -108,12 +108,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
            new EV3MultiplayerControl(m_ev3, m_settings),
            new ComDeviceMultiplayerControl(m_com, m_settings));
 
-    connect(m_tabs, &QTabWidget::currentChanged, [=](int index) {
-        if (m_ev3) m_ev3->stopMotors();
-        if (m_com) m_com->stop();
-        m_controlState = (ControlState)index;
-        m_neuroplayConnector->start(m_controlState == Multiplayer);
-    });
+    connect(m_tabs, &QTabWidget::currentChanged, this, [=](int index) {
+        handleTabChange();
+    }, Qt::QueuedConnection);
 
     static QColor colorBlue = QColor(0x00CCFF);
     static QColor colorGray = QColor(0xCCCCCC);
@@ -133,12 +130,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto radioDeviceCOM = new QRadioButton("COM");
     radioGroup->addButton(radioDeviceEV3);
     radioGroup->addButton(radioDeviceCOM);
-    connect(radioDeviceEV3, &QRadioButton::toggled, this, [=](bool ) {
-        setDeviceMode(Device_EV3);
-    });
-    connect(radioDeviceCOM, &QRadioButton::toggled, this, [=](bool ) {
-        setDeviceMode(Device_COM);
-    });
 
     auto layoutDeviceSelection = new QVBoxLayout();
     layoutDeviceSelection->setContentsMargins(0,0,0,0);
@@ -178,6 +169,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto btnWiFi = UICommon::iconedButton(":/resources/wifi.svg", QSize(20, 20), QSize(16, 16));
     btnWiFi->setCheckable(true);
 
+    m_deviceWidgets[Device_EV3] << widgetEV3connectionType;
+
     layoutEV3connectionType->addWidget(btnWiFi);
     layoutEV3connectionType->addWidget(btnBluetooth);
 
@@ -210,7 +203,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto headerLayout = new QHBoxLayout();
     headerLayout->addLayout(layoutDeviceSelection);
     headerLayout->addWidget(btnEV3Connect);
-    headerLayout->addLayout(layoutEV3connectionType);
+    headerLayout->addWidget(widgetEV3connectionType);
     headerLayout->addWidget(ev3ConnectedStatus);
     headerLayout->addWidget(comConnectedStatus);
     headerLayout->addWidget(labelConnected);
@@ -283,11 +276,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setMinimumWidth(520);
 #endif
 
+    radioDeviceEV3->blockSignals(true);
+    radioDeviceCOM->blockSignals(true);
     if (m_settings->ev3Mode()) {
         radioDeviceEV3->setChecked(true);
     } else {
         radioDeviceCOM->setChecked(true);
     }
+    radioDeviceEV3->blockSignals(false);
+    radioDeviceCOM->blockSignals(false);
+
+    connect(radioDeviceEV3, &QRadioButton::toggled, this, [=](bool on) {
+        if (on) setDeviceMode(Device_EV3);
+    });
+    connect(radioDeviceCOM, &QRadioButton::toggled, this, [=](bool on) {
+        if (on) setDeviceMode(Device_COM);
+    });
+
+    setDeviceMode(m_settings->ev3Mode() ? Device_EV3 : Device_COM);
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
@@ -343,12 +349,7 @@ void MainWindow::control()
 
 void MainWindow::setDeviceMode(DeviceMode mode)
 {
-    // if (!m_easyMode) {
-    //     m_tabs->setCurrentIndex(0);
-    // } else {
-    //     m_tabs->setCurrentIndex(1);
-    // }
-
+    m_tabs->blockSignals(true);
     m_tabs->setTabVisible(0, mode == Device_COM && !m_easyMode);
 
     if (!m_easyMode) {
@@ -365,11 +366,12 @@ void MainWindow::setDeviceMode(DeviceMode mode)
         if (m_ev3) {
             m_ev3->disconnect();
         }
-
-
         m_com->setEnabled(true);
     } else {
         m_com->setEnabled(false);
+        if (m_ev3) {
+            m_ev3->searchAndConnect();
+        }
     }
 
     m_deviceMode = mode;
@@ -382,7 +384,10 @@ void MainWindow::setDeviceMode(DeviceMode mode)
     }
 
     m_tabs->setTabVisible(m_tabs->count()-1, !m_easyMode);
+    m_tabs->blockSignals(false);
     m_settings->setEV3mode(mode == Device_EV3);
+
+    handleTabChange();
 }
 
 void MainWindow::addTab(QString title, QWidget *widgetForEV3, QWidget *widgetForCOM)
@@ -420,6 +425,14 @@ void MainWindow::addTab(QString title, DeviceProportionalControl *widgetForEV3, 
         if (widgetForEV3) m_concentrationControls << widgetForEV3;
         if (widgetForCOM) m_concentrationControls << widgetForCOM;
     }
+}
+
+void MainWindow::handleTabChange()
+{
+    if (m_ev3) m_ev3->stopMotors();
+    if (m_com && m_com->isEnabled()) m_com->stop();
+    m_controlState = (ControlState)m_tabs->currentIndex();
+    m_neuroplayConnector->start(m_controlState == Multiplayer);
 }
 
 QString MainWindow::autoDetectLanguage(QString settingsFile)

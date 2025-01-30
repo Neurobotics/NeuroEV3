@@ -90,5 +90,7 @@ protected:
     QList<QWidget*> m_notEasyWidgets;
     bool m_easyMode = false;
 
+    void handleTabChange();
+
 };
 #endif // MAINWINDOW_H
