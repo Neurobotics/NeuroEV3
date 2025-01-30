@@ -1,3 +1,15 @@
+1.5.1 (2025-01-30)
+<ru-RU>
++ Исправлено переключение между режимами EV3/COM
++ Возвращена возможность выбора WiFi/Bluetooth для EV3
++ В руководстве добавлен раздел "Подключение к EV3 по Bluetooth"
+</ru-RU>
+<en-EN>
++ Fixed EV3/COM mode change
++ Restored WiFi/Bluetooth mode selection for EV3
++ Added "Connection to EV3 via Bluetooth" section in manual (RU)
+</en-EN>
+
 1.5.0 (2025-01-22)
 <ru-RU>
 + Режим последовательности команд для COM
